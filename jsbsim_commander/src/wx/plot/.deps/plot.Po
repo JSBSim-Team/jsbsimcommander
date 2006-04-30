@@ -1,0 +1,630 @@
+plot.o plot.o: plot.cpp /usr/local/include/wx-2.6/wx/wxprec.h \
+  /usr/local/include/wx-2.6/wx/defs.h \
+  /usr/local/include/wx-2.6/wx/platform.h \
+  /usr/local/lib/wx/include/msw-ansi-debug-static-2.6/wx/setup.h \
+  /usr/local/include/wx-2.6/wx/chkconf.h \
+  /usr/local/include/wx-2.6/wx/msw/chkconf.h \
+  /usr/local/include/wx-2.6/wx/chkconf.h \
+  /usr/local/include/wx-2.6/wx/msw/libraries.h \
+  /usr/local/include/wx-2.6/wx/msw/gccpriv.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/../../../../include/w32api/w32api.h \
+  /usr/local/include/wx-2.6/wx/features.h \
+  /usr/local/include/wx-2.6/wx/version.h \
+  /usr/local/include/wx-2.6/wx/dlimpexp.h \
+  /usr/local/include/wx-2.6/wx/debug.h /usr/include/assert.h \
+  /usr/include/_ansi.h /usr/include/newlib.h /usr/include/sys/config.h \
+  /usr/include/machine/ieeefp.h /usr/include/cygwin/config.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/limits.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/syslimits.h \
+  /usr/include/limits.h /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/sys/features.h /usr/local/include/wx-2.6/wx/wxchar.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/stdarg.h \
+  /usr/include/sys/types.h /usr/include/_ansi.h \
+  /usr/include/machine/_types.h /usr/include/sys/_types.h \
+  /usr/include/sys/lock.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/stddef.h \
+  /usr/include/machine/types.h /usr/include/cygwin/types.h \
+  /usr/include/sys/sysmacros.h /usr/include/stdint.h \
+  /usr/include/endian.h /usr/include/wchar.h /usr/include/sys/reent.h \
+  /usr/include/ctype.h /usr/include/string.h /usr/include/sys/string.h \
+  /usr/include/unistd.h /usr/include/sys/unistd.h /usr/include/getopt.h \
+  /usr/local/include/wx-2.6/wx/object.h \
+  /usr/local/include/wx-2.6/wx/memory.h \
+  /usr/local/include/wx-2.6/wx/string.h /usr/include/stdio.h \
+  /usr/include/sys/stdio.h /usr/include/stdlib.h \
+  /usr/include/machine/stdlib.h /usr/include/alloca.h \
+  /usr/include/cygwin/stdlib.h /usr/local/include/wx-2.6/wx/buffer.h \
+  /usr/local/include/wx-2.6/wx/strconv.h \
+  /usr/local/include/wx-2.6/wx/fontenc.h \
+  /usr/local/include/wx-2.6/wx/beforestd.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/string \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++config.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/os_defines.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stringfwd.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/char_traits.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstring \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstddef \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_algobase.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/climits \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstdlib \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/new \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/exception \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/iosfwd \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++locale.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/clocale \
+  /usr/include/locale.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstdio \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++io.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/gthr.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/gthr-default.h \
+  /usr/include/pthread.h /usr/include/signal.h /usr/include/sys/signal.h \
+  /usr/include/cygwin/signal.h /usr/include/sched.h /usr/include/time.h \
+  /usr/include/machine/time.h /usr/include/cygwin/time.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cctype \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/postypes.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cwchar \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/ctime \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/functexcept.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/exception_defines.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_pair.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/type_traits.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator_base_types.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator_base_funcs.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/concept_check.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/debug/debug.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cassert \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/memory \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/allocator.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++allocator.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/ext/new_allocator.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_construct.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_uninitialized.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_raw_storage_iter.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/limits \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_function.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/basic_string.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/atomicity.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/atomic_word.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/algorithm \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_algo.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_heap.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_tempbuf.h \
+  /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/basic_string.tcc \
+  /usr/local/include/wx-2.6/wx/afterstd.h \
+  /usr/local/include/wx-2.6/wx/msw/winundef.h \
+  /usr/local/include/wx-2.6/wx/arrstr.h \
+  /usr/local/include/wx-2.6/wx/iosfwrap.h \
+  /usr/local/include/wx-2.6/wx/msgout.h \
+  /usr/local/include/wx-2.6/wx/font.h \
+  /usr/local/include/wx-2.6/wx/gdiobj.h \
+  /usr/local/include/wx-2.6/wx/msw/gdiobj.h \
+  /usr/local/include/wx-2.6/wx/object.h \
+  /usr/local/include/wx-2.6/wx/msw/font.h \
+  /usr/local/include/wx-2.6/wx/gdicmn.h \
+  /usr/local/include/wx-2.6/wx/list.h \
+  /usr/local/include/wx-2.6/wx/object.h \
+  /usr/local/include/wx-2.6/wx/hashmap.h \
+  /usr/local/include/wx-2.6/wx/colour.h \
+  /usr/local/include/wx-2.6/wx/msw/colour.h \
+  /usr/local/include/wx-2.6/wx/settings.h \
+  /usr/local/include/wx-2.6/wx/colour.h \
+  /usr/local/include/wx-2.6/wx/font.h \
+  /usr/local/include/wx-2.6/wx/sizer.h \
+  /usr/local/include/wx-2.6/wx/button.h \
+  /usr/local/include/wx-2.6/wx/control.h \
+  /usr/local/include/wx-2.6/wx/window.h \
+  /usr/local/include/wx-2.6/wx/event.h \
+  /usr/local/include/wx-2.6/wx/clntdata.h \
+  /usr/local/include/wx-2.6/wx/vector.h \
+  /usr/local/include/wx-2.6/wx/cursor.h \
+  /usr/local/include/wx-2.6/wx/msw/cursor.h \
+  /usr/local/include/wx-2.6/wx/msw/gdiimage.h \
+  /usr/local/include/wx-2.6/wx/gdiobj.h \
+  /usr/local/include/wx-2.6/wx/list.h \
+  /usr/local/include/wx-2.6/wx/utils.h \
+  /usr/local/include/wx-2.6/wx/filefn.h /usr/include/sys/stat.h \
+  /usr/include/cygwin/stat.h /usr/include/dirent.h \
+  /usr/include/sys/dirent.h /usr/include/fcntl.h /usr/include/sys/fcntl.h \
+  /usr/local/include/wx-2.6/wx/longlong.h \
+  /usr/local/include/wx-2.6/wx/thread.h \
+  /usr/local/include/wx-2.6/wx/dynarray.h \
+  /usr/local/include/wx-2.6/wx/region.h \
+  /usr/local/include/wx-2.6/wx/msw/region.h \
+  /usr/local/include/wx-2.6/wx/validate.h \
+  /usr/local/include/wx-2.6/wx/palette.h \
+  /usr/local/include/wx-2.6/wx/msw/palette.h \
+  /usr/local/include/wx-2.6/wx/accel.h \
+  /usr/local/include/wx-2.6/wx/msw/accel.h \
+  /usr/local/include/wx-2.6/wx/msw/window.h \
+  /usr/local/include/wx-2.6/wx/hash.h \
+  /usr/local/include/wx-2.6/wx/msw/control.h \
+  /usr/local/include/wx-2.6/wx/dynarray.h \
+  /usr/local/include/wx-2.6/wx/msw/button.h \
+  /usr/local/include/wx-2.6/wx/frame.h \
+  /usr/local/include/wx-2.6/wx/toplevel.h \
+  /usr/local/include/wx-2.6/wx/iconbndl.h \
+  /usr/local/include/wx-2.6/wx/msw/toplevel.h \
+  /usr/local/include/wx-2.6/wx/msw/frame.h \
+  /usr/local/include/wx-2.6/wx/dialog.h \
+  /usr/local/include/wx-2.6/wx/containr.h \
+  /usr/local/include/wx-2.6/wx/msw/dialog.h \
+  /usr/local/include/wx-2.6/wx/panel.h \
+  /usr/local/include/wx-2.6/wx/generic/panelg.h \
+  /usr/local/include/wx-2.6/wx/window.h \
+  /usr/local/include/wx-2.6/wx/containr.h \
+  /usr/local/include/wx-2.6/wx/bookctrl.h \
+  /usr/local/include/wx-2.6/wx/notebook.h \
+  /usr/local/include/wx-2.6/wx/msw/notebook.h \
+  /usr/local/include/wx-2.6/wx/control.h \
+  /usr/local/include/wx-2.6/wx/log.h \
+  /usr/local/include/wx-2.6/wx/generic/logg.h \
+  /usr/local/include/wx-2.6/wx/intl.h \
+  /usr/local/include/wx-2.6/wx/dcclient.h \
+  /usr/local/include/wx-2.6/wx/msw/dcclient.h \
+  /usr/local/include/wx-2.6/wx/dc.h /usr/local/include/wx-2.6/wx/bitmap.h \
+  /usr/local/include/wx-2.6/wx/msw/bitmap.h \
+  /usr/local/include/wx-2.6/wx/palette.h \
+  /usr/local/include/wx-2.6/wx/brush.h \
+  /usr/local/include/wx-2.6/wx/msw/brush.h \
+  /usr/local/include/wx-2.6/wx/bitmap.h \
+  /usr/local/include/wx-2.6/wx/pen.h \
+  /usr/local/include/wx-2.6/wx/msw/pen.h \
+  /usr/local/include/wx-2.6/wx/colour.h \
+  /usr/local/include/wx-2.6/wx/math.h /usr/include/math.h \
+  /usr/local/include/wx-2.6/wx/msw/dc.h \
+  /usr/local/include/wx-2.6/wx/defs.h ../../../src/wx/plot/plot.h \
+  /usr/local/include/wx-2.6/wx/defs.h \
+  /usr/local/include/wx-2.6/wx/scrolwin.h \
+  /usr/local/include/wx-2.6/wx/generic/scrolwin.h \
+  /usr/local/include/wx-2.6/wx/panel.h \
+  /usr/local/include/wx-2.6/wx/event.h \
+  /usr/local/include/wx-2.6/wx/dynarray.h \
+  /usr/local/include/wx-2.6/wx/bmpbuttn.h \
+  /usr/local/include/wx-2.6/wx/msw/bmpbuttn.h \
+  /usr/local/include/wx-2.6/wx/button.h \
+  /usr/local/include/wx-2.6/wx/brush.h \
+  /usr/local/include/wx-2.6/wx/module.h \
+  /usr/local/include/wx-2.6/wx/arrimpl.cpp
+
+/usr/local/include/wx-2.6/wx/wxprec.h:
+
+/usr/local/include/wx-2.6/wx/defs.h:
+
+/usr/local/include/wx-2.6/wx/platform.h:
+
+/usr/local/lib/wx/include/msw-ansi-debug-static-2.6/wx/setup.h:
+
+/usr/local/include/wx-2.6/wx/chkconf.h:
+
+/usr/local/include/wx-2.6/wx/msw/chkconf.h:
+
+/usr/local/include/wx-2.6/wx/chkconf.h:
+
+/usr/local/include/wx-2.6/wx/msw/libraries.h:
+
+/usr/local/include/wx-2.6/wx/msw/gccpriv.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/../../../../include/w32api/w32api.h:
+
+/usr/local/include/wx-2.6/wx/features.h:
+
+/usr/local/include/wx-2.6/wx/version.h:
+
+/usr/local/include/wx-2.6/wx/dlimpexp.h:
+
+/usr/local/include/wx-2.6/wx/debug.h:
+
+/usr/include/assert.h:
+
+/usr/include/_ansi.h:
+
+/usr/include/newlib.h:
+
+/usr/include/sys/config.h:
+
+/usr/include/machine/ieeefp.h:
+
+/usr/include/cygwin/config.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/limits.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/sys/features.h:
+
+/usr/local/include/wx-2.6/wx/wxchar.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/stdarg.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/_ansi.h:
+
+/usr/include/machine/_types.h:
+
+/usr/include/sys/_types.h:
+
+/usr/include/sys/lock.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/stddef.h:
+
+/usr/include/machine/types.h:
+
+/usr/include/cygwin/types.h:
+
+/usr/include/sys/sysmacros.h:
+
+/usr/include/stdint.h:
+
+/usr/include/endian.h:
+
+/usr/include/wchar.h:
+
+/usr/include/sys/reent.h:
+
+/usr/include/ctype.h:
+
+/usr/include/string.h:
+
+/usr/include/sys/string.h:
+
+/usr/include/unistd.h:
+
+/usr/include/sys/unistd.h:
+
+/usr/include/getopt.h:
+
+/usr/local/include/wx-2.6/wx/object.h:
+
+/usr/local/include/wx-2.6/wx/memory.h:
+
+/usr/local/include/wx-2.6/wx/string.h:
+
+/usr/include/stdio.h:
+
+/usr/include/sys/stdio.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/machine/stdlib.h:
+
+/usr/include/alloca.h:
+
+/usr/include/cygwin/stdlib.h:
+
+/usr/local/include/wx-2.6/wx/buffer.h:
+
+/usr/local/include/wx-2.6/wx/strconv.h:
+
+/usr/local/include/wx-2.6/wx/fontenc.h:
+
+/usr/local/include/wx-2.6/wx/beforestd.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/string:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++config.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/os_defines.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stringfwd.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/char_traits.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstring:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstddef:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_algobase.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/climits:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstdlib:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/new:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/exception:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/iosfwd:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++locale.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/clocale:
+
+/usr/include/locale.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cstdio:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++io.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/gthr.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/gthr-default.h:
+
+/usr/include/pthread.h:
+
+/usr/include/signal.h:
+
+/usr/include/sys/signal.h:
+
+/usr/include/cygwin/signal.h:
+
+/usr/include/sched.h:
+
+/usr/include/time.h:
+
+/usr/include/machine/time.h:
+
+/usr/include/cygwin/time.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cctype:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/postypes.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cwchar:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/ctime:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/functexcept.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/exception_defines.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_pair.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/type_traits.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator_base_types.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator_base_funcs.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/concept_check.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_iterator.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/debug/debug.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/cassert:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/memory:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/allocator.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/c++allocator.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/ext/new_allocator.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_construct.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_uninitialized.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_raw_storage_iter.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/limits:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_function.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/basic_string.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/atomicity.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/i686-pc-cygwin/bits/atomic_word.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/algorithm:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_algo.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_heap.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/stl_tempbuf.h:
+
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/bits/basic_string.tcc:
+
+/usr/local/include/wx-2.6/wx/afterstd.h:
+
+/usr/local/include/wx-2.6/wx/msw/winundef.h:
+
+/usr/local/include/wx-2.6/wx/arrstr.h:
+
+/usr/local/include/wx-2.6/wx/iosfwrap.h:
+
+/usr/local/include/wx-2.6/wx/msgout.h:
+
+/usr/local/include/wx-2.6/wx/font.h:
+
+/usr/local/include/wx-2.6/wx/gdiobj.h:
+
+/usr/local/include/wx-2.6/wx/msw/gdiobj.h:
+
+/usr/local/include/wx-2.6/wx/object.h:
+
+/usr/local/include/wx-2.6/wx/msw/font.h:
+
+/usr/local/include/wx-2.6/wx/gdicmn.h:
+
+/usr/local/include/wx-2.6/wx/list.h:
+
+/usr/local/include/wx-2.6/wx/object.h:
+
+/usr/local/include/wx-2.6/wx/hashmap.h:
+
+/usr/local/include/wx-2.6/wx/colour.h:
+
+/usr/local/include/wx-2.6/wx/msw/colour.h:
+
+/usr/local/include/wx-2.6/wx/settings.h:
+
+/usr/local/include/wx-2.6/wx/colour.h:
+
+/usr/local/include/wx-2.6/wx/font.h:
+
+/usr/local/include/wx-2.6/wx/sizer.h:
+
+/usr/local/include/wx-2.6/wx/button.h:
+
+/usr/local/include/wx-2.6/wx/control.h:
+
+/usr/local/include/wx-2.6/wx/window.h:
+
+/usr/local/include/wx-2.6/wx/event.h:
+
+/usr/local/include/wx-2.6/wx/clntdata.h:
+
+/usr/local/include/wx-2.6/wx/vector.h:
+
+/usr/local/include/wx-2.6/wx/cursor.h:
+
+/usr/local/include/wx-2.6/wx/msw/cursor.h:
+
+/usr/local/include/wx-2.6/wx/msw/gdiimage.h:
+
+/usr/local/include/wx-2.6/wx/gdiobj.h:
+
+/usr/local/include/wx-2.6/wx/list.h:
+
+/usr/local/include/wx-2.6/wx/utils.h:
+
+/usr/local/include/wx-2.6/wx/filefn.h:
+
+/usr/include/sys/stat.h:
+
+/usr/include/cygwin/stat.h:
+
+/usr/include/dirent.h:
+
+/usr/include/sys/dirent.h:
+
+/usr/include/fcntl.h:
+
+/usr/include/sys/fcntl.h:
+
+/usr/local/include/wx-2.6/wx/longlong.h:
+
+/usr/local/include/wx-2.6/wx/thread.h:
+
+/usr/local/include/wx-2.6/wx/dynarray.h:
+
+/usr/local/include/wx-2.6/wx/region.h:
+
+/usr/local/include/wx-2.6/wx/msw/region.h:
+
+/usr/local/include/wx-2.6/wx/validate.h:
+
+/usr/local/include/wx-2.6/wx/palette.h:
+
+/usr/local/include/wx-2.6/wx/msw/palette.h:
+
+/usr/local/include/wx-2.6/wx/accel.h:
+
+/usr/local/include/wx-2.6/wx/msw/accel.h:
+
+/usr/local/include/wx-2.6/wx/msw/window.h:
+
+/usr/local/include/wx-2.6/wx/hash.h:
+
+/usr/local/include/wx-2.6/wx/msw/control.h:
+
+/usr/local/include/wx-2.6/wx/dynarray.h:
+
+/usr/local/include/wx-2.6/wx/msw/button.h:
+
+/usr/local/include/wx-2.6/wx/frame.h:
+
+/usr/local/include/wx-2.6/wx/toplevel.h:
+
+/usr/local/include/wx-2.6/wx/iconbndl.h:
+
+/usr/local/include/wx-2.6/wx/msw/toplevel.h:
+
+/usr/local/include/wx-2.6/wx/msw/frame.h:
+
+/usr/local/include/wx-2.6/wx/dialog.h:
+
+/usr/local/include/wx-2.6/wx/containr.h:
+
+/usr/local/include/wx-2.6/wx/msw/dialog.h:
+
+/usr/local/include/wx-2.6/wx/panel.h:
+
+/usr/local/include/wx-2.6/wx/generic/panelg.h:
+
+/usr/local/include/wx-2.6/wx/window.h:
+
+/usr/local/include/wx-2.6/wx/containr.h:
+
+/usr/local/include/wx-2.6/wx/bookctrl.h:
+
+/usr/local/include/wx-2.6/wx/notebook.h:
+
+/usr/local/include/wx-2.6/wx/msw/notebook.h:
+
+/usr/local/include/wx-2.6/wx/control.h:
+
+/usr/local/include/wx-2.6/wx/log.h:
+
+/usr/local/include/wx-2.6/wx/generic/logg.h:
+
+/usr/local/include/wx-2.6/wx/intl.h:
+
+/usr/local/include/wx-2.6/wx/dcclient.h:
+
+/usr/local/include/wx-2.6/wx/msw/dcclient.h:
+
+/usr/local/include/wx-2.6/wx/dc.h:
+
+/usr/local/include/wx-2.6/wx/bitmap.h:
+
+/usr/local/include/wx-2.6/wx/msw/bitmap.h:
+
+/usr/local/include/wx-2.6/wx/palette.h:
+
+/usr/local/include/wx-2.6/wx/brush.h:
+
+/usr/local/include/wx-2.6/wx/msw/brush.h:
+
+/usr/local/include/wx-2.6/wx/bitmap.h:
+
+/usr/local/include/wx-2.6/wx/pen.h:
+
+/usr/local/include/wx-2.6/wx/msw/pen.h:
+
+/usr/local/include/wx-2.6/wx/colour.h:
+
+/usr/local/include/wx-2.6/wx/math.h:
+
+/usr/include/math.h:
+
+/usr/local/include/wx-2.6/wx/msw/dc.h:
+
+/usr/local/include/wx-2.6/wx/defs.h:
+
+../../../src/wx/plot/plot.h:
+
+/usr/local/include/wx-2.6/wx/defs.h:
+
+/usr/local/include/wx-2.6/wx/scrolwin.h:
+
+/usr/local/include/wx-2.6/wx/generic/scrolwin.h:
+
+/usr/local/include/wx-2.6/wx/panel.h:
+
+/usr/local/include/wx-2.6/wx/event.h:
+
+/usr/local/include/wx-2.6/wx/dynarray.h:
+
+/usr/local/include/wx-2.6/wx/bmpbuttn.h:
+
+/usr/local/include/wx-2.6/wx/msw/bmpbuttn.h:
+
+/usr/local/include/wx-2.6/wx/button.h:
+
+/usr/local/include/wx-2.6/wx/brush.h:
+
+/usr/local/include/wx-2.6/wx/module.h:
+
+/usr/local/include/wx-2.6/wx/arrimpl.cpp:
