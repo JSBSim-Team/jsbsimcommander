@@ -1,2 +1,0 @@
-SUBDIRS = deprecated ogl plot
-
