@@ -1,0 +1,85 @@
+# Process this file with autoconf to produce a configure script.
+AC_INIT(Commander.cpp, 0.1.1, matthewzhenggong@yahoo.com.cn)
+AM_INIT_AUTOMAKE(JSBSimCommander, 0.1.1)
+
+# Checks for programs.
+AC_PROG_CPP
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_CANONICAL_HOST
+AC_PROG_CXX
+AC_CHECK_TOOL(RC, windres)
+AC_CHECK_TOOL(MSGFMT, msgfmt)
+AC_CHECK_TOOL(XGETTEXT, xgettext)
+AC_LANG_CPLUSPLUS
+
+
+# Check for wx
+AM_OPTIONS_WXCONFIG
+AM_PATH_WXCONFIG(2.6.0, [wxWin=1], [wxWin=0], [], [--unicode=no])
+     if test "$wxWin" != 1; then
+        AC_MSG_ERROR([
+                wxWidgets must be installed on your system
+                but wx-config script couldn't be found.
+
+                Please check that wx-config is in path, the directory
+                where wxWidgets libraries are installed (returned by
+                'wx-config --libs' command) is in LD_LIBRARY_PATH or
+                equivalent variable and wxWidgets version is 2.6.0 or above.
+        ])
+     fi
+WX_INCLUDES="`wx-config --unicode=no --cxxflags | awk '{print $1 \"  \" $2}'`"
+
+# Checks for header files.
+AC_HEADER_STDC
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_FUNC_MEMCMP
+
+# Used for enabling the "-no-undefined" flag while generating DLLs
+# Borrowed from the official gtk+-2 configure.in
+AC_MSG_CHECKING([for some Win32 platform])
+case "$host" in
+  *-*-mingw*|*-*-cygwin*)
+    platform_win32=yes
+    declare COMMANDER_RES="commander.res"
+    declare WIN32_LDADD="-lws2_32"
+    ;;
+  *)
+    platform_win32=no
+    declare COMMANDER_RES=""
+    declare WIN32_LDADD=""
+    ;;
+esac
+AC_MSG_RESULT([$platform_win32])
+AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
+  
+AC_SEARCH_LIBS(libiconv, iconv)
+  
+AC_SUBST(COMMANDER_RES)
+AC_SUBST(WIN32_LDADD)
+AC_SUBST(WX_INCLUDES)
+
+AC_OUTPUT( \
+    Makefile \
+    src/Makefile \
+    src/simgear/Makefile \
+    src/simgear/props/Makefile \
+    src/simgear/xml/Makefile \
+    src/input_output/Makefile \
+    src/math/Makefile \
+    src/wx/Makefile \
+    src/wx/plot/Makefile \
+    src/wx/deprecated/Makefile \
+    src/wx/ogl/Makefile \
+    src/gui/Makefile \
+    src/bitmaps/Makefile \
+    )
+
