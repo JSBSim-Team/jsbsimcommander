@@ -91,6 +91,10 @@
 #include "Property_Diag.h"
 #include "LGear_Diag.h"
 
+/**
+* mkNewFDMFile =================================================================
+*/
+
 void mkNewFDMFile(const wxString & filename)
 { 
     wxFileOutputStream os(filename);
@@ -488,6 +492,11 @@ void mkNewFDMFile(const wxString & filename)
     out << wxT("</fdm_config>\n");
 }
 
+/**
+* AircraftDialog ===============================================================
+* Constructor
+*/
+
 AircraftDialog::AircraftDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, style)
 {
@@ -704,7 +713,7 @@ AircraftDialog::AircraftDialog(wxWindow* parent, int id, const wxString& title, 
     };
     combo_box_ixy = new wxComboBox(notebook_ac_pane_mass, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 2, combo_box_ixy_choices, wxCB_DROPDOWN|wxCB_READONLY|wxCB_SIMPLE);
     const wxString list_box_pm_choices[] = {
-        
+
     };
     list_box_pm = new wxListBox(notebook_ac_pane_mass, ID_PM_LIST, wxDefaultPosition, wxDefaultSize, 0, list_box_pm_choices, 0);
     button_pm_add = new wxButton(notebook_ac_pane_mass, ID_PM_ADD, _("Add a new point mass"));
@@ -760,7 +769,7 @@ AircraftDialog::AircraftDialog(wxWindow* parent, int id, const wxString& title, 
     checkbox_output_fcs = new wxCheckBox(notebook_ac_pane_output, -1, _("FCS"));
     checkbox_output_propulsion = new wxCheckBox(notebook_ac_pane_output, -1, _("propulsion"));
     const wxString list_box_output_adds_choices[] = {
-        
+
     };
     list_box_output_adds = new wxListBox(notebook_ac_pane_output, -1, wxDefaultPosition, wxDefaultSize, 0, list_box_output_adds_choices, 0);
     text_ctrl_output = new wxTextCtrl(notebook_ac_pane_output, -1, wxT(""));
@@ -774,6 +783,9 @@ AircraftDialog::AircraftDialog(wxWindow* parent, int id, const wxString& title, 
     // end wxGlade
 }
 
+/**
+* EVENT TABLE ==================================================================
+*/
 
 BEGIN_EVENT_TABLE(AircraftDialog, wxDialog)
     // begin wxGlade: AircraftDialog::event_table
@@ -804,11 +816,14 @@ BEGIN_EVENT_TABLE(AircraftDialog, wxDialog)
     EVT_TOOL(wxID_SAVEAS, AircraftDialog::OnSaveAsButton)
     EVT_LISTBOX_DCLICK(ID_LISTBOX_GR, AircraftDialog::OnDetailGR)
     EVT_LIST_KEY_DOWN(ID_TANKS, AircraftDialog::OnTankDelete)
-    EVT_LIST_ITEM_ACTIVATED(ID_TANKS, AircraftDialog::OnTankDetail) 
-    EVT_LIST_ITEM_ACTIVATED(ID_SUB_ENGS, AircraftDialog::OnEngineDetail) 
+    EVT_LIST_ITEM_ACTIVATED(ID_TANKS, AircraftDialog::OnTankDetail)
+    EVT_LIST_ITEM_ACTIVATED(ID_SUB_ENGS, AircraftDialog::OnEngineDetail)
     EVT_LIST_KEY_DOWN(ID_SUB_ENGS, AircraftDialog::OnEngineDelete)
 END_EVENT_TABLE();
 
+/**
+* OnDetailPMList ===============================================================
+*/
 
 void AircraftDialog::OnDetailPMList(wxCommandEvent &event)
 {
@@ -829,12 +844,18 @@ void AircraftDialog::OnDetailPMList(wxCommandEvent &event)
   }
 }
 
+/**
+* OnSelectPMList ===============================================================
+*/
 
 void AircraftDialog::OnSelectPMList(wxCommandEvent &event)
 {
     event.Skip();
 }
 
+/**
+* OnAddPM ======================================================================
+*/
 
 void AircraftDialog::OnAddPM(wxCommandEvent &event)
 {
@@ -850,6 +871,9 @@ void AircraftDialog::OnAddPM(wxCommandEvent &event)
     list_box_pm->SetSelection(i);
 }
 
+/**
+* OnDelPM ======================================================================
+*/
 
 void AircraftDialog::OnDelPM(wxCommandEvent &event)
 {
@@ -863,6 +887,9 @@ void AircraftDialog::OnDelPM(wxCommandEvent &event)
   }
 }
 
+/**
+* OnAddGR ======================================================================
+*/
 
 void AircraftDialog::OnAddGR(wxCommandEvent &event)
 {
@@ -878,6 +905,9 @@ void AircraftDialog::OnAddGR(wxCommandEvent &event)
     list_ctrl_gr->SetSelection(i);
 }
 
+/**
+* OnDelGR ======================================================================
+*/
 
 void AircraftDialog::OnDelGR(wxCommandEvent &event)
 {
@@ -891,6 +921,9 @@ void AircraftDialog::OnDelGR(wxCommandEvent &event)
   }
 }
 
+/**
+* OnDetailGR ===================================================================
+*/
 
 void AircraftDialog::OnDetailGR(wxCommandEvent &event)
 {
@@ -911,12 +944,18 @@ void AircraftDialog::OnDetailGR(wxCommandEvent &event)
   }
 }
 
+/**
+* OnNewAvailEng ================================================================
+*/
 
 void AircraftDialog::OnNewAvailEng(wxCommandEvent &event)
 {
     event.Skip();
 }
 
+/**
+* OnSubEng =====================================================================
+*/
 
 void AircraftDialog::OnSubEng(wxCommandEvent &event)
 {
@@ -960,7 +999,7 @@ void AircraftDialog::OnSubEng(wxCommandEvent &event)
     long i = list_ctrl_avail_thruster->GetSelectedItemCount();
     if ( i == 1 )
     {
-        long item = -1;    
+        long item = -1;
         item = list_ctrl_avail_thruster->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if ( item == -1 )
         {
@@ -997,7 +1036,7 @@ void AircraftDialog::OnSubEng(wxCommandEvent &event)
   list_ctrl_sub_engines->SetItem(no, 1, data.GetThrusterName(), image_t);
   list_ctrl_sub_engines->SetColumnWidth( 0, wxLIST_AUTOSIZE );
   list_ctrl_sub_engines->SetColumnWidth( 1, wxLIST_AUTOSIZE );
-    
+
     EngineThrusterDialog dlg(this, -1);
     dlg.Load(&(engines.back()));
     if (dlg.ShowModal() == wxID_OK)
@@ -1042,12 +1081,18 @@ void AircraftDialog::OnSubEng(wxCommandEvent &event)
     }
 }
 
+/**
+* OnNewAvailThrt ===============================================================
+*/
 
 void AircraftDialog::OnNewAvailThrt(wxCommandEvent &event)
 {
     event.Skip();
 }
 
+/**
+* OnNewTank ====================================================================
+*/
 
 void AircraftDialog::OnNewTank(wxCommandEvent &event)
 {
@@ -1057,7 +1102,7 @@ void AircraftDialog::OnNewTank(wxCommandEvent &event)
     list_ctrl_tanks->InsertItem(no, tank.GetText(), 35);
     list_ctrl_tanks->SetItemData(no, tanks.size()-1);
     list_ctrl_tanks->SetColumnWidth( 0, wxLIST_AUTOSIZE );
-    
+
     TankDialog dlg(this, -1);
     dlg.Load(&(tanks.back()));
     if (dlg.ShowModal() == wxID_OK)
@@ -1067,6 +1112,9 @@ void AircraftDialog::OnNewTank(wxCommandEvent &event)
     }
 }
 
+/**
+* OnOutputChoose ===============================================================
+*/
 
 void AircraftDialog::OnOutputChoose(wxCommandEvent &event)
 {
@@ -1078,6 +1126,9 @@ void AircraftDialog::OnOutputChoose(wxCommandEvent &event)
   }
 }
 
+/**
+* OnOutputAdd ==================================================================
+*/
 
 void AircraftDialog::OnOutputAdd(wxCommandEvent &event)
 {
@@ -1090,6 +1141,9 @@ void AircraftDialog::OnOutputAdd(wxCommandEvent &event)
   }
 }
 
+/**
+* OnOutputDel ==================================================================
+*/
 
 void AircraftDialog::OnOutputDel(wxCommandEvent &event)
 {
@@ -1103,8 +1157,11 @@ void AircraftDialog::OnOutputDel(wxCommandEvent &event)
   }
 }
 
-
 // wxGlade: add AircraftDialog event handlers
+
+/**
+* OnClose ======================================================================
+*/
 
 void AircraftDialog::OnClose(wxCloseEvent &event)
 {
@@ -1153,12 +1210,20 @@ void AircraftDialog::OnClose(wxCloseEvent &event)
   }
 }
 
+/**
+* OnCloseButton ================================================================
+*/
+
 void AircraftDialog::OnCloseButton(wxCommandEvent &event)
 {
     wxCloseEvent e(wxEVT_CLOSE_WINDOW, wxID_CLOSE);
     e.SetEventObject( this );
     GetEventHandler()->ProcessEvent(e);
 }
+
+/**
+* OnNewButton ==================================================================
+*/
 
 void AircraftDialog::OnNewButton(wxCommandEvent &event)
 {
@@ -1183,6 +1248,10 @@ void AircraftDialog::OnNewButton(wxCommandEvent &event)
   }
 }
 
+/**
+* OnOpenButton =================================================================
+*/
+
 void AircraftDialog::OnOpenButton(wxCommandEvent &event)
 {
   {
@@ -1205,6 +1274,10 @@ void AircraftDialog::OnOpenButton(wxCommandEvent &event)
   }
 }
 
+/**
+* OnSaveButton =================================================================
+*/
+
 void AircraftDialog::OnSaveButton(wxCommandEvent &event)
 {
     int rslt = wxMessageBox(_("Do you want to save the FDM configure file?"), _("Confirm"), wxYES_NO|wxICON_QUESTION, this);
@@ -1213,6 +1286,10 @@ void AircraftDialog::OnSaveButton(wxCommandEvent &event)
       Save();
     }
 }
+
+/**
+* OnSaveAsButton ===============================================================
+*/
 
 void AircraftDialog::OnSaveAsButton(wxCommandEvent &event)
 {
@@ -1223,6 +1300,10 @@ void AircraftDialog::OnSaveAsButton(wxCommandEvent &event)
   }
 }
 
+/**
+* OnTankDetailB ================================================================
+*/
+
 void AircraftDialog::OnTankDetailB(wxCommandEvent &event)
 {
   wxListEvent e(wxEVT_COMMAND_LIST_ITEM_ACTIVATED , ID_TANKS);
@@ -1230,17 +1311,21 @@ void AircraftDialog::OnTankDetailB(wxCommandEvent &event)
   GetEventHandler()->ProcessEvent(e);
 }
 
+/**
+* OnTankDetail =================================================================
+*/
+
 void AircraftDialog::OnTankDetail(wxListEvent &event)
 {
   long i = list_ctrl_tanks->GetSelectedItemCount();
   if ( i == 1 )
   {
-    long item = -1;    
+    long item = -1;
     item = list_ctrl_tanks->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if ( item == -1 )
       return;
     long data = list_ctrl_tanks->GetItemData(item);
-    
+
     TankDialog dlg(this, -1);
     dlg.Load(&(tanks[data]));
     if (dlg.ShowModal() == wxID_OK)
@@ -1251,6 +1336,10 @@ void AircraftDialog::OnTankDetail(wxListEvent &event)
   }
 }
 
+/**
+* OnSubEngDetail ===============================================================
+*/
+
 void AircraftDialog::OnSubEngDetail(wxCommandEvent &event)
 {
   wxListEvent e(wxEVT_COMMAND_LIST_ITEM_ACTIVATED , ID_SUB_ENGS);
@@ -1258,17 +1347,21 @@ void AircraftDialog::OnSubEngDetail(wxCommandEvent &event)
   GetEventHandler()->ProcessEvent(e);
 }
 
+/**
+* OnEngineDetail ===============================================================
+*/
+
 void AircraftDialog::OnEngineDetail(wxListEvent &event)
 {
   long i = list_ctrl_sub_engines->GetSelectedItemCount();
   if ( i == 1 )
   {
-    long litem = -1;    
+    long litem = -1;
     litem = list_ctrl_sub_engines->GetNextItem(litem, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if ( litem == -1 )
       return;
     long data = list_ctrl_sub_engines->GetItemData(litem);
-    
+
     EngineThrusterDialog dlg(this, -1);
     dlg.Load(&(engines[data]));
     if (dlg.ShowModal() == wxID_OK)
@@ -1314,6 +1407,10 @@ void AircraftDialog::OnEngineDetail(wxListEvent &event)
   }
 }
 
+/**
+* OnTankDel ====================================================================
+*/
+
 void AircraftDialog::OnTankDel(wxCommandEvent &event)
 {
   wxListEvent e(wxEVT_COMMAND_LIST_KEY_DOWN , ID_TANKS);
@@ -1331,7 +1428,7 @@ void AircraftDialog::OnTankDelete(wxListEvent &event)
     {
       if ( ::wxMessageBox(_("Do you really want to delete the tank?"), _("Confirm"), wxYES_NO | wxICON_QUESTION, this) == wxYES )
       {
-        long item = -1;    
+        long item = -1;
         item = list_ctrl_tanks->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if ( item == -1 )
           return;
@@ -1362,7 +1459,7 @@ void AircraftDialog::OnEngineDelete(wxListEvent &event)
     {
       if ( ::wxMessageBox(_("Do you really want to delete the engine/thruster pair?"), _("Confirm"), wxYES_NO | wxICON_QUESTION, this) == wxYES )
       {
-        long item = -1;    
+        long item = -1;
         item = list_ctrl_sub_engines->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if ( item == -1 )
           return;
@@ -1890,7 +1987,7 @@ void AircraftDialog::init_dialog()
         else if (type == wxT("rocket_engine"))
         {
           list_ctrl_avail_engines->InsertItem(eNo++, engine_id, 30);
-        
+
         }
         else if (type == wxT("electric_engine"))
         {
@@ -1902,11 +1999,11 @@ void AircraftDialog::init_dialog()
         }
         else if (type == wxT("nozzle"))
         {
-          list_ctrl_avail_thruster->InsertItem(tNo++, engine_id, 33);       
+          list_ctrl_avail_thruster->InsertItem(tNo++, engine_id, 33);
         }
         else if (type == wxT("direct"))
         {
-          list_ctrl_avail_thruster->InsertItem(tNo++, engine_id, 34);       
+          list_ctrl_avail_thruster->InsertItem(tNo++, engine_id, 34);
         }
       }
       flag = config.GetNextGroup(engine_id, id);
@@ -1958,9 +2055,9 @@ bool AircraftDialog::Load(const wxString &fn)
   {
     text_ctrl_info_name->SetValue(wxT("Unknown"));
     text_ctrl_info_cfgver->SetValue(wxT("2.0"));
-    combo_box_info_level->SetValue(wxT("ALPHA"));  
+    combo_box_info_level->SetValue(wxT("ALPHA"));
   }
-  
+
   {
     double d;
     if ( text_ctrl_info_cfgver->GetValue().ToDouble(&d) )
@@ -1980,7 +2077,7 @@ bool AircraftDialog::Load(const wxString &fn)
   {
     LoadFileHeader(null_el);
   }
-  
+
   if (flag && ( tmp = document->FindElement("metrics")))
   {
     LoadMetrics(tmp);
@@ -2045,7 +2142,7 @@ bool AircraftDialog::Load(const wxString &fn)
   }
 
   tree_ctrl_aerodynamics->Expand(root);
- 
+
   delete null_el;
   delete controls_file_parser;
   return flag;
@@ -2064,9 +2161,9 @@ bool AircraftDialog::Save(const wxString &fn)
   out << wxT("<?xml version=\"1.0\"?>\n");
   out << wxT("<?xml-stylesheet href=\"JSBSim.xsl\" type=\"application/xml\"?>\n");
   out << wxT("<fdm_config name=\"") << text_ctrl_info_name->GetValue() << wxT("\" version=\"") << text_ctrl_info_cfgver->GetValue() << wxT("\" release=\"") << combo_box_info_level->GetValue() << wxT("\">\n");
-  
+
   wxString prefix = wxT("    ");
-  
+
   SaveFileHeader(out, prefix);
   SaveMetrics(out, prefix);
   SaveMass(out, prefix);
@@ -2079,23 +2176,23 @@ bool AircraftDialog::Save(const wxString &fn)
   out << wxT("</fdm_config>\n");
 
   os.Close();
-  
+
   return true;
 }
 
 void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
 {
   JSBSim::Element * tmp;
-  
+
   if ( tmp = el->FindElement("author"))
   {
     text_ctrl_info_author->SetValue(tmp->GetDataLine());
   }
   else
   {
-    text_ctrl_info_author->SetValue(wxT("anonymous"));  
+    text_ctrl_info_author->SetValue(wxT("anonymous"));
   }
-  
+
   if ( tmp = el->FindElement("filecreationdate"))
   {
     text_ctrl_info_date->SetValue(tmp->GetDataLine());
@@ -2105,7 +2202,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
     text_ctrl_info_date->SetValue(wxDateTime::Now().FormatISODate());
   }
 
-  
+
   if ( tmp = el->FindElement("version"))
   {
     text_ctrl_info_ver->SetValue(tmp->GetDataLine());
@@ -2115,7 +2212,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
     text_ctrl_info_ver->SetValue(wxT("0.1"));
   }
 
-  
+
   if ( tmp = el->FindElement("email"))
   {
     text_ctrl_info_email->SetValue(tmp->GetDataLine());
@@ -2125,7 +2222,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
     text_ctrl_info_email->Clear();
   }
 
-  
+
   text_ctrl_info_desc->Clear();
   if ( tmp = el->FindElement("description"))
   {
@@ -2169,7 +2266,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       }
     }
   }
-  
+
   text_ctrl_info_limit->Clear();
   if ( tmp = el->FindElement("limitations"))
   {
@@ -2191,7 +2288,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       }
     }
   }
-  
+
   text_ctrl_info_notes->Clear();
   if ( tmp = el->FindElement("notes"))
   {
@@ -2213,7 +2310,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       }
     }
   }
-  
+
   tmp = el->FindElement("reference");
   grid_info_refs->BeginBatch();
   {
@@ -2231,7 +2328,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       grid_info_refs->SetCellValue(i, 0, wxEmptyString);
       grid_info_refs->SetCellValue(i, 1, wxEmptyString);
       grid_info_refs->SetCellValue(i, 2, wxEmptyString);
-      grid_info_refs->SetCellValue(i, 3, wxEmptyString);    
+      grid_info_refs->SetCellValue(i, 3, wxEmptyString);
     }
   }
   grid_info_refs->EndBatch();
@@ -2243,33 +2340,33 @@ void AircraftDialog::SaveFileHeader(wxTextOutputStream &out, const wxString & pr
   wxString pre = wxT("    ");
   out << '\n';
   out << prefix << wxT("<fileheader>\n");
-  
+
   if (! text_ctrl_info_author->GetValue().IsEmpty())
     out << prefix << pre << wxT("<author> ") << text_ctrl_info_author->GetValue() << wxT(" </author>\n");
-  
+
   if (! text_ctrl_info_email->GetValue().IsEmpty())
     out << prefix << pre << wxT("<email> ") << text_ctrl_info_email->GetValue() << wxT(" </email>\n");
-  
+
   if (! text_ctrl_info_org->GetValue().IsEmpty())
   {
     out << prefix << pre << wxT("<orgnization>\n");
     out << text_ctrl_info_org->GetValue();
     out << prefix << pre << wxT("</orgnization>\n");
   }
-  
+
   if (! text_ctrl_info_date->GetValue().IsEmpty())
     out << prefix << pre << wxT("<filecreationdate> ") << text_ctrl_info_date->GetValue() << wxT(" </filecreationdate>\n");
-  
+
   if (! text_ctrl_info_desc->GetValue().IsEmpty())
   {
     out << prefix << pre << wxT("<description>\n");
     out << text_ctrl_info_desc->GetValue();
     out << prefix << pre << wxT("</description>\n");
   }
-  
+
   if (! text_ctrl_info_ver->GetValue().IsEmpty())
     out << prefix << pre << wxT("<version> ") << text_ctrl_info_ver->GetValue() << wxT(" </version>\n");
-  
+
   for (int i=0; i<10; ++i)
   {
     wxString s0, s1, s2, s3;
@@ -2282,21 +2379,21 @@ void AircraftDialog::SaveFileHeader(wxTextOutputStream &out, const wxString & pr
       out << prefix << pre << wxT("<reference refID=\"") << s0 << wxT("\" author=\"") << s1 << wxT("\" title=\"") << s2 << wxT("\" date=\"") << s3 << wxT("\"/>\n");
     }
   }
-  
+
   if (! text_ctrl_info_limit->GetValue().IsEmpty())
   {
     out << prefix << pre << wxT("<limitations>\n");
     out << text_ctrl_info_limit->GetValue();
     out << prefix << pre << wxT("</limitations>\n");
   }
-  
+
   if (! text_ctrl_info_notes->GetValue().IsEmpty())
   {
     out << prefix << pre << wxT("<notes>\n");
     out << text_ctrl_info_notes->GetValue();
     out << prefix << pre << wxT("</notes>\n");
   }
-  
+
   out << prefix << wxT("</fileheader>\n");
 }
 
@@ -2336,7 +2433,7 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
   else
   {
     text_ctrl_chord->SetValue(wxT("0"));
-    combo_box_chord->SetValue(wxT("M"));  
+    combo_box_chord->SetValue(wxT("M"));
   }
 
   if (tmp = el->FindElement("wing_incidence"))
@@ -2409,7 +2506,7 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
   text_ctrl_vrp_y->SetValue(wxT("0"));
   text_ctrl_vrp_z->SetValue(wxT("0"));
   combo_box_vrp_unit->SetValue(wxT("M"));
-  
+
   loc = el->FindElement("location");
   while (loc) {
     loc_name = loc->GetAttributeValue("name");
@@ -2472,7 +2569,7 @@ void AircraftDialog::SaveMetrics(wxTextOutputStream &out, const wxString & prefi
   out << prefix << pre << pre << wxT("<y> ") << text_ctrl_vrp_y->GetValue() << wxT(" </y>\n");
   out << prefix << pre << pre << wxT("<z> ") << text_ctrl_vrp_z->GetValue() << wxT(" </z>\n");
   out << prefix << pre << wxT("</location>\n");
-  
+
   out << prefix << wxT("</metrics>\n");
 
 }
@@ -2589,7 +2686,7 @@ void AircraftDialog::SaveMass(wxTextOutputStream &out, const wxString & prefix)
   out << pre << wxT("<ixz unit=\"") << combo_box_ixz->GetValue() << wxT("\">") << text_ctrl_ixz->GetValue() << wxT("</ixz>\n");
   out << pre << wxT("<iyz unit=\"") << combo_box_iyz->GetValue() << wxT("\">") << text_ctrl_iyz->GetValue() << wxT("</iyz>\n");
   out << pre << wxT("<ixy unit=\"") << combo_box_ixy->GetValue() << wxT("\">") << text_ctrl_ixy->GetValue() << wxT("</ixy>\n");
-  
+
   out << pre << wxT("<emptywt unit=\"") << combo_box_mass_unit->GetValue() << wxT("\">") << text_ctrl_mass->GetValue() << wxT("</emptywt>\n");
   out << pre << wxT("<location name=\"CG\" unit=\"") << combo_box_mass_locunit->GetValue() << wxT("\">\n");
   out << pre << wxT("    <x>") << text_ctrl_mass_x->GetValue() << wxT("</x>\n");
@@ -2603,7 +2700,7 @@ void AircraftDialog::SaveMass(wxTextOutputStream &out, const wxString & prefix)
     if (tmp)
       tmp->Save(out, pre);
   }
-  
+
   out << prefix << wxT("</mass_balance>\n");
 }
 
@@ -2634,7 +2731,7 @@ void AircraftDialog::SaveGR(wxTextOutputStream &out, const wxString & prefix)
     if (tmp)
       tmp->Save(out, pre);
   }
-  
+
   out << prefix << wxT("</ground_reactions>\n");
 
 }
@@ -2645,7 +2742,7 @@ void AircraftDialog::LoadPropulsion(JSBSim::Element * el)
   long no;
 
   list_ctrl_sub_engines->DeleteAllItems();
-  engines.clear(); 
+  engines.clear();
   tmp = el->FindElement("engine");
   no = 0;
   while (tmp)
@@ -2715,7 +2812,7 @@ void AircraftDialog::SavePropulsion(wxTextOutputStream &out, const wxString & pr
 
     wxString pre = prefix + wxT("    ");
     long item;
-  
+
     item = -1;
     for ( ;; )
     {
@@ -2767,7 +2864,7 @@ void AircraftDialog::SaveFCS(wxTextOutputStream &out, const wxString & prefix)
   }
   else
   {
-    notebook_ac_pane_fcs->Export(out, prefix);  
+    notebook_ac_pane_fcs->Export(out, prefix);
   }
 }
 
@@ -2791,7 +2888,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   if (!fname.IsEmpty()) {
     wxString filename = text_ctrl_info_file->GetValue();
     wxString path=wxEmptyString;
-    path = filename.BeforeLast(wxGetApp().Delimited[0]) + wxGetApp().Delimited;      
+    path = filename.BeforeLast(wxGetApp().Delimited[0]) + wxGetApp().Delimited;
     wxString output_file_name = path + fname + wxT(".xml");
 
     std::ifstream output_file;
@@ -2809,7 +2906,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   } else {
     document = el;
   }
-  
+
   wxString   name = wxT("JSBout.csv");
   wxString   type = wxT("CSV");
   name = document->GetAttributeValue("name");
@@ -2936,14 +3033,14 @@ void AircraftDialog::SaveOutput(wxTextOutputStream &out, const wxString & prefix
   else
     out << wxT(" OFF ");
   out << wxT("</rates>\n");
-    
+
   out << pre << wxT("<velocities>");
   if (checkbox_output_vel->GetValue())
     out << wxT(" ON ");
   else
     out << wxT(" OFF ");
   out << wxT("</velocities>\n");
-  
+
   out << pre << wxT("<forces>");
   if (checkbox_output_forc->GetValue())
     out << wxT(" ON ");

@@ -1,3 +1,7 @@
+EXTRA_DIST = \
+        commander.rc \
+        commander.res
+
 SUBDIRS = simgear input_output math wx gui bitmaps
 
 AM_CPPFLAGS = -I$(top_srcdir)src \

@@ -49,7 +49,7 @@
 #endif
 
 BEGIN_EVENT_TABLE(EngineMgrDialog, wxDialog)
-  EVT_LIST_ITEM_ACTIVATED(ENGINE_LIST, EngineMgrDialog::OnDoubleClickList) 
+  EVT_LIST_ITEM_ACTIVATED(ENGINE_LIST, EngineMgrDialog::OnDoubleClickList)
   EVT_LIST_ITEM_SELECTED(ENGINE_LIST, EngineMgrDialog::OnSelectList)
   EVT_LIST_ITEM_DESELECTED(ENGINE_LIST, EngineMgrDialog::OnDeselectList)
   EVT_TEXT_ENTER(ENGINE_NAME, EngineMgrDialog::OnEnterName)
@@ -94,7 +94,7 @@ EngineMgrDialog::EngineMgrDialog(const wxString & eng, wxWindow* parent, int id,
       text_ctrl_symbol->SetValue(wxEmptyString);
       text_ctrl_type->SetValue(wxEmptyString);
       text_ctrl_name->SetValue(wxEmptyString);
-      text_ctrl_dscp->SetValue(wxEmptyString);  
+      text_ctrl_dscp->SetValue(wxEmptyString);
     }
     else
     {
@@ -187,7 +187,7 @@ void EngineMgrDialog::InitEngineCfg()
     for (int i=0; i<losts.Count(); ++i)
     {
       config->DeleteEntry(losts[i]);
-    }    
+    }
   }
   {
     wxArrayString lost_Engines;
@@ -246,14 +246,14 @@ void EngineMgrDialog::InitEngineCfg()
       flag = dir.GetNext(&filename);
     }
   }
-  
+
   delete config;
 }
 
 void EngineMgrDialog::after_construct()
 {
   InitEngineCfg();
-  
+
   config = new wxFileConfig(wxT("EngineMgr"), wxT("nuaa"), wxT("EngineMgr.ini"), wxT("EngineMgr.ini"), wxCONFIG_USE_LOCAL_FILE|wxCONFIG_USE_RELATIVE_PATH);
 
   wxBitmap bmp(wxBITMAP(piston_engine));
@@ -302,31 +302,31 @@ void EngineMgrDialog::after_construct()
       }
       else if (tmp == wxT("turbine_engine"))
       {
-        item.SetImage(1);      
+        item.SetImage(1);
       }
       else if (tmp == wxT("rocket_engine"))
       {
-        item.SetImage(2);      
+        item.SetImage(2);
       }
       else if (tmp == wxT("electric_engine"))
       {
-        item.SetImage(3);      
+        item.SetImage(3);
       }
       else if (tmp == wxT("propeller"))
       {
-        item.SetImage(4);      
+        item.SetImage(4);
       }
       else if (tmp == wxT("nozzle"))
       {
-        item.SetImage(5);      
+        item.SetImage(5);
       }
       else if (tmp == wxT("direct"))
       {
-        item.SetImage(6);      
+        item.SetImage(6);
       }
       else
       {
-        item.SetImage(-1);      
+        item.SetImage(-1);
       }
       engine_list->InsertItem(item);
       item.SetColumn(1);
@@ -358,7 +358,7 @@ void EngineMgrDialog::before_destruct()
                                     wxLIST_NEXT_ALL,
                                     wxLIST_STATE_SELECTED);
     if ( item != -1 )
-    { 
+    {
       wxString sac = text_ctrl_symbol->GetValue();
       config->Write( sac + wxT("/name"), text_ctrl_name->GetValue());
       config->Write( sac + wxT("/description"), text_ctrl_dscp->GetValue());
@@ -378,7 +378,7 @@ void EngineMgrDialog::OnSelectList(wxListEvent & event)
   long i = event.GetIndex();
   if ( i == -1 )
     return;
-  
+
   wxString osac = text_ctrl_symbol->GetValue();
   if (!osac.IsEmpty())
   {
@@ -387,7 +387,7 @@ void EngineMgrDialog::OnSelectList(wxListEvent & event)
     engine_list->SetColumnWidth( 1, wxLIST_AUTOSIZE );
     engine_list->SetColumnWidth( 2, wxLIST_AUTOSIZE );
   }
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -412,7 +412,7 @@ void EngineMgrDialog::OnEnterName(wxCommandEvent & event)
                                  wxLIST_STATE_SELECTED);
   if ( i == -1 )
     return;
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -430,7 +430,7 @@ void EngineMgrDialog::apply(const long & i)
 {
   if ( i == -1 )
     return;
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -471,7 +471,7 @@ void EngineMgrDialog::OnDel(wxCommandEvent & event)
   }
   if ( ::wxMessageBox(_("Do you really want to delete it?"), _("Confirm"), wxYES_NO | wxICON_QUESTION, this) == wxNO )
     return;
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -479,7 +479,7 @@ void EngineMgrDialog::OnDel(wxCommandEvent & event)
   engine_list->GetItem(item);
   wxString sac = item.GetText();
   wxString ca = wxGetApp().engine_dir + wxGetApp().Delimited + sac + wxT(".xml");
-  
+
   if ( wxRemoveFile(ca) )
   {
     config->DeleteGroup(sac);
@@ -487,7 +487,7 @@ void EngineMgrDialog::OnDel(wxCommandEvent & event)
     text_ctrl_symbol->SetValue(wxEmptyString);
     text_ctrl_type->SetValue(wxEmptyString);
     text_ctrl_name->SetValue(wxEmptyString);
-    text_ctrl_dscp->SetValue(wxEmptyString);  
+    text_ctrl_dscp->SetValue(wxEmptyString);
   }
   else
   {
@@ -508,11 +508,11 @@ void EngineMgrDialog::OnAdd(wxCommandEvent & event)
   wxString choice = wxGetSingleChoice(_("Choose one kind of engines/thrusters"), _("Which kind of engines/thrusters do you want to create?"), aChoices, this);
   if (choice.IsEmpty())
     return;
-  
+
   wxString symbol = ::wxGetTextFromUser(_("Please give me the symbol of new engine."), _("Input new engine symbol"), wxEmptyString, NULL);
   if (symbol.IsEmpty())
     return;
-  
+
   wxString ca = wxGetApp().engine_dir + wxGetApp().Delimited + symbol + wxT(".xml");
   bool flag = false;
 
@@ -528,14 +528,14 @@ void EngineMgrDialog::OnAdd(wxCommandEvent & event)
   {
     flag = false;
   }
-  
+
   if ( flag )
   {
       wxString dscp(wxT("NO INFO"));
       config->Write(symbol + wxT("/type"), choice);
       config->Write(symbol + wxT("/name"), symbol);
       config->Write(symbol + wxT("/description"), dscp);
-      
+
       long i = -1;
       wxListItem item;
       long no = engine_list->GetItemCount();
@@ -548,31 +548,31 @@ void EngineMgrDialog::OnAdd(wxCommandEvent & event)
       }
       else if (tmp == wxT("turbine_engine"))
       {
-        item.SetImage(1);      
+        item.SetImage(1);
       }
       else if (tmp == wxT("rocket_engine"))
       {
-        item.SetImage(2);      
+        item.SetImage(2);
       }
       else if (tmp == wxT("electric_engine"))
       {
-        item.SetImage(3);      
+        item.SetImage(3);
       }
       else if (tmp == wxT("propeller"))
       {
-        item.SetImage(4);      
+        item.SetImage(4);
       }
       else if (tmp == wxT("nozzle"))
       {
-        item.SetImage(5);      
+        item.SetImage(5);
       }
       else if (tmp == wxT("direct"))
       {
-        item.SetImage(6);      
+        item.SetImage(6);
       }
       else
       {
-        item.SetImage(-1);      
+        item.SetImage(-1);
       }
       item.SetText(symbol);
       i = engine_list->InsertItem(item);
@@ -622,7 +622,7 @@ void EngineMgrDialog::OnDup(wxCommandEvent & event)
      ::wxMessageBox(_("Please select one engine first."), _("Info"), wxOK | wxICON_INFORMATION, this);
     return;
   }
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -638,7 +638,7 @@ void EngineMgrDialog::OnDup(wxCommandEvent & event)
     wxString sa = wxGetApp().engine_dir + wxGetApp().Delimited + san + wxT(".xml");
     if (!wxCopyFile(sa, ca))
     {
-      ::wxMessageBox(_("Something is wrong! I can not copy the file. Please check it."), _("Error"), wxOK | wxICON_ERROR, this);      
+      ::wxMessageBox(_("Something is wrong! I can not copy the file. Please check it."), _("Error"), wxOK | wxICON_ERROR, this);
     }
     else
     {
@@ -646,7 +646,7 @@ void EngineMgrDialog::OnDup(wxCommandEvent & event)
       config->Write(symbol + wxT("/type"), type);
       config->Write(symbol + wxT("/name"), symbol);
       config->Write(symbol + wxT("/description"), dscp);
-      
+
       long i = -1;
       wxListItem item;
 
@@ -660,31 +660,31 @@ void EngineMgrDialog::OnDup(wxCommandEvent & event)
       }
       else if (tmp == wxT("turbine_engine"))
       {
-        item.SetImage(1);      
+        item.SetImage(1);
       }
       else if (tmp == wxT("rocket_engine"))
       {
-        item.SetImage(2);      
+        item.SetImage(2);
       }
       else if (tmp == wxT("electric_engine"))
       {
-        item.SetImage(3);      
+        item.SetImage(3);
       }
       else if (tmp == wxT("propeller"))
       {
-        item.SetImage(4);      
+        item.SetImage(4);
       }
       else if (tmp == wxT("nozzle"))
       {
-        item.SetImage(5);      
+        item.SetImage(5);
       }
       else if (tmp == wxT("direct"))
       {
-        item.SetImage(6);      
+        item.SetImage(6);
       }
       else
       {
-        item.SetImage(-1);      
+        item.SetImage(-1);
       }
       item.SetText(symbol);
       i = engine_list->InsertItem(item);
@@ -715,7 +715,7 @@ void EngineMgrDialog::OnDup(wxCommandEvent & event)
       text_ctrl_symbol->SetValue(symbol);
       text_ctrl_type->SetValue(type);
       text_ctrl_name->SetValue(symbol);
-      text_ctrl_dscp->SetValue(dscp);    
+      text_ctrl_dscp->SetValue(dscp);
     }
   }
 }
@@ -735,7 +735,7 @@ void EngineMgrDialog::OnDetail(wxCommandEvent & event)
                                  wxLIST_STATE_SELECTED);
   if ( i == -1 )
     return;
-  
+
   wxListItem item;
   item.SetId(i);
   item.SetColumn(0);
@@ -759,9 +759,9 @@ void EngineMgrDialog::OnDetail(wxCommandEvent & event)
     else
     {
       wxMessageBox(_("Can not setup this kind of engine/thruster in GUI yet."), _("Warning"), wxOK | wxICON_INFORMATION, this);
-      return;    
+      return;
     }
-    
+
     if (!dlg->Load(ca))
     {
       ::wxMessageBox(_("Something is wrong! I can not load proper file(") + ca + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, this);
@@ -780,7 +780,7 @@ void EngineMgrDialog::OnDetail(wxCommandEvent & event)
   }
   else
   {
-      ::wxMessageBox(_("Something is wrong! I can not find proper file(") + ca + _("). Please check it."), _("Error"), wxOK | wxICON_ERROR, this);  
+      ::wxMessageBox(_("Something is wrong! I can not find proper file(") + ca + _("). Please check it."), _("Error"), wxOK | wxICON_ERROR, this);
   }
 }
 

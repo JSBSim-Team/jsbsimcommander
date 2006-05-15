@@ -287,9 +287,16 @@ void readXML (const string &path, XMLVisitor &visitor)
     } catch (...) {
       input.close();
       cerr << "Failed to open file" << endl;
+      //Matt's change start
+      throw "Failed to open file 2";
+      //Matt's change end
     }
   } else {
     cerr << "Failed to open file" << endl;
+      //Matt's change start
+      input.close();
+      throw "Failed to open file 1";
+      //Matt's change end
   }
   input.close();
 }

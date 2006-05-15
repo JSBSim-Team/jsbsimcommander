@@ -41,18 +41,21 @@
 
 IMPLEMENT_APP (MyApp)
 
+/**
+* MyApp ========================================================================
+*/
 
 MyApp::MyApp (void)
 {
 }
 
 /*
+ * =============================================================================
  * The `main program' equivalent, creating the windows and returning the
  * main frame
  */
 
-bool
-MyApp::OnInit (void)
+bool MyApp::OnInit (void)
 {
   Delimited = wxFileName::GetPathSeparator();
   if (!wxApp::OnInit ())
@@ -91,7 +94,7 @@ MyApp::OnInit (void)
 
   if (!inputfile.IsEmpty() && ! dlg->Load(inputfile))
   {
-      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);  
+      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);
   }
   else
   {
@@ -107,15 +110,20 @@ MyApp::OnInit (void)
   return true;
 }
 
-int
-MyApp::OnExit (void)
+/**
+* OnExit =======================================================================
+*/
+
+int MyApp::OnExit (void)
 {
   return 0;
 }
 
+/**
+* OnInitCmdLine ================================================================
+*/
 
-void
-MyApp::OnInitCmdLine(wxCmdLineParser& parser)
+void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
   CurrentWorkDirectory = argv[0];
   CurrentWorkDirectory = CurrentWorkDirectory.BeforeLast(wxFileName::GetPathSeparator());
@@ -148,6 +156,10 @@ MyApp::OnInitCmdLine(wxCmdLineParser& parser)
     */
 }
 
+/**
+* OnCmdLineParsed ==============================================================
+*/
+
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
   if (wxApp::OnCmdLineParsed(parser))
@@ -163,10 +175,13 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
   {
     return false;
   }
-}    
+}
 
-void
-MyApp::InitDir (void)
+/**
+* InitDir ======================================================================
+*/
+
+void MyApp::InitDir (void)
 {
 
   aircraft_dir = CurrentWorkDirectory + Delimited + wxT("aircraft");
@@ -195,22 +210,30 @@ MyApp::InitDir (void)
 
 }
 
+/**
+* InitCfg ======================================================================
+*/
 
-void
-MyApp::InitCfg (void)
+void MyApp::InitCfg (void)
 {
   wxString ini = CurrentWorkDirectory + Delimited + wxT("EngineMgr.ini");
   EngineMgrDialog::InitEngineCfg(); 
 }
 
-AircraftDialog *
-GetMainDlg (void)
+/**
+* GetMainDlg ===================================================================
+*/
+
+AircraftDialog *GetMainDlg (void)
 {
   return wxGetApp().dlg;
 }
 
-PropertyDialog *
-GetPropertyDialog (void)
+/**
+* GetPropertyDialog ============================================================
+*/
+
+PropertyDialog *GetPropertyDialog (void)
 {
   return wxGetApp().property_dialog;
 }
