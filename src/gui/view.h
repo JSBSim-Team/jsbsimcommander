@@ -32,8 +32,8 @@ public:
   void OnDClickEvent (wxMouseEvent & event);
 
   void DrawPic (wxDC * dc, const int & maxX, const int & maxY);
-  int MyCanvas::GetCanvasWidth();
-  int MyCanvas::GetCanvasHeight();
+  int GetCanvasWidth();
+  int GetCanvasHeight();
   
   virtual void OnLeftClick (double x, double y, int keys = 0);
   virtual void OnRightClick (double x, double y, int keys = 0);

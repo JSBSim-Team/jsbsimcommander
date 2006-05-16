@@ -143,10 +143,10 @@ protected:
     void clearCurves();
     std::vector< MyPlotCurve4D * > curves;
 
-    void TableDialog::OnDetailRow(wxCommandEvent & event);
-    void TableDialog::OnDetailCol(wxCommandEvent & event);
-    void TableDialog::OnDetailTab(wxCommandEvent & event);
-    void TableDialog::OnDetailFrm(wxCommandEvent & event);
+    void OnDetailRow(wxCommandEvent & event);
+    void OnDetailCol(wxCommandEvent & event);
+    void OnDetailTab(wxCommandEvent & event);
+    void OnDetailFrm(wxCommandEvent & event);
     void OnChsRow(wxCommandEvent & event);
     void OnChsCol(wxCommandEvent & event);
     void OnChsTab(wxCommandEvent & event);
