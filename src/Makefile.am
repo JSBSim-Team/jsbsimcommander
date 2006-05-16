@@ -7,6 +7,7 @@ SUBDIRS = simgear input_output math wx gui bitmaps
 AM_CPPFLAGS = -I$(top_srcdir)src \
               -I$(top_srcdir)/src/input_output -I$(top_srcdir)/src/math \
 	      -I$(top_srcdir)/src/simgear/xml \
+              -I$(top_srcdir)/src/bitmaps \
 	      -DwxUSE_DEPRECATED=1 -DwxUSE_PROLOGIO=1 \
               -I$(top_srcdir)/src/gui ${WX_CXXFLAGS}
 

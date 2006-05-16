@@ -34,6 +34,17 @@
 #include "EngineMgr_Diag.h"
 
 #include "initprops.h"
+
+//-----------------------------------------------------------------------------
+// Regular resources (the non-XRC kind).
+//-----------------------------------------------------------------------------
+
+// The application icon
+// All non-MSW platforms use an xpm. MSW uses an .ico file
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
+    #include "ogl.xpm"
+#endif
+
 /*
  * A macro needed for some compilers (AIX) that need 'main' to be defined
  * in the application itself.
