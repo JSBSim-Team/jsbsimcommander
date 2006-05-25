@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+  <object class="wxToolBar" name="main_toolbar">
+    <style>wxTB_FLAT|wxTB_DOCKABLE</style>
+    <margins>2,2</margins>
+    <object class="tool" name="aircraft_tool_or_menuitem">
+      <bitmap>acft_mgr.bmp</bitmap>
+      <tooltip>manage all the aircraft models</tooltip>
+      <longhelp>manage all the aircraft models</longhelp>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="result_tool_or_menuitem">
+      <bitmap>rslt_mgr.bmp</bitmap>
+      <tooltip>manage all the results of nomograph</tooltip>
+      <longhelp>manage all the results of nomograph</longhelp>
+    </object>
+    <object class="separator"/>
+    <separator/>
+    <object class="tool" name="wxID_EXIT">
+      <tooltip>Exit this application</tooltip>
+      <bitmap stock_id="wxART_QUIT"></bitmap>
+      <longhelp>Exit this application</longhelp>
+    </object>
+    <object class="tool" name="about_tool_or_menuitem">
+      <tooltip>About this application</tooltip>
+      <bitmap stock_id="wxART_HELP_BOOK"></bitmap>
+      <longhelp>About this application</longhelp>
+    </object>
+  </object>
+</resource>

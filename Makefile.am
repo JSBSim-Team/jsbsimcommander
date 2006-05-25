@@ -1,6 +1,4 @@
 EXTRA_DIST = \
-        ogl.xpm \
-        ogl.ico \
         autogen.sh
 
 SUBDIRS	= src

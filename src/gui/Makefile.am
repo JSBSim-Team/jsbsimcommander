@@ -18,7 +18,8 @@ Function_Diag.cpp      When_Diag.cpp        func_dlg.cpp     switch.cpp \
 LGear_Diag.cpp         condition.cpp        gain.cpp         switch_dlg.cpp \
 Mass_Diag.cpp          deadband.cpp         gain_dlg.cpp     toolbar.cpp \
 Property_Diag.cpp      deadband_dlg.cpp     import.cpp       view.cpp \
-Propulsion_Diag.cpp    doc.cpp              kinemat.cpp      EngineMgr_Diag.cpp
+Propulsion_Diag.cpp    doc.cpp              kinemat.cpp      EngineMgr_Diag.cpp\
+MyFrame.cpp
                    
 
 noinst_HEADERS = \
@@ -30,6 +31,7 @@ Function_Diag.h      When_Diag.h        func_dlg.h     switch.h \
 LGear_Diag.h         condition.h        gain.h         switch_dlg.h \
 Mass_Diag.h          deadband.h         gain_dlg.h     toolbar.h \
 Property_Diag.h      deadband_dlg.h     import.h       view.h \
-Propulsion_Diag.h    doc.h              kinemat.h      EngineMgr_Diag.h
+Propulsion_Diag.h    doc.h              kinemat.h      EngineMgr_Diag.h \
+MyFrame.h
 
 

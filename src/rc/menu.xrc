@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+  <object class="wxMenuBar" name="main_menu">
+    <style>wxMB_DOCKABLE</style>
+    <object class="wxMenu" name="file_tool_or_menuitem">
+      <label>_File</label>
+      <style>wxMENU_TEAROFF</style>
+      <object class="wxMenuItem" name="wxID_OPEN">
+        <label>_Open...\tCTRL+O</label>
+        <bitmap stock_id="wxART_FILE_OPEN"></bitmap>
+        <help>open</help>
+      </object>
+      <object class="wxMenuItem" name="wxID_SAVE">
+        <label>_Save\tCTRL+S</label>
+        <bitmap stock_id="wxART_FILE_SAVE"></bitmap>
+        <help>save</help>
+      </object>
+      <object class="wxMenuItem" name="wxID_SAVEAS">
+        <label>Save _As...\tSHIFT+CTRL+S</label>
+        <bitmap stock_id="wxART_FILE_SAVE_AS"></bitmap>
+        <help>save as</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="wxID_PRINT">
+        <label>_Print...</label>
+        <bitmap stock_id="wxART_PRINT"></bitmap>
+        <help>print</help>
+      </object>
+      <object class="wxMenuItem" name="wxID_PRINT_SETUP">
+        <label>Page Set&amp;up...</label>
+        <help>Page setup</help>
+      </object>
+      <object class="wxMenuItem" name="wxID_PREVIEW">
+        <label>Print Pre&amp;view\tCTRL+V</label>
+        <help>Preview</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="wxID_PREFERENCES">
+        <label>Preferences</label>
+        <help>Show as WYSWYG</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="wxID_EXIT">
+        <label>_Quit</label>
+        <bitmap stock_id="wxART_QUIT"></bitmap>
+        <help>Exit this application</help>
+      </object>
+    </object>
+    <object class="wxMenu" name="model_tool_or_menuitem">
+      <label>_Models</label>
+      <object class="wxMenuItem" name="aircraft_tool_or_menuitem">
+        <label>_Aircraft Manager\tCtrl-A</label>
+        <bitmap>acft_mgr.bmp</bitmap>
+        <help>manage the aircraft model</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="result_tool_or_menuitem">
+        <label>_Result Analysis\tCtrl-R</label>
+        <bitmap>rslt_mgr.bmp</bitmap>
+        <help>Analyse the csv result file</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="property_tool_or_menuitem">
+        <label>_Property Manager\tCtrl-P</label>
+        <bitmap>mgr.bmp</bitmap>
+      </object>
+    </object>
+    <object class="wxMenu" name="help_menu">
+      <label>_Help</label>
+      <object class="wxMenuItem" name="about_tool_or_menuitem">
+        <label>_About...</label>
+        <bitmap stock_id="wxART_HELP_BOOK"></bitmap>
+        <help>About this application</help>
+      </object>
+    </object>
+  </object>
+</resource>

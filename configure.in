@@ -81,5 +81,6 @@ AC_OUTPUT( \
     src/wx/ogl/Makefile \
     src/gui/Makefile \
     src/bitmaps/Makefile \
+    src/rc/Makefile \
     )
 
