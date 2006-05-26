@@ -32,7 +32,7 @@
 #include "EngineMgr_Diag.h"
 #include "Engine_Diag.h"
 #include "Turbine_Diag.h"
-#include "Commander.h"
+#include "MyApp.h"
 
 #ifndef __WXMSW__
 #include "add.xpm"

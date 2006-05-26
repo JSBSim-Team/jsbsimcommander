@@ -11,8 +11,8 @@
     <object class="separator"/>
     <object class="tool" name="result_tool_or_menuitem">
       <bitmap>rslt_mgr.bmp</bitmap>
-      <tooltip>manage all the results of nomograph</tooltip>
-      <longhelp>manage all the results of nomograph</longhelp>
+      <tooltip>Analyse the csv result file</tooltip>
+      <longhelp>Analyse the csv result file</longhelp>
     </object>
     <object class="separator"/>
     <separator/>

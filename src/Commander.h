@@ -14,6 +14,9 @@
 #ifndef _COMMANDER_H_
 #define _COMMANDER_H_
 
+#include <wx/app.h>             // wxApp
+#include <wx/dir.h>
+
 // Define a new application
 class AircraftDialog;
 class PropertyDialog;
@@ -86,7 +89,8 @@ public:
   PropertyDialog * property_dialog;
 
   wxString CurrentWorkDirectory;
-  wxString aircraft_dir;
+  wxString AppDirectory;
+ wxString aircraft_dir;
   wxString engine_dir;
   wxString script_dir;
   wxString result_dir;
@@ -98,6 +102,8 @@ protected:
   void InitDir();
   void InitCfg();
   wxString inputfile;
+  wxString about_img_file;
+  wxDir rc_dir;
 };
 
 DECLARE_APP (MyApp)

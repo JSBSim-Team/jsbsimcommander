@@ -26,9 +26,9 @@
 
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
+#include <wx/filename.h>
 
 #include "Turbine_Diag.h"
-#include "Commander.h"
 #include "TreeItem.h"
 
 #ifndef __WXMSW__
@@ -89,7 +89,7 @@ bool newTurbineEngine(const wxString & filename)
     if (!os.Ok())
       return false;
     wxTextOutputStream out(os,wxEOL_UNIX);
-    wxString name = filename.AfterLast(wxGetApp().Delimited[0]);
+    wxString name = filename.AfterLast(wxFileName::GetPathSeparator() );
     name = name.BeforeLast('.');
 
     out << wxT("<?xml version=\"1.0\"?>\n");

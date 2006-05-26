@@ -27,7 +27,7 @@
 #include <wx/txtstrm.h>
 
 #include "FGXMLElement.h"
-#include "Commander.h"
+#include "MyApp.h"
 #include "When_Diag.h"
 #include "Property_Diag.h"
 

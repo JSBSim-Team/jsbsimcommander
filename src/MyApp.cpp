@@ -129,8 +129,9 @@ bool MyApp::OnInit (void)
   wxToolTip::SetDelay(300);
 
   SetTopWindow(frame);
+  // Set the default size.
+  frame->SetSize(800,600);
   frame->Centre (wxBOTH);
-  frame->Maximize(true);
 
   // Show the frame as it's created initially hidden.
   frame->Show(true);
@@ -154,9 +155,11 @@ int MyApp::OnExit (void)
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
-  CurrentWorkDirectory = argv[0];
-  CurrentWorkDirectory = CurrentWorkDirectory.BeforeLast(wxFileName::GetPathSeparator());
-  wxSetWorkingDirectory(CurrentWorkDirectory);
+  CurrentWorkDirectory = wxGetCwd();
+  AppDirectory = argv[0];
+  AppDirectory = AppDirectory.BeforeLast(wxFileName::GetPathSeparator());  
+  // Do not change current working directory to where the app is.
+  //wxSetWorkingDirectory(AppDirectory);
     static const wxCmdLineEntryDesc cmdLineDesc[] =
     {
         { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"),
@@ -165,6 +168,9 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
         { wxCMD_LINE_SWITCH, _T("q"), _T("quiet"),   _T("be quiet") },
         { wxCMD_LINE_OPTION, _T("r"), _T("resource"), _T("resource dir") },
 	{ wxCMD_LINE_OPTION, _T("a"), _T("about"), _T("about image file") },
+        { wxCMD_LINE_PARAM,  NULL, NULL, _T("input file"),
+            wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+
 
         { wxCMD_LINE_NONE }
     };
@@ -186,7 +192,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     }
     else
     {
-      rc_dir.Open(CurrentWorkDirectory+wxFileName::GetPathSeparator()+wxT("rc"));
+      rc_dir.Open(AppDirectory+wxFileName::GetPathSeparator()+wxT("rc"));
     }
     if (parser.Found("about", &dir))
     {
@@ -194,7 +200,12 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     }
     else
     {
-      about_img_file = CurrentWorkDirectory+wxFileName::GetPathSeparator()+wxT("about.bmp");
+      about_img_file = AppDirectory+wxFileName::GetPathSeparator()+wxT("about.bmp");
+    }
+    size_t count = parser.GetParamCount();
+    if (count > 0u)
+    {
+      inputfile = parser.GetParam(0u);
     }
     return true;
   }
@@ -210,7 +221,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void MyApp::InitDir (void)
 {
-  engine_dir = CurrentWorkDirectory + Delimited + wxT("engine");
+  engine_dir = wxT("engine");
   if (! ::wxDirExists(engine_dir))
   {
     ::wxMkdir(engine_dir);
@@ -223,7 +234,7 @@ void MyApp::InitDir (void)
 
 void MyApp::InitCfg (void)
 {
-  wxString ini = CurrentWorkDirectory + Delimited + wxT("EngineMgr.ini");
+  wxString ini = wxT("EngineMgr.ini");
   EngineMgrDialog::InitEngineCfg(); 
 }
 

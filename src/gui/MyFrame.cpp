@@ -51,6 +51,8 @@
 
 #include "MyApp.h"
 #include "Property_Diag.h"
+#include "AircraftDialog.h"
+#include "ResultShow_Diag.h"
 
 //-----------------------------------------------------------------------------
 // Regular resources (the non-XRC kind).
@@ -77,7 +79,7 @@
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(XRCID("aircraft_tool_or_menuitem"), MyFrame::OnAircraftManagerToolOrMenuCommand)
     EVT_MENU(XRCID("result_tool_or_menuitem"), MyFrame::OnResultManagerToolOrMenuCommand)
-    EVT_MENU(XRCID("about_tool_or_menuitem"), MyFrame::OnAboutToolOrMenuCommand)
+    EVT_MENU(XRCID("property_tool_or_menuitem"), MyFrame::OnPropertyManagerToolOrMenuCommand)
     EVT_MENU(wxID_EXIT,  MyFrame::OnExitToolOrMenuCommand)
 END_EVENT_TABLE()
 
@@ -159,19 +161,47 @@ void MyFrame::OnAboutToolOrMenuCommand(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnAircraftManagerToolOrMenuCommand(wxCommandEvent& event)
 {
+  wxString filename = wxFileSelector(_("Choose a file to open"), wxEmptyString, wxEmptyString, wxT("xml"), _("XML files (*.xml)|*.xml"), wxOPEN|wxFILE_MUST_EXIST, this);
+  if ( !filename.empty())
+  {
+    AircraftDialog * dlg = new AircraftDialog (this, -1);
+    if (dlg->Load(filename))
+    {
+      if (dlg->ShowModal () == wxID_OK)
+      {
+        dlg->Save();
+      }
+    }
+    else
+    {
+      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + filename + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);    
+    }
+    dlg->Destroy();
+  }
 }
 
 /**
 * OnResultManagerToolOrMenuCommand =============================================
+* Show the curves from a CSV file.
 */
 
 void MyFrame::OnResultManagerToolOrMenuCommand(wxCommandEvent& event)
 {
-/*******************************************************************************    wxString anyname=wxEmptyString;
-    TmpMgrDialog dlg(wxGetApp().GetResultIni(), wxGetApp().GetResultDir(), anyname, this);
-    dlg.SetTitle(_("Result Manager"));
-    dlg.ShowModal();
-*******************************************************************************/}
+  wxString filename = wxFileSelector(_("Choose a file to open"), wxEmptyString, wxEmptyString, wxT("csv"), _("CSV files (*.csv)|*.csv"), wxOPEN|wxFILE_MUST_EXIST, this);
+  if ( !filename.empty())
+  {
+    ResultShowDialog * dlg = new ResultShowDialog (this, -1);
+    if (dlg->Load(filename))
+    {
+      dlg->ShowModal();
+    }
+    else
+    {
+      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + filename + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);    
+    }
+    dlg->Destroy();
+  }
+}
 
 /**
 * OnRunScriptToolOrMenuCommand =================================================

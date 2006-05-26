@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
   <object class="wxFrame" name="main_frame">
-    <title>Flash Point</title>
+    <title>JSBSim Commander</title>
     <centered>1</centered>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>

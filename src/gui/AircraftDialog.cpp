@@ -28,6 +28,7 @@
 #include <wx/txtstrm.h>
 #include <wx/datetime.h>
 #include <wx/fileconf.h>
+#include <wx/filename.h>
 
 #ifndef __WXMSW__
 #include "aero_icon.xpm"
@@ -84,10 +85,10 @@
 
 #endif
 
+#include "MyApp.h"
 #include "AircraftDialog.h"
 #include "Mass_Diag.h"
 #include "doc.h"
-#include "Commander.h"
 #include "Property_Diag.h"
 #include "LGear_Diag.h"
 
@@ -101,7 +102,7 @@ void mkNewFDMFile(const wxString & filename)
     if (!os.Ok())
       return ;
     wxTextOutputStream out(os,wxEOL_UNIX);
-    wxString name = filename.AfterLast(wxGetApp().Delimited[0]);
+    wxString name = filename.AfterLast(wxFileName::GetPathSeparator());
     name = name.BeforeLast('.');
 
     out << wxT("<?xml version=\"1.0\"?>\n");
@@ -2843,7 +2844,7 @@ void AircraftDialog::LoadFCS(JSBSim::Element * el)
   if ( !fcsfile.IsEmpty() )
   {
     wxString file = text_ctrl_info_file->GetValue();
-    file = file.BeforeLast(wxGetApp().Delimited[0]) + wxGetApp().Delimited + fcsfile + wxT(".xml");
+    file = file.BeforeLast(wxFileName::GetPathSeparator()) + wxFileName::GetPathSeparator() + fcsfile + wxT(".xml");
     notebook_ac_pane_fcs->ImportXML(file);
   }
   else
@@ -2857,7 +2858,7 @@ void AircraftDialog::SaveFCS(wxTextOutputStream &out, const wxString & prefix)
   if (!fcsfile.IsEmpty())
   {
     wxString file = text_ctrl_info_file->GetValue();
-    file = file.BeforeLast(wxGetApp().Delimited[0]) + wxGetApp().Delimited + fcsfile + wxT(".xml");
+    file = file.BeforeLast(wxFileName::GetPathSeparator()) + wxFileName::GetPathSeparator() + fcsfile + wxT(".xml");
     notebook_ac_pane_fcs->ExportXML(file);
     out << '\n';
     out << prefix << wxT("<flight_control file=\"") << fcsfile << wxT("\"/>\n");
@@ -2888,7 +2889,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   if (!fname.IsEmpty()) {
     wxString filename = text_ctrl_info_file->GetValue();
     wxString path=wxEmptyString;
-    path = filename.BeforeLast(wxGetApp().Delimited[0]) + wxGetApp().Delimited;
+    path = filename.BeforeLast(wxFileName::GetPathSeparator()) + wxFileName::GetPathSeparator();
     wxString output_file_name = path + fname + wxT(".xml");
 
     std::ifstream output_file;

@@ -29,12 +29,12 @@
 #include "FGXMLParse.h"
 
 #include "TreeItem.h"
-#include "Commander.h"
 #include "AeroDynamics_Diag.h"
 #include "Axis_Diag.h"
 #include "Function_Diag.h"
 #include "Table_Diag.h"
 #include "Property_Diag.h"
+#include "MyApp.h"
 
 BEGIN_EVENT_TABLE(TreeItemEvtHandler, wxEvtHandler)
   EVT_TREE_ITEM_MENU(TREE, TreeItemEvtHandler::OnRightClick) 

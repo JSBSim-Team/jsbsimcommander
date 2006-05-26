@@ -29,6 +29,7 @@
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 #include <wx/notebook.h>
+#include <wx/filename.h>
 
 #include "FGXMLParse.h"
 
@@ -49,7 +50,7 @@
 #include "kinemat_dlg.h"
 #include "fcsprop_dlg.h"
 #include "toolbar.h"
-#include "Commander.h"
+#include "MyApp.h"
 #include "AircraftDialog.h"
 #include "Property_Diag.h"
 #include "func.h"
@@ -128,8 +129,8 @@ bool DiagramDocument::SaveObject(MyDiagram * diagram, const wxString & name)
   if (p)
   {
     wxString buf = p->GetFileName();
-    buf = buf.BeforeLast(wxGetApp().Delimited[0]);
-    buf += wxGetApp().Delimited + name + wxT(".dia");
+    buf = buf.BeforeLast(wxFileName::GetPathSeparator());
+    buf += wxFileName::GetPathSeparator() + name + wxT(".dia");
     diagram->SaveFile (buf);
   }
 #endif
@@ -144,8 +145,8 @@ bool DiagramDocument::LoadObject(MyDiagram * diagram, const wxString & name)
   if (p)
   {
     wxString file = p->GetFileName();
-    wxString buf = file.BeforeLast(wxGetApp().Delimited[0]);
-    buf += wxGetApp().Delimited + name + wxT(".dia");
+    wxString buf = file.BeforeLast(wxFileName::GetPathSeparator());
+    buf += wxFileName::GetPathSeparator() + name + wxT(".dia");
     if (!wxFileExists(buf))
       return false;
     wxFileName filename(file);

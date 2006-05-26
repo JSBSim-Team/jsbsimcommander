@@ -31,7 +31,7 @@
 #include "Table_Diag.h"
 #include "TreeItem.h"
 #include "Property_Diag.h"
-#include "Commander.h"
+#include "MyApp.h"
 
 class MyPlotCurve: public wxPlotCurve
 {

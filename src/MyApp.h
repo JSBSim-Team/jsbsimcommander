@@ -120,6 +120,7 @@ public:
   PropertyDialog * property_dialog;
 
   wxString CurrentWorkDirectory;
+  wxString AppDirectory;
   wxString aircraft_dir;
   wxString engine_dir;
   wxString script_dir;
@@ -131,6 +132,7 @@ protected:
   wxLocale m_locale; // locale we'll be using
   void InitDir();
   void InitCfg();
+  wxString inputfile;
   wxString about_img_file;
   wxDir rc_dir;
 };

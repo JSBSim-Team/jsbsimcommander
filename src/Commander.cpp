@@ -27,6 +27,8 @@
 #include <wx/cmdline.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
+#include <wx/xrc/xmlres.h>          // XRC XML resouces
+#include <wx/image.h>               // wxImage
 
 #include "Commander.h"
 #include "AircraftDialog.h"
@@ -73,7 +75,7 @@ bool MyApp::OnInit (void)
      return false;
 
   wxBitmap about;
-  if ( about.LoadFile(wxT("about.bmp"), wxBITMAP_TYPE_BMP))
+  if ( about.LoadFile(about_img_file, wxBITMAP_TYPE_BMP))
   {
     wxSplashScreen* splash = new wxSplashScreen(about,
           wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
@@ -86,6 +88,40 @@ bool MyApp::OnInit (void)
   m_locale.AddCatalog(wxT("Commander"));
 
   InitProps(source_property, source_desc, source_unit, source_access, source_comment, destination_property, destination_desc, destination_unit, destination_access, destination_comment, all_property, all_desc, all_unit, all_access, all_comment);
+
+  // If there is any of a certain format of image in the xrcs, then first
+  // load a handler for that image type. This example uses XPMs, but if
+  // you want PNGs, then add a PNG handler, etc. See wxImage::AddHandler()
+  // documentation for the types of image handlers available.
+  //wxImage::AddHandler(new wxXPMHandler);
+  ::wxInitAllImageHandlers();
+
+  // Initialize all the XRC handlers. Always required (unless you feel like
+  // going through and initializing a handler of each control type you will
+  // be using (ie initialize the spinctrl handler, initialize the textctrl
+  // handler). However, if you are only using a few control types, it will
+  // save some space to only initialize the ones you will be using. See
+  // wxXRC docs for details.
+  wxXmlResource::Get()->InitAllHandlers();
+
+  // Load all of the XRC files that will be used. You can put everything
+  // into one giant XRC file if you wanted, but then they become more
+  // diffcult to manage, and harder to reuse in later projects.
+  // The menubar
+  wxString filename;
+  bool cont = rc_dir.GetFirst(&filename, wxT("*.xrc"), wxDIR_FILES);
+  if (!cont)
+  {
+    wxMessageBox(_("Fail to load XRC files. Please use --resource=<str> or -r <str> to specify the resource directory."), _("Error"), wxOK | wxICON_ERROR);
+    return false;
+  }
+  while ( cont )
+  {
+	wxXmlResource::Get()->Load(
+	  rc_dir.GetName()+wxFileName::GetPathSeparator()+filename);
+      cont = rc_dir.GetNext(&filename);
+  }
+
   InitDir();
   InitCfg();
 
@@ -105,11 +141,11 @@ bool MyApp::OnInit (void)
 
   if (!inputfile.IsEmpty() && ! dlg->Load(inputfile))
   {
-      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);
+      ::wxMessageBox(wxString(_("Something is wrong! I can not load proper file(")) + inputfile + wxT(")."), _("Warning"), wxOK | wxICON_INFORMATION, NULL);
   }
   else
   {
-    dlg->Maximize(true);
+    //dlg->Maximize(true);
     if (dlg->ShowModal () == wxID_OK)
     {
       dlg->Save();
@@ -136,15 +172,20 @@ int MyApp::OnExit (void)
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
-  CurrentWorkDirectory = argv[0];
-  CurrentWorkDirectory = CurrentWorkDirectory.BeforeLast(wxFileName::GetPathSeparator());
-  wxSetWorkingDirectory(CurrentWorkDirectory);
+  CurrentWorkDirectory = wxGetCwd();
+  AppDirectory = argv[0];
+  AppDirectory = AppDirectory.BeforeLast(wxFileName::GetPathSeparator());  
+  // Do not change current working directory to where the app is.
+  //wxSetWorkingDirectory(AppDirectory);
     static const wxCmdLineEntryDesc cmdLineDesc[] =
     {
         { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"),
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
         { wxCMD_LINE_SWITCH, _T("v"), _T("verbose"), _T("be verbose") },
         { wxCMD_LINE_SWITCH, _T("q"), _T("quiet"),   _T("be quiet") },
+        { wxCMD_LINE_OPTION, _T("r"), _T("resource"), _T("resource dir") },
+	{ wxCMD_LINE_OPTION, _T("a"), _T("about"), _T("about image file") },
+
         /*
         { wxCMD_LINE_OPTION, _T("o"), _T("output"),  _T("output file") },
         { wxCMD_LINE_OPTION, _T("i"), _T("input"),   _T("input dir") },
@@ -175,6 +216,23 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
   if (wxApp::OnCmdLineParsed(parser))
   {
+    wxString dir;
+    if (parser.Found("resource", &dir))
+    {
+      rc_dir.Open(dir);
+    }
+    else
+    {
+      rc_dir.Open(AppDirectory+wxFileName::GetPathSeparator()+wxT("rc"));
+    }
+    if (parser.Found("about", &dir))
+    {
+      about_img_file = dir;
+    }
+    else
+    {
+      about_img_file = AppDirectory+wxFileName::GetPathSeparator()+wxT("about.bmp");
+    }
     size_t count = parser.GetParamCount();
     if (count > 0u)
     {
@@ -194,31 +252,11 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void MyApp::InitDir (void)
 {
-
-  aircraft_dir = CurrentWorkDirectory + Delimited + wxT("aircraft");
-  if (! ::wxDirExists(aircraft_dir))
-  {
-    ::wxMkdir(aircraft_dir);
-  }
-
-  engine_dir = CurrentWorkDirectory + Delimited + wxT("engine");
+  engine_dir = wxT("engine");
   if (! ::wxDirExists(engine_dir))
   {
     ::wxMkdir(engine_dir);
   }
-
-  script_dir = CurrentWorkDirectory + Delimited + wxT("scripts");
-  if (! ::wxDirExists(script_dir))
-  {
-    ::wxMkdir(script_dir);
-  }
-
-  result_dir = CurrentWorkDirectory + Delimited + wxT("results");
-  if (! ::wxDirExists(result_dir))
-  {
-    ::wxMkdir(result_dir);
-  }
-
 }
 
 /**
@@ -227,7 +265,7 @@ void MyApp::InitDir (void)
 
 void MyApp::InitCfg (void)
 {
-  wxString ini = CurrentWorkDirectory + Delimited + wxT("EngineMgr.ini");
+  wxString ini = wxT("EngineMgr.ini");
   EngineMgrDialog::InitEngineCfg(); 
 }
 
