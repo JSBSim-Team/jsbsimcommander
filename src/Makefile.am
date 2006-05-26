@@ -1,6 +1,5 @@
 EXTRA_DIST = \
-        commander.rc \
-        commander.res
+        commander.rc
 
 SUBDIRS = simgear input_output math wx gui bitmaps rc
 
