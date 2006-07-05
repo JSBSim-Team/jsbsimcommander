@@ -80,7 +80,7 @@ public:
     void OnButtonPressHelp(wxCommandEvent &event); // wxGlade: <event_handler>
     void GetDataIn(PID * g);
     void SetDataOut(PID * g);
-    bool PIDPropertyDialog::Show(bool);
+    bool Show(bool);
 
 private:
   wxString name;
