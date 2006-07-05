@@ -41,6 +41,7 @@
 #include "source.xpm"
 #include "destination.xpm"
 #include "summer.xpm"
+#include "pid.xpm"
 #include "gain.xpm"
 #include "filter.xpm"
 #include "deadband.xpm"
@@ -113,6 +114,7 @@ DiagramDocument::CreateAddToolBar (wxWindow * parent)
   wxBitmap PaletteSource (wxBITMAP(source));
   wxBitmap PaletteDestination (wxBITMAP(destination));
   wxBitmap PaletteSummer (wxBITMAP(summer));
+  wxBitmap PalettePID (wxBITMAP(pid));
   wxBitmap PaletteGain (wxBITMAP(gain));
   wxBitmap PaletteFilter (wxBITMAP(filter));
   wxBitmap PaletteDeadBand (wxBITMAP(deadband));
@@ -142,6 +144,9 @@ DiagramDocument::CreateAddToolBar (wxWindow * parent)
   toolbar->AddTool (TOOLBAR_ADD_SUMMER, _("Summer"), PaletteSummer,
 		    wxNullBitmap, wxITEM_CHECK, _("Summer"), _("Summer"),
 		    NULL);
+  toolbar->AddTool (TOOLBAR_ADD_PID, _("PID"), PalettePID,
+        wxNullBitmap, wxITEM_CHECK, _("PID"), _("PID"),
+        NULL);
   toolbar->AddTool (TOOLBAR_ADD_GAIN, _("Gain"), PaletteGain,
 		    wxNullBitmap, wxITEM_CHECK, _("Gain"), _("Gain"),
 		    NULL);

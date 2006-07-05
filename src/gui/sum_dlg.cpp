@@ -5,6 +5,22 @@
 // Created:     02/05/2005
 // Copyright:   (c) Matthew Gong
 // Licence:     GPL licence
+//
+// Functions:
+//
+// SummerPropertyDialog - Constructor
+// set_properties
+// do_layout
+// Show
+// OnOK
+// OnClipable
+// GetDataIn
+// SetDataOut
+// OnListBox
+// OnRadioSet
+// OnInputAdd
+// OnInputRemove
+//
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -41,6 +57,10 @@ BEGIN_EVENT_TABLE (SummerPropertyDialog, wxDialog)
 END_EVENT_TABLE ()
 
 
+/**
+* Constructor ==================================================================
+*/
+
 SummerPropertyDialog::SummerPropertyDialog(Summer * sum, wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
 {
@@ -63,7 +83,7 @@ SummerPropertyDialog::SummerPropertyDialog(Summer * sum, wxWindow* parent, int i
     label_bias = new wxStaticText(notebook_Main_pane_basic, -1, _("Bias:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     text_ctrl_bias = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &bias));
     const wxString list_box_input_choices[] = {
-        
+
     };
     list_box_input = new wxListBox(notebook_Main_pane_input, ID_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, list_box_input_choices, wxLB_SINGLE|wxLB_NEEDED_SB);
     const wxString radio_box_set_choices[] = {
@@ -83,6 +103,9 @@ SummerPropertyDialog::SummerPropertyDialog(Summer * sum, wxWindow* parent, int i
     GetDataIn(sum);
 }
 
+/**
+* set_properties ===============================================================
+*/
 
 void SummerPropertyDialog::set_properties()
 {
@@ -91,6 +114,9 @@ void SummerPropertyDialog::set_properties()
     // end wxGlade
 }
 
+/**
+* do_layout ====================================================================
+*/
 
 void SummerPropertyDialog::do_layout()
 {
@@ -155,9 +181,11 @@ void SummerPropertyDialog::do_layout()
     // end wxGlade
 }
 
+/**
+* Show =========================================================================
+*/
 
-bool
-SummerPropertyDialog::Show( bool show)
+bool SummerPropertyDialog::Show( bool show)
 {
   bool tmp = wxDialog::Show(show);
 
@@ -170,8 +198,11 @@ SummerPropertyDialog::Show( bool show)
   return tmp;
 }
 
-void
-SummerPropertyDialog::OnOK(wxCommandEvent & event )
+/**
+* OnOK =========================================================================
+*/
+
+void SummerPropertyDialog::OnOK(wxCommandEvent & event )
 {
   if (notebook_Main_pane_basic->Validate())
     notebook_Main_pane_basic->TransferDataFromWindow();
@@ -181,9 +212,11 @@ SummerPropertyDialog::OnOK(wxCommandEvent & event )
   event.Skip();
 }
 
+/**
+* OnClipable ===================================================================
+*/
 
-void
-SummerPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
+void SummerPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
 {
   if ( checkbox_clipable->IsChecked() )
     {
@@ -197,16 +230,18 @@ SummerPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
     }
 }
 
+/**
+* GetDataIn ====================================================================
+*/
 
-void
-SummerPropertyDialog::GetDataIn(Summer * g)
+void SummerPropertyDialog::GetDataIn(Summer * g)
 {
   name       = g->GetName();
   order      = wxString::Format("%ld",g->GetOrder());
   clipable   = g->IsClipable();
   clipmax    = g->GetClipMax();
   clipmin    = g->GetClipMin();
-  
+
   bias       = wxString::Format("%g",g->GetBias());
 
   list_box_input->Clear();
@@ -245,9 +280,11 @@ SummerPropertyDialog::GetDataIn(Summer * g)
     button_remove->Enable(false);
 }
 
+/**
+* SetDataOut ===================================================================
+*/
 
-void
-SummerPropertyDialog::SetDataOut(Summer * g)
+void SummerPropertyDialog::SetDataOut(Summer * g)
 {
   g->SetName(name);
   long int tmpl;
@@ -260,7 +297,7 @@ SummerPropertyDialog::SetDataOut(Summer * g)
 
   bias.ToDouble(&tmpd);
   g->SetBias(tmpd);
-  
+
   MyBoolList & list = g->GetInputSignList();
   list.Clear();
 
@@ -284,9 +321,11 @@ SummerPropertyDialog::SetDataOut(Summer * g)
   g->NormalizeLines();
 }
 
+/**
+* OnListBox ====================================================================
+*/
 
-void 
-SummerPropertyDialog::OnListBox (wxCommandEvent & WXUNUSED(event))
+void SummerPropertyDialog::OnListBox (wxCommandEvent & WXUNUSED(event))
 {
   wxString str = list_box_input->GetStringSelection();
   if ( str == wxT("negative") )
@@ -296,9 +335,11 @@ SummerPropertyDialog::OnListBox (wxCommandEvent & WXUNUSED(event))
 
 }
 
+/**
+* OnRadioSet ===================================================================
+*/
 
-void 
-SummerPropertyDialog::OnRadioSet (wxCommandEvent & WXUNUSED(event))
+void SummerPropertyDialog::OnRadioSet (wxCommandEvent & WXUNUSED(event))
 {
   int pos =  list_box_input->GetSelection();
   if ( radio_box_set->GetSelection() == 0 )
@@ -307,16 +348,20 @@ SummerPropertyDialog::OnRadioSet (wxCommandEvent & WXUNUSED(event))
     list_box_input->SetString(pos,wxT("negative"));
 }
 
+/**
+* OnInputAdd ===================================================================
+*/
 
-void 
-SummerPropertyDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
+void SummerPropertyDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
 {
   list_box_input->Append(wxT("positive"));
 }
 
+/**
+* OnInputRemove ================================================================
+*/
 
-void 
-SummerPropertyDialog::OnInputRemove (wxCommandEvent & WXUNUSED(event))
+void SummerPropertyDialog::OnInputRemove (wxCommandEvent & WXUNUSED(event))
 {
   if ( list_box_input->GetCount() <= 2)
     return;

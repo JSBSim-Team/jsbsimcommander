@@ -27,22 +27,23 @@
 #include "toolbar.h"
 #include "shape.h"
 #include "sum.h"
+#include "pid.h"
 #include "gain.h"
 #include "filter.h"
 #include "deadband.h"
 #include "switch.h"
 #include "kinemat.h"
 #include "func.h"
-  
+
 /*
  * MyCanvas implementations
  */
 
 BEGIN_EVENT_TABLE (MyCanvas, wxShapeCanvas)
   EVT_MOUSE_EVENTS (MyCanvas::OnMouseEvent)
-  EVT_PAINT (MyCanvas::OnPaint) 
+  EVT_PAINT (MyCanvas::OnPaint)
   EVT_KEY_DOWN  (MyCanvas::OnKey)
-  EVT_LEFT_DCLICK(MyCanvas::OnDClickEvent) 
+  EVT_LEFT_DCLICK(MyCanvas::OnDClickEvent)
 END_EVENT_TABLE ()
 
 
@@ -51,7 +52,7 @@ END_EVENT_TABLE ()
  */
 
 MyCanvas::MyCanvas (wxWindow * parent, wxWindowID id,
-		      const wxPoint & pos, const wxSize & size, long style)
+              const wxPoint & pos, const wxSize & size, long style)
   :wxShapeCanvas (parent, id, pos, size, style)
 {
   SetBackgroundColour (*wxWHITE);
@@ -78,53 +79,58 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
     {
     case TOOLBAR_ADD_NODE:
       {
-	info = CLASSINFO (SIMOShape);
-	break;
+        info = CLASSINFO (SIMOShape);
+        break;
       }
     case TOOLBAR_ADD_SOURCE:
       {
-	info = CLASSINFO (SourceShape);
-	break;
+        info = CLASSINFO (SourceShape);
+        break;
       }
     case TOOLBAR_ADD_DESTINATION:
       {
-	info = CLASSINFO (DestinationShape);
-	break;
+        info = CLASSINFO (DestinationShape);
+        break;
       }
     case TOOLBAR_ADD_SUMMER:
       {
-	info = CLASSINFO (Summer);
-	break;
+        info = CLASSINFO (Summer);
+        break;
+      }
+    case TOOLBAR_ADD_PID:
+      {
+        info = CLASSINFO (PID);
+        break;
       }
     case TOOLBAR_ADD_GAIN:
       {
-	info = CLASSINFO (Gain);
-	break;
+        info = CLASSINFO (Gain);
+        break;
       }
     case TOOLBAR_ADD_FILTER:
       {
-	info = CLASSINFO (Filter);
-	break;
+        info = CLASSINFO (Filter);
+        break;
       }
     case TOOLBAR_ADD_DEADBAND:
       {
-	info = CLASSINFO (DeadBand);
-	break;
+        info = CLASSINFO (DeadBand);
+        break;
       }
     case TOOLBAR_ADD_SWITCH:
       {
-	info = CLASSINFO (Switch);
-	break;
+        info = CLASSINFO (Switch);
+        break;
       }
     case TOOLBAR_ADD_KINEMAT:
       {
-	info = CLASSINFO (Kinemat);
-	break;
+        info = CLASSINFO (Kinemat);
+        break;
       }
     case TOOLBAR_ADD_FUNC:
       {
-	info = CLASSINFO (FCSFunction);
-	break;
+        info = CLASSINFO (FCSFunction);
+        break;
       }
     default:
       break;
@@ -132,34 +138,34 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
   if (info)
     {
       {
-	      wxShape *theShape;
-	      theShape = (wxShape *) info->CreateObject ();
-	      theShape->AssignNewIds ();
-	      theShape->SetEventHandler(new MyEvtHandler(theShape, theShape));
-	      theShape->SetCentreResize (false);
-	      theShape->SetPen (wxBLACK_PEN);
-	      theShape->SetBrush (wxWHITE_BRUSH);
-	      if (theShape->IsKindOf(CLASSINFO(SIMOShape)))
-	        theShape->SetSize (10, 10);
-	      else  
-	        theShape->SetSize (50, 50);
-	      GetDiagram ()->AddShape (theShape);
+              wxShape *theShape;
+              theShape = (wxShape *) info->CreateObject ();
+              theShape->AssignNewIds ();
+              theShape->SetEventHandler(new MyEvtHandler(theShape, theShape));
+              theShape->SetCentreResize (false);
+              theShape->SetPen (wxBLACK_PEN);
+              theShape->SetBrush (wxWHITE_BRUSH);
+              if (theShape->IsKindOf(CLASSINFO(SIMOShape)))
+                theShape->SetSize (10, 10);
+              else
+                theShape->SetSize (50, 50);
+              GetDiagram ()->AddShape (theShape);
         if (theShape->IsKindOf(CLASSINFO(MISOShape)))
         {
           MISOShape * shape = (MISOShape *)theShape;
           shape->SetName(shape->GetName() + wxString::Format("_%ld", (dynamic_cast<DiagramDocument *>(GetParent()->GetParent()))->unused++));
         }
-	      if (theShape->IsKindOf(CLASSINFO(ComponentShape)))
-	         ((ComponentShape*)theShape)->SetOrder();
+              if (theShape->IsKindOf(CLASSINFO(ComponentShape)))
+                 ((ComponentShape*)theShape)->SetOrder();
 
-	      theShape->Show (true);
+              theShape->Show (true);
 
-	      wxClientDC dc (theShape->GetCanvas ());
-	      theShape->GetCanvas ()->PrepareDC (dc);
-	      theShape->Move (dc, x, y);
+              wxClientDC dc (theShape->GetCanvas ());
+              theShape->GetCanvas ()->PrepareDC (dc);
+              theShape->Move (dc, x, y);
       }
-	    toolbar->ToggleTool(TOOLBAR_ARROW, true);
-	    toolbar->OnLeftClick(TOOLBAR_ARROW, true);
+            toolbar->ToggleTool(TOOLBAR_ARROW, true);
+            toolbar->OnLeftClick(TOOLBAR_ARROW, true);
     }
   else
   {
@@ -178,7 +184,7 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
 inline
 void
 MyCanvas::OnRightClick (double x, double y,
-			int WXUNUSED (keys))
+                        int WXUNUSED (keys))
 {
   tmpx = x;
   tmpy = y;
@@ -188,7 +194,7 @@ MyCanvas::OnRightClick (double x, double y,
 inline
 void
 MyCanvas::OnDragLeft (bool WXUNUSED (draw), double WXUNUSED (x),
-		      double WXUNUSED (y), int WXUNUSED (keys))
+                      double WXUNUSED (y), int WXUNUSED (keys))
 {
 }
 
@@ -196,7 +202,7 @@ MyCanvas::OnDragLeft (bool WXUNUSED (draw), double WXUNUSED (x),
 inline
 void
 MyCanvas::OnBeginDragLeft (double WXUNUSED (x), double WXUNUSED (y),
-			   int WXUNUSED (keys))
+                           int WXUNUSED (keys))
 {
 }
 
@@ -204,7 +210,7 @@ MyCanvas::OnBeginDragLeft (double WXUNUSED (x), double WXUNUSED (y),
 inline
 void
 MyCanvas::OnEndDragLeft (double WXUNUSED (x), double WXUNUSED (y),
-			 int WXUNUSED (keys))
+                         int WXUNUSED (keys))
 {
 }
 
@@ -212,7 +218,7 @@ MyCanvas::OnEndDragLeft (double WXUNUSED (x), double WXUNUSED (y),
 inline
 void
 MyCanvas::OnDragRight (bool WXUNUSED (draw), double WXUNUSED (x),
-		       double WXUNUSED (y), int WXUNUSED (keys))
+                       double WXUNUSED (y), int WXUNUSED (keys))
 {
 }
 
@@ -220,7 +226,7 @@ MyCanvas::OnDragRight (bool WXUNUSED (draw), double WXUNUSED (x),
 inline
 void
 MyCanvas::OnBeginDragRight (double WXUNUSED (x), double WXUNUSED (y),
-			    int WXUNUSED (keys))
+                            int WXUNUSED (keys))
 {
 }
 
@@ -228,11 +234,11 @@ MyCanvas::OnBeginDragRight (double WXUNUSED (x), double WXUNUSED (y),
 inline
 void
 MyCanvas::OnEndDragRight (double WXUNUSED (x), double WXUNUSED (y),
-			  int WXUNUSED (keys))
+                          int WXUNUSED (keys))
 {
 }
 
-inline 
+inline
 void
 MyCanvas::OnMouseEvent (wxMouseEvent & event)
 {
@@ -257,15 +263,15 @@ MyCanvas::OnDClickEvent (wxMouseEvent &  WXUNUSED (event))
       if (eachShape->GetParent() == NULL && eachShape->HitTest(tmpx,tmpy,&attachment,&distance) && distance < 50)
       {
         (dynamic_cast<DiagramDocument *>(GetParent()->GetParent()))->SetProperty(eachShape);
-	      eachShape->Select(true);
-	      return;
+              eachShape->Select(true);
+              return;
       }
       else
-	      node = node->GetNext ();
+              node = node->GetNext ();
     }
 }
 
-inline 
+inline
 void
 MyCanvas::OnPaint (wxPaintEvent & event)
 {
@@ -282,76 +288,76 @@ MyCanvas::OnKey (wxKeyEvent & event)
   {
     case '1' :
       {
-	toolbar->ToggleTool(TOOLBAR_ARROW, true);
-	toolbar->OnLeftClick(TOOLBAR_ARROW, true);
+        toolbar->ToggleTool(TOOLBAR_ARROW, true);
+        toolbar->OnLeftClick(TOOLBAR_ARROW, true);
       }
       break;
     case '2' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_SOURCE, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_SOURCE, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_SOURCE, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_SOURCE, true);
       }
       break;
     case '3' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_DESTINATION, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_DESTINATION, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_DESTINATION, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_DESTINATION, true);
       }
       break;
     case '4' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_SUMMER, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_SUMMER, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_SUMMER, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_SUMMER, true);
       }
       break;
     case '5' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_GAIN, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_GAIN, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_GAIN, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_GAIN, true);
       }
       break;
     case '6' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_FILTER, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_FILTER, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_FILTER, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_FILTER, true);
       }
       break;
     case '7' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_DEADBAND, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_DEADBAND, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_DEADBAND, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_DEADBAND, true);
       }
       break;
     case '8' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_SWITCH, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_SWITCH, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_SWITCH, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_SWITCH, true);
       }
       break;
     case '9' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_KINEMAT, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_KINEMAT, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_KINEMAT, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_KINEMAT, true);
       }
       break;
     case '0' :
       {
-	toolbar->ToggleTool(TOOLBAR_ADD_FUNC, true);
-	toolbar->OnLeftClick(TOOLBAR_ADD_FUNC, true);
+        toolbar->ToggleTool(TOOLBAR_ADD_FUNC, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_FUNC, true);
       }
       break;
     case WXK_DELETE :
       {
-	wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,FCSBUILDER_DEL);
-	wxPostEvent(GetParent()->GetParent(), e);
+        wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,FCSBUILDER_DEL);
+        wxPostEvent(GetParent()->GetParent(), e);
       }
       break;
     case 'P' :
     case 'p' :
     case WXK_RETURN :
       {
-	wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,TOOLBAR_ADJ_PROPERTY);
-	wxPostEvent(GetParent()->GetParent(), e);
+        wxCommandEvent e(wxEVT_COMMAND_MENU_SELECTED,TOOLBAR_ADJ_PROPERTY);
+        wxPostEvent(GetParent()->GetParent(), e);
       }
       break;
     default :
@@ -365,25 +371,25 @@ MyCanvas::DrawPic (wxDC * dc, const int & maxX, const int & maxY)
 {
   // This part was added to preform the print preview and printing functions
 
-  dc->BeginDrawing ();		// Allows optimization of drawing code under MS Windows.
-  wxDiagram *diagram_p = GetDiagram ();	// Get the current diagram
+  dc->BeginDrawing ();                // Allows optimization of drawing code under MS Windows.
+  wxDiagram *diagram_p = GetDiagram ();        // Get the current diagram
   if (diagram_p->GetShapeList ())
     {
       /* wxCursor *old_cursor = NULL; */
       wxObjectList::compatibility_iterator current =
-	diagram_p->GetShapeList ()->GetFirst ();
+        diagram_p->GetShapeList ()->GetFirst ();
 
-      while (current)		// Loop through the entire list of shapes
-	{
-	  wxShape *object = (wxShape *) current->GetData ();
-	  if (!object->GetParent ())
-	    {
-	      object->Draw (*dc);	// Draw the shape onto our printing dc
-	    }
-	  current = current->GetNext ();	// Procede to the next shape in the list
-	}
+      while (current)                // Loop through the entire list of shapes
+        {
+          wxShape *object = (wxShape *) current->GetData ();
+          if (!object->GetParent ())
+            {
+              object->Draw (*dc);        // Draw the shape onto our printing dc
+            }
+          current = current->GetNext ();        // Procede to the next shape in the list
+        }
     }
-  dc->EndDrawing ();		// Allows optimization of drawing code under MS Windows.
+  dc->EndDrawing ();                // Allows optimization of drawing code under MS Windows.
 }
 
 int
@@ -391,24 +397,24 @@ MyCanvas::GetCanvasWidth()
 {
   int result = 0;
 
-  wxDiagram *diagram_p = GetDiagram ();	// Get the current diagram
+  wxDiagram *diagram_p = GetDiagram ();        // Get the current diagram
   if (diagram_p->GetShapeList ())
     {
       /* wxCursor *old_cursor = NULL; */
       wxObjectList::compatibility_iterator current =
-	diagram_p->GetShapeList ()->GetFirst ();
+        diagram_p->GetShapeList ()->GetFirst ();
 
-      while (current)		// Loop through the entire list of shapes
-	{
-	  wxShape *object = (wxShape *) current->GetData ();
+      while (current)                // Loop through the entire list of shapes
+        {
+          wxShape *object = (wxShape *) current->GetData ();
           if ( !object->IsKindOf(CLASSINFO(wxLineShape)) )
           {
             int tmp = (int)object->GetX();
             if ( tmp > result )
               result = tmp;
           }
-	  current = current->GetNext ();	// Procede to the next shape in the list
-	}
+          current = current->GetNext ();        // Procede to the next shape in the list
+        }
     }
   return result+100;
 }
@@ -418,24 +424,24 @@ MyCanvas::GetCanvasHeight()
 {
   int result = 0;
 
-  wxDiagram *diagram_p = GetDiagram ();	// Get the current diagram
+  wxDiagram *diagram_p = GetDiagram ();        // Get the current diagram
   if (diagram_p->GetShapeList ())
     {
       /* wxCursor *old_cursor = NULL; */
       wxObjectList::compatibility_iterator current =
-	diagram_p->GetShapeList ()->GetFirst ();
+        diagram_p->GetShapeList ()->GetFirst ();
 
-      while (current)		// Loop through the entire list of shapes
-	{
-	  wxShape *object = (wxShape *) current->GetData ();
+      while (current)                // Loop through the entire list of shapes
+        {
+          wxShape *object = (wxShape *) current->GetData ();
           if ( !object->IsKindOf(CLASSINFO(wxLineShape)) )
           {
             int tmp = (int)object->GetY();
             if ( tmp > result )
               result = tmp;
           }
-	  current = current->GetNext ();	// Procede to the next shape in the list
-	}
+          current = current->GetNext ();        // Procede to the next shape in the list
+        }
     }
   return result+100;
 }

@@ -5,6 +5,15 @@
 // Created:     02/05/2005
 // Copyright:   (c) Matthew Gong
 // Licence:     GPL licence
+//
+// Functions:
+//
+// Summer - Constructor
+// OnDraw
+// Copy
+// ExportXML
+// ImportXML
+//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -38,6 +47,10 @@
 
 IMPLEMENT_DYNAMIC_CLASS (Summer, ComponentShape)
 
+/**
+* Summer Constructor ===========================================================
+*/
+
 Summer::Summer (double w, double h, const wxString & Name )
   :ComponentShape(w, h, wxT("SUMMER"), Name),
    bias(0)
@@ -54,8 +67,11 @@ Summer::Summer (double w, double h, const wxString & Name )
 }
 
 
-void
-Summer::OnDraw (wxDC & dc)
+/**
+* OnDraw =======================================================================
+*/
+
+void Summer::OnDraw (wxDC & dc)
 {
   ComponentShape::OnDraw (dc);
   wxCoord  h,w;
@@ -78,7 +94,7 @@ Summer::OnDraw (wxDC & dc)
 }
 
 #if wxUSE_PROLOGIO
-void 
+void
 Summer::WriteAttributes (wxExpr * clause)
 {
   ComponentShape::WriteAttributes (clause);
@@ -87,7 +103,7 @@ Summer::WriteAttributes (wxExpr * clause)
 }
 
 
-void 
+void
 Summer::ReadAttributes (wxExpr * clause)
 {
   ComponentShape::ReadAttributes (clause);
@@ -96,8 +112,11 @@ Summer::ReadAttributes (wxExpr * clause)
 }
 #endif
 
-void 
-Summer::Copy (wxShape & copy)
+/**
+* Copy =========================================================================
+*/
+
+void Summer::Copy (wxShape & copy)
 {
   ComponentShape::Copy (copy);
 
@@ -107,28 +126,32 @@ Summer::Copy (wxShape & copy)
   SummerCopy.bias = bias;
 }
 
+/**
+* ExportXML ====================================================================
+*/
 
-void 
-Summer::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
+void Summer::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 {
   ExportHead(stream, prefix);
 
   wxString Pre = prefix + wxT("  ");
-  
+
   ExportInputs(stream,Pre);
-  
+
   if (bias != 0)
     stream << Pre << wxT("<bias> ")<< wxString::Format(wxT("%g"), bias) << wxT(" </bias>") << endl;
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
-  
+
   ExportTail(stream, prefix);
 }
 
+/**
+* ImportXML ====================================================================
+*/
 
-wxArrayString
-Summer::ImportXML(JSBSim::Element * el)
+wxArrayString Summer::ImportXML(JSBSim::Element * el)
 {
   wxArrayString strings = ComponentShape::ImportXML(el);
 
@@ -136,5 +159,3 @@ Summer::ImportXML(JSBSim::Element * el)
 
   return strings;
 }
-
-

@@ -29,6 +29,7 @@
 #include "view.h"
 #include "shape.h"
 #include "sum.h"
+#include "pid.h"
 #include "gain.h"
 #include "filter.h"
 #include "deadband.h"
@@ -104,6 +105,8 @@ void DiagramDocument::Import(JSBSim::Element * el)
         shape = new Filter;
       } else if (type == "summer") {
         shape = new Summer;
+      } else if (type == "pid") {
+        shape = new PID;
       } else if (type == "deadband") {
         shape = new DeadBand;
       } else if (type == "switch") {
