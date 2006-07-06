@@ -2,31 +2,34 @@
 // Name:        sum_dlg.cpp
 // Purpose:     dialog for FGSummer
 // Author:      Matthew Gong
-// Created:     02/05/2005
+// Created:     07/06/2006
 // Copyright:   (c) Matthew Gong
 // Licence:     GPL licence
 //
 // Functions:
 //
 // SummerPropertyDialog - Constructor
-// set_properties
-// do_layout
-// Show
-// OnOK
 // OnClipable
 // GetDataIn
 // SetDataOut
 // OnListBox
-// OnRadioSet
+// OnRadioSign
 // OnInputAdd
 // OnInputRemove
 //
 /////////////////////////////////////////////////////////////////////////////
 
+//-----------------------------------------------------------------------------
+// GCC implementation
+//-----------------------------------------------------------------------------
 
 #ifdef __GNUG__
 // #pragma implementation
 #endif
+
+//-----------------------------------------------------------------------------
+// Standard wxWidgets headers
+//-----------------------------------------------------------------------------
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
@@ -35,181 +38,91 @@
 #pragma hdrstop
 #endif
 
+// For all others, include the necessary headers (this file is usually all you
+// need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+//-----------------------------------------------------------------------------
+// Header of this .cpp file
+//-----------------------------------------------------------------------------
+
+#include "sum_dlg.h"
+
+//-----------------------------------------------------------------------------
+// Remaining headers: Needed wx headers, then wx/contrib headers, then application headers
+//-----------------------------------------------------------------------------
+
 #include <wx/valtext.h>
 #include <wx/valgen.h>
+#include <wx/xrc/xmlres.h>              // XRC XML resouces
 
 #include "shape.h"
 #include "sum.h"
-#include "sum_dlg.h"
 
+//-----------------------------------------------------------------------------
+// Event table: connect the events to the handler functions to process them
+//-----------------------------------------------------------------------------
 
+// The event tables connect the wxWidgets events with the functions (event
+// handlers) which process them. It can be also done at run-time, but for the
+// simple menu events like this the static method is much simpler.
+// The reason why the menuitems and tools are given the same name in the
+// XRC file, is that both a tool (a toolbar item) and a menuitem are designed
+// to fire the same kind of event (an EVT_MENU) and thus I give them the same
+// ID name to help new users emphasize this point which is often overlooked
+// when starting out with wxWidgets.
 BEGIN_EVENT_TABLE (SummerPropertyDialog, wxDialog)
-  EVT_CHECKBOX(ID_CLIPABLE, SummerPropertyDialog::OnClipable)
-  EVT_BUTTON  (wxID_OK, SummerPropertyDialog::OnOK)
-  EVT_LISTBOX (ID_LISTBOX, SummerPropertyDialog::OnListBox)
-  EVT_RADIOBOX (ID_RADIO_SET, SummerPropertyDialog::OnRadioSet)
-  EVT_BUTTON  (ID_INPUT_ADD, SummerPropertyDialog::OnInputAdd)
-  EVT_BUTTON  (ID_INPUT_REMOVE, SummerPropertyDialog::OnInputRemove)
+  EVT_CHECKBOX(XRCID("ID_CLIPABLE"), SummerPropertyDialog::OnClipable)
+  EVT_LISTBOX (XRCID("ID_LISTBOX_INPUTS"), SummerPropertyDialog::OnListBox)
+  EVT_RADIOBOX (XRCID("ID_RADIO_SIGN"), SummerPropertyDialog::OnRadioSign)
+  EVT_BUTTON  (XRCID("ID_INPUT_ADD"), SummerPropertyDialog::OnInputAdd)
+  EVT_BUTTON  (XRCID("ID_INPUT_REMOVE"), SummerPropertyDialog::OnInputRemove)
 END_EVENT_TABLE ()
-
 
 /**
 * Constructor ==================================================================
 */
 
-SummerPropertyDialog::SummerPropertyDialog(Summer * sum, wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
+SummerPropertyDialog::SummerPropertyDialog(Summer * sum, wxWindow* parent)
 {
-    // begin wxGlade: SumPropertyDialog::SumPropertyDialog
-    notebook_Main_pane = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, 0);
-    notebook_Main_pane_input = new wxPanel(notebook_Main_pane, -1);
-    notebook_Main_pane_basic = new wxPanel(notebook_Main_pane, -1);
-    sizer_7_staticbox = new wxStaticBox(notebook_Main_pane_basic, -1, _("cliper"));
-    label_name = new wxStaticText(notebook_Main_pane_basic, -1, _("Name:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    label_Type = new wxStaticText(notebook_Main_pane_basic, -1, _("Type:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    label_order = new wxStaticText(notebook_Main_pane_basic, -1, _("Order:"));
-    text_ctrl_name = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &name) );
-    label_type = new wxStaticText(notebook_Main_pane_basic, -1, wxT("SUMMER"));
-    text_ctrl_order = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &order));
-    checkbox_clipable = new wxCheckBox(notebook_Main_pane_basic, ID_CLIPABLE, _("clipable"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&clipable));
-    label_max = new wxStaticText(notebook_Main_pane_basic, -1, _("Max:"));
-    text_ctrl_clipmax = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &clipmax));
-    label_min = new wxStaticText(notebook_Main_pane_basic, -1, _("Min:"));
-    text_ctrl_clipmin = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &clipmin));
-    label_bias = new wxStaticText(notebook_Main_pane_basic, -1, _("Bias:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-    text_ctrl_bias = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &bias));
-    const wxString list_box_input_choices[] = {
+    // Load up this frame from XRC. [Note, instead of making a class's
+    // constructor take a wxWindow* parent with a default value of NULL,
+    // we could have just had designed MyFrame class with an empty
+    // constructor and then written here:
+    // wxXmlResource::Get()->LoadFrame(this, (wxWindow* )NULL, "main_frame");
+    // since this frame will always be the top window, and thus parentless.
+    // However, the current approach has source code that can be recycled
+    // for other frames that aren't the top level window.]
+    wxXmlResource::Get()->LoadDialog(this, parent, wxT("SUM_DIALOG"));
 
-    };
-    list_box_input = new wxListBox(notebook_Main_pane_input, ID_LISTBOX, wxDefaultPosition, wxDefaultSize, 0, list_box_input_choices, wxLB_SINGLE|wxLB_NEEDED_SB);
-    const wxString radio_box_set_choices[] = {
-        wxT("Positive"),
-        wxT("Negative")
-    };
-    radio_box_set = new wxRadioBox(notebook_Main_pane_input, ID_RADIO_SET, _("set"), wxDefaultPosition, wxDefaultSize, 2, radio_box_set_choices, 1, wxRA_SPECIFY_ROWS);
-    button_add = new wxButton(notebook_Main_pane_input, ID_INPUT_ADD, _("Add"));
-    button_remove = new wxButton(notebook_Main_pane_input, ID_INPUT_REMOVE, _("Remove"));
-    button_OK = new wxButton(this, wxID_OK, _("OK"));
-    button_Cancel = new wxButton(this, wxID_CANCEL, _("Cancel"));
+    // Get the widgets needed.
+    text_ctrl_name = XRCCTRL(*this, "ID_TEXT_NAME", wxTextCtrl);
+    text_ctrl_order = XRCCTRL(*this, "ID_TEXT_ORDER", wxTextCtrl);
+    checkbox_clipable = XRCCTRL(*this, "ID_CLIPABLE", wxCheckBox);
+    text_ctrl_clipmax = XRCCTRL(*this, "ID_TEXT_CLIP_MAX", wxTextCtrl);
+    text_ctrl_clipmin = XRCCTRL(*this, "ID_TEXT_CLIP_MIN", wxTextCtrl);
+    text_ctrl_bias = XRCCTRL(*this, "ID_TEXT_BIAS", wxTextCtrl);
+    list_box_input = XRCCTRL(*this, "ID_LISTBOX_INPUTS", wxListBox);
+    radio_box_sign = XRCCTRL(*this, "ID_RADIO_SIGN", wxRadioBox);
+    notebook_Main_pane_basic = XRCCTRL(*this, "ID_PANEL_BASIC", wxPanel);
+    notebook_Main_pane_input = XRCCTRL(*this, "ID_PANEL_INPUTS", wxPanel);
+    
+    // Set the validators.
+    text_ctrl_name->SetValidator(wxTextValidator(wxFILTER_NONE, &name));
+    text_ctrl_order->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &order));
+    checkbox_clipable->SetValidator(wxGenericValidator(&clipable));
+    text_ctrl_clipmax->SetValidator(wxTextValidator(wxFILTER_NONE, &clipmax));
+    text_ctrl_clipmin->SetValidator(wxTextValidator(wxFILTER_NONE, &clipmin));
+    text_ctrl_bias->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &bias));
 
-    set_properties();
-    do_layout();
-    // end wxGlade
+    // Make sure to set the extra flag wxWS_EX_VALIDATE_RECURSIVELY for the dialog.
+    SetExtraStyle(GetExtraStyle() | wxWS_EX_VALIDATE_RECURSIVELY);
 
-    GetDataIn(sum);
-}
-
-/**
-* set_properties ===============================================================
-*/
-
-void SummerPropertyDialog::set_properties()
-{
-    // begin wxGlade: SummerPropertyDialog::set_properties
-    button_Cancel->SetFocus();
-    // end wxGlade
-}
-
-/**
-* do_layout ====================================================================
-*/
-
-void SummerPropertyDialog::do_layout()
-{
-    // begin wxGlade: SummerPropertyDialog::do_layout
-    wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_13 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_14 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_3 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
-    //wxBoxSizer* sizer_12 = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticBoxSizer* sizer_7 = new wxStaticBoxSizer(sizer_7_staticbox, wxVERTICAL);
-    wxBoxSizer* sizer_10 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_9 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_6 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_5 = new wxBoxSizer(wxVERTICAL);
-    sizer_5->Add(label_name, 1, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_5->Add(label_Type, 1, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_5->Add(label_order, 1, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_4->Add(sizer_5, 1, wxLEFT|wxTOP|wxBOTTOM|wxEXPAND, 10);
-    sizer_6->Add(text_ctrl_name, 1, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_6->Add(label_type, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_6->Add(text_ctrl_order, 1, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_4->Add(sizer_6, 2, wxRIGHT|wxTOP|wxBOTTOM|wxEXPAND, 10);
-    sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
-    sizer_7->Add(checkbox_clipable, 0, wxLEFT, 5);
-    sizer_9->Add(label_max, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_9->Add(text_ctrl_clipmax, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_7->Add(sizer_9, 1, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
-    sizer_10->Add(label_min, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_10->Add(text_ctrl_clipmin, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_7->Add(sizer_10, 1, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
-    sizer_3->Add(sizer_7, 0, wxEXPAND, 0);
-    sizer_8->Add(label_bias, 1, wxALL, 7);
-    sizer_8->Add(text_ctrl_bias, 2, wxALL, 3);
-    sizer_3->Add(sizer_8, 0, wxALL|wxEXPAND, 4);
-    notebook_Main_pane_basic->SetAutoLayout(true);
-    notebook_Main_pane_basic->SetSizer(sizer_3);
-    sizer_3->Fit(notebook_Main_pane_basic);
-    sizer_3->SetSizeHints(notebook_Main_pane_basic);
-    sizer_13->Add(list_box_input, 2, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5);
-    sizer_13->Add(radio_box_set, 0, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5);
-    sizer_14->Add(button_add, 1, wxALL, 10);
-    sizer_14->Add(button_remove, 1, wxALL, 10);
-    sizer_13->Add(sizer_14, 1, wxBOTTOM|wxEXPAND, 10);
-    notebook_Main_pane_input->SetAutoLayout(true);
-    notebook_Main_pane_input->SetSizer(sizer_13);
-    sizer_13->Fit(notebook_Main_pane_input);
-    sizer_13->SetSizeHints(notebook_Main_pane_input);
-    notebook_Main_pane->AddPage(notebook_Main_pane_basic, _("Basic"));
-    notebook_Main_pane->AddPage(notebook_Main_pane_input, _("Input"));
-    sizer_1->Add(notebook_Main_pane, 2, wxALL|wxEXPAND, 5);
-    sizer_2->Add(button_OK, 1, wxALL, 5);
-    sizer_2->Add(button_Cancel, 1, wxALL, 5);
-    sizer_1->Add(sizer_2, 0, wxEXPAND, 0);
-    SetAutoLayout(true);
-    SetSizer(sizer_1);
-    sizer_1->Fit(this);
-    sizer_1->SetSizeHints(this);
-    Layout();
-    // end wxGlade
-}
-
-/**
-* Show =========================================================================
-*/
-
-bool SummerPropertyDialog::Show( bool show)
-{
-  bool tmp = wxDialog::Show(show);
-
-  if (show)
-    {
-      notebook_Main_pane_basic->InitDialog();
-      notebook_Main_pane_input->InitDialog();
-    }
-
-  return tmp;
-}
-
-/**
-* OnOK =========================================================================
-*/
-
-void SummerPropertyDialog::OnOK(wxCommandEvent & event )
-{
-  if (notebook_Main_pane_basic->Validate())
-    notebook_Main_pane_basic->TransferDataFromWindow();
-  if (notebook_Main_pane_input->Validate())
-    notebook_Main_pane_input->TransferDataFromWindow();
-
-  event.Skip();
+    // Read data in.
+    if (sum)
+      GetDataIn(sum);
 }
 
 /**
@@ -234,7 +147,7 @@ void SummerPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
 * GetDataIn ====================================================================
 */
 
-void SummerPropertyDialog::GetDataIn(Summer * g)
+void SummerPropertyDialog::GetDataIn(const Summer * g)
 {
   name       = g->GetName();
   order      = wxString::Format("%ld",g->GetOrder());
@@ -245,19 +158,22 @@ void SummerPropertyDialog::GetDataIn(Summer * g)
   bias       = wxString::Format("%g",g->GetBias());
 
   list_box_input->Clear();
-  wxMyBoolListNode * node = g->GetInputSignList().GetFirst();
+  const wxMyBoolListNode * node = g->GetInputSignList().GetFirst();
+  wxArrayString inputs = g->GetInputNames();
+  size_t i = 0;
   while (node)
     {
       bool * value = node->GetData();
       if (*value)
 	{
-	  list_box_input->Append(wxT("negative"));
+	  list_box_input->Append(wxT("-") + inputs[i]);
 	}
       else
 	{
-	  list_box_input->Append(wxT("positive"));
+	  list_box_input->Append(inputs[i]);
 	}
       node = node->GetNext();
+      ++i;
     }
 
   if (clipable)
@@ -271,20 +187,17 @@ void SummerPropertyDialog::GetDataIn(Summer * g)
       text_ctrl_clipmin->Enable(false);
     }
   list_box_input->SetSelection(0);
-  if ( list_box_input->GetString(0) == wxT("positive") )
-    radio_box_set->SetSelection(0);
+  if ( list_box_input->GetString(0)[0] == wxT('-') )
+    radio_box_sign->SetSelection(1);
   else
-    radio_box_set->SetSelection(1);
-
-  if ( g->GetLines().GetCount()>0 )
-    button_remove->Enable(false);
+    radio_box_sign->SetSelection(0);
 }
 
 /**
 * SetDataOut ===================================================================
 */
 
-void SummerPropertyDialog::SetDataOut(Summer * g)
+void SummerPropertyDialog::SetDataOut(Summer * g) const
 {
   g->SetName(name);
   long int tmpl;
@@ -310,10 +223,10 @@ void SummerPropertyDialog::SetDataOut(Summer * g)
   for ( int i = 0; i < s; ++i)
     {
       wxString str = list_box_input->GetString(i);
-      if ( str == wxT("positive") )
-	list.Append(new bool(false));
-      else
+      if ( str[0] == wxT('-') )
 	list.Append(new bool(true));
+      else
+	list.Append(new bool(false));
       g->GetAttachments ().Append (new wxAttachmentPoint (i+1, -w * 0.5, 0.0));
     }
 
@@ -328,10 +241,10 @@ void SummerPropertyDialog::SetDataOut(Summer * g)
 void SummerPropertyDialog::OnListBox (wxCommandEvent & WXUNUSED(event))
 {
   wxString str = list_box_input->GetStringSelection();
-  if ( str == wxT("negative") )
-    radio_box_set->SetSelection(1);
+  if ( str[0] == wxT('-') )
+    radio_box_sign->SetSelection(1);
   else
-    radio_box_set->SetSelection(0);
+    radio_box_sign->SetSelection(0);
 
 }
 
@@ -339,13 +252,21 @@ void SummerPropertyDialog::OnListBox (wxCommandEvent & WXUNUSED(event))
 * OnRadioSet ===================================================================
 */
 
-void SummerPropertyDialog::OnRadioSet (wxCommandEvent & WXUNUSED(event))
+void SummerPropertyDialog::OnRadioSign (wxCommandEvent & WXUNUSED(event))
 {
   int pos =  list_box_input->GetSelection();
-  if ( radio_box_set->GetSelection() == 0 )
-    list_box_input->SetString(pos,wxT("positive"));
-  else
-    list_box_input->SetString(pos,wxT("negative"));
+  if (pos != wxNOT_FOUND)
+  {
+    wxString name = list_box_input->GetString(pos);
+    if (name[0] == wxT('-'))
+    {
+      name.Remove(0u, 1u);
+    }
+    if ( radio_box_sign->GetSelection() == 0 )
+      list_box_input->SetString(pos,name);
+    else
+      list_box_input->SetString(pos,wxT("-")+name);
+  }
 }
 
 /**
@@ -354,7 +275,7 @@ void SummerPropertyDialog::OnRadioSet (wxCommandEvent & WXUNUSED(event))
 
 void SummerPropertyDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
 {
-  list_box_input->Append(wxT("positive"));
+  list_box_input->Append(wxT("NULL"));
 }
 
 /**
@@ -363,9 +284,19 @@ void SummerPropertyDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
 
 void SummerPropertyDialog::OnInputRemove (wxCommandEvent & WXUNUSED(event))
 {
-  if ( list_box_input->GetCount() <= 2)
-    return;
-
-  int pos =  list_box_input->GetSelection();
-  list_box_input->Delete(pos);
+  size_t n;
+  while ( (n = list_box_input->GetCount()) > 2)
+  {
+    --n;
+    if (list_box_input->GetString(n) == wxT("NULL")
+     || list_box_input->GetString(n) == wxT("-NULL") )
+    {
+      list_box_input->Delete(n);
+    }
+    else
+    {
+      break;
+    }
+  }
 }
+

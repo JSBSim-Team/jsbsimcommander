@@ -223,7 +223,14 @@ public:
   virtual wxArrayString ImportXML(JSBSim::Element * el);
 
   static DestinationShape * GetOutputNode(SIMOShape * shape);
-  // Does the copying for this object
+
+  /**
+   * Get the names of inputs.
+   * Based on the line attached to this component.
+   */
+  wxArrayString GetInputNames() const;
+
+  /// Does the copying for this object
   void Copy (wxShape & copy);
 
   inline bool IsClipable() const
@@ -252,6 +259,11 @@ public:
     }
 
   inline MyBoolList& GetInputSignList()
+    {
+      return input_sign_list;
+    }
+
+  inline const MyBoolList& GetInputSignList() const
     {
       return input_sign_list;
     }

@@ -2,7 +2,7 @@
 // Name:        sum_dlg.h
 // Purpose:     dialog for FGSummer
 // Author:      Matthew Gong
-// Created:     02/05/2005
+// Created:     07/06/2006
 // Copyright:   (c) Matthew Gong
 // Licence:     GPL licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,66 +12,47 @@
 #endif
 
 #include <wx/wx.h>
-#include <wx/image.h>
-// begin wxGlade: ::dependencies
-#include <wx/notebook.h>
-// end wxGlade
 
 
 #ifndef SUMDIALOG_H
 #define SUMDIALOG_H
 
 class Summer;
+
+/** The Dialog for summer component.
+ *  The dialog use the XRC dialog resource SUM_DIALOG(sum_dlg.xrc).
+ *  And all these ID is needed:
+ *     ID_TEXT_NAME,
+ *     ID_TEXT_ORDER,
+ *     ID_CLIPABLE,
+ *     ID_TEXT_CLIP_MAX,
+ *     ID_TEXT_CLIP_MIN,
+ *     ID_TEXT_BIAS,
+ *     ID_LISTBOX_INPUTS,
+ *     ID_RADIO_SIGN,
+ *     ID_PANEL_BASIC,
+ *     ID_PANEL_INPUTS,
+ *     ID_INPUT_ADD,
+ *     ID_INPUT_REMOVE.
+ *  Use it like this:
+ *     SummerPropertyDialog  dlg((Summer *)theShape, this);
+ *     if ( dlg.ShowModal() == wxID_OK )
+ *     {
+ *       dlg.SetDataOut((Summer *)theShape);
+ *     }
+ */
+
 class SummerPropertyDialog : public wxDialog 
 {
  public:
-  // begin wxGlade: SumPropertyDialog::ids
-  enum
-    {
-      ID_TYPE = 700,
-      ID_CLIPABLE,
-      ID_LISTBOX,
-      ID_RADIO_SET,
-      ID_INPUT_ADD,
-      ID_INPUT_REMOVE
-    };
-  // end wxGlade
+  /// Constructor
+  SummerPropertyDialog(Summer * sum, wxWindow* parent);
 
-  SummerPropertyDialog(Summer * sum, wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxSize(240, 350), long style=wxDEFAULT_DIALOG_STYLE);
+  /// Read data in.
+  void GetDataIn(const Summer * g);
 
- private:
-  // begin wxGlade: SumPropertyDialog::methods
-  void set_properties();
-  void do_layout();
-  // end wxGlade
-
- protected:
-  // begin wxGlade: SumPropertyDialog::attributes
-  wxStaticBox* sizer_11_staticbox;
-  wxStaticBox* sizer_7_staticbox;
-  wxStaticText* label_name;
-  wxStaticText* label_Type;
-  wxStaticText* label_order;
-  wxTextCtrl* text_ctrl_name;
-  wxStaticText* label_type;
-  wxTextCtrl* text_ctrl_order;
-  wxCheckBox* checkbox_clipable;
-  wxStaticText* label_max;
-  wxTextCtrl* text_ctrl_clipmax;
-  wxStaticText* label_min;
-  wxTextCtrl* text_ctrl_clipmin;
-  wxStaticText* label_bias;
-  wxTextCtrl* text_ctrl_bias;
-  wxPanel* notebook_Main_pane_basic;
-  wxListBox* list_box_input;
-  wxRadioBox* radio_box_set;
-  wxButton* button_add;
-  wxButton* button_remove;
-  wxPanel* notebook_Main_pane_input;
-  wxNotebook* notebook_Main_pane;
-  wxButton* button_OK;
-  wxButton* button_Cancel;
-  // end wxGlade
+  /// Send data out.
+  void SetDataOut(Summer * g) const;
 
  private:
   wxString name;
@@ -82,17 +63,22 @@ class SummerPropertyDialog : public wxDialog
 
   wxString bias;
 
+  wxTextCtrl* text_ctrl_name;
+  wxTextCtrl* text_ctrl_order;
+  wxCheckBox* checkbox_clipable;
+  wxTextCtrl* text_ctrl_clipmax;
+  wxTextCtrl* text_ctrl_clipmin;
+  wxTextCtrl* text_ctrl_bias;
+  wxPanel* notebook_Main_pane_basic;
+  wxListBox* list_box_input;
+  wxRadioBox* radio_box_sign;
+  wxPanel* notebook_Main_pane_input;
+
  public:
+
   void OnClipable (wxCommandEvent & event);
-
-  bool Show( bool show = TRUE );
-  void OnOK( wxCommandEvent &event );
-
-  void GetDataIn(Summer * g);
-  void SetDataOut(Summer * g);
-
   void OnListBox (wxCommandEvent & event);
-  void OnRadioSet (wxCommandEvent & event);
+  void OnRadioSign (wxCommandEvent & event);
   void OnInputAdd (wxCommandEvent & event);
   void OnInputRemove (wxCommandEvent & event);
 

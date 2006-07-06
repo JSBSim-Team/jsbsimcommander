@@ -1098,6 +1098,55 @@ ComponentShape::mkName(wxString name, bool lowercase)
   return wxT("fcs/") + name;
 }
 
+wxArrayString
+ComponentShape::GetInputNames() const
+{
+  wxArrayString rslt;
+  rslt.Add(wxT("NULL"), input_sign_list.GetCount());
+
+  wxNode * node = GetLines().GetFirst();
+  while (node)
+  {
+    wxLineShape * data = (wxLineShape *)node->GetData();
+    if (data->GetTo() == this)  // if this line point to this shape
+    {
+      wxShape * shape = data->GetFrom(); // input shape
+      while (shape && shape->IsKindOf(CLASSINFO(SIMOShape))) //if input shape is a SIMO Shape, find the input shape of the SIMO Shape
+      {
+        wxNode * nd = shape->GetLines().GetFirst();
+	bool flag = false;
+	while (nd)
+	{
+	  wxLineShape * value = (wxLineShape *)nd->GetData();
+	  if (value->GetTo() == shape)
+	  {
+	    shape = value->GetFrom();  // get it!
+	    flag = true;
+	    break;
+	  }
+          nd = nd->GetNext();
+	}
+	if (!flag)
+	{
+	  shape = 0; // no find
+	}
+      }
+      //output
+      if (shape && shape->IsKindOf(CLASSINFO(MISOShape)))
+      {
+	 int a = data->GetAttachmentTo() - 1;
+         MISOShape * misoshape = (MISOShape *)shape;
+	 if (misoshape->IsKindOf(CLASSINFO(ComponentShape)))
+	   rslt[a] =  mkName( misoshape->GetName(), true );
+	 else
+	   rslt[a] = misoshape->GetName();
+      }
+    }
+    node = node->GetNext();
+  }
+  return rslt;
+}
+
 void 
 ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefix)
 {

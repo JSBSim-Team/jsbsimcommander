@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+  <object class="wxDialog" name="SUM_DIALOG">
+    <title>Summer Component</title>
+    <centered>1</centered>
+    <size>240,350</size>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="ID_NOTEBOOK">
+          <object class="notebookpage">
+            <label>Basic</label>
+            <object class="wxPanel" name="ID_PANEL_BASIC">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>3</rows>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Name:</label>
+                        <style>wxALIGN_RIGHT</style>
+                      </object>
+                      <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <vgap>3</vgap>
+                    <hgap>3</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="ID_TEXT_NAME">
+                        <style></style>
+                      </object>
+                      <minsize>120,-1</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Type:</label>
+                        <style>wxALIGN_RIGHT</style>
+                      </object>
+                      <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>SUMMER</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Order:</label>
+                        <style>wxALIGN_RIGHT</style>
+                      </object>
+                      <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="ID_TEXT_ORDER"/>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>cliper</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="ID_CLIPABLE">
+                        <label>clipable</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxFlexGridSizer">
+                        <cols>2</cols>
+                        <rows>2</rows>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Max:</label>
+                          </object>
+                          <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="ID_TEXT_CLIP_MAX"/>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Min:</label>
+                          </object>
+                          <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="ID_TEXT_CLIP_MIN"/>
+                        </object>
+                        <vgap>3</vgap>
+                        <hgap>3</hgap>
+                        <growablecols>1</growablecols>
+                      </object>
+                      <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                    </object>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>3</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Bias:</label>
+                      </object>
+                      <flag>wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="ID_TEXT_BIAS"/>
+                    </object>
+                  </object>
+                  <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Inputs</label>
+            <object class="wxPanel" name="ID_PANEL_INPUTS">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxListBox" name="ID_LISTBOX_INPUTS">
+                    <content/>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>3</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxRadioBox" name="ID_RADIO_SIGN">
+                    <label>sign</label>
+                    <content>
+                      <item>Positive</item>
+                      <item>Negative</item>
+                    </content>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>3</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="ID_INPUT_ADD">
+                        <label>Add</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="ID_INPUT_REMOVE">
+                        <label>Remove</label>
+                      </object>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <border>3</border>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>3</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label></label>
+              <label>&amp;Ok</label>
+            </object>
+          </object>
+          <object class="button">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label></label>
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>3</border>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE</style>
+    <exstyle>wxWS_EX_VALIDATE_RECURSIVELY</exstyle>
+  </object>
+</resource>

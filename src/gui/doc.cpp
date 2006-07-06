@@ -577,7 +577,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (Summer)))
     {
-      SummerPropertyDialog  dlg((Summer *)theShape, this,wxID_ANY,_("Summer Componment"));
+      SummerPropertyDialog  dlg((Summer *)theShape, this);
       if ( dlg.ShowModal() == wxID_OK )
 	    {
 	      dlg.SetDataOut((Summer *)theShape);
