@@ -212,12 +212,12 @@ public:
    
   inline void ExportHead(wxTextOutputStream & stream, const wxString & prefix)
   {
-    stream << endl << prefix << wxT("<component name=\"") << name << wxT("\" type=\"") << type << wxT("\">") << endl;
+    stream << endl << prefix << wxT("<") << type << wxT(" name=\"") << name << wxT("\">") << endl;
   }
     
   inline void ExportTail(wxTextOutputStream & stream, const wxString & prefix)
   {
-    stream<< prefix << wxT("</component>") << endl;  
+    stream<< prefix << wxT("</") << type << wxT(">") << endl;  
   }
 
   virtual wxArrayString ImportXML(JSBSim::Element * el);

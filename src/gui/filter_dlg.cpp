@@ -58,11 +58,11 @@ FilterPropertyDialog::FilterPropertyDialog(Filter * shape, wxWindow* parent, int
     label_order = new wxStaticText(notebook_Main_pane_basic, -1, _("Order:"));
     text_ctrl_name = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &name) );
     const wxString combo_box_type_choices[] = {
-        wxT("LAG_FILTER"),
-        wxT("LEAD_LAG_FILTER"),
-        wxT("SECOND_ORDER_FILTER"),
-        wxT("WASHOUT_FILTER"),
-        wxT("INTEGRATOR")
+        wxT("lag_filter"),
+        wxT("lead_lag_filter"),
+        wxT("second_order_filter"),
+        wxT("washout_filter"),
+        wxT("integrator")
     };
     combo_box_type = new wxComboBox(notebook_Main_pane_basic, ID_TYPE, wxT(""), wxDefaultPosition, wxDefaultSize, 5, combo_box_type_choices, wxCB_READONLY,wxGenericValidator(&type));
     text_ctrl_order = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &order));

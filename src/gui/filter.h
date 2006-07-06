@@ -34,7 +34,7 @@ protected:
   wxString trigger;
 
 public:
-  Filter (double w = 0.0, double h = 0.0, const wxString & Type = wxT("LAG_FILTER"), const wxString & Name = wxT("filter"));
+  Filter (double w = 0.0, double h = 0.0, const wxString & Type = wxT("lag_filter"), const wxString & Name = wxT("filter"));
   virtual ~Filter();
   void OnDraw (wxDC & dc);
   

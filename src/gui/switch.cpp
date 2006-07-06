@@ -225,7 +225,7 @@ void Test::ImportXML(JSBSim::Element * test_element, wxArrayString & array)
 IMPLEMENT_DYNAMIC_CLASS (Switch, ComponentShape)
 
 Switch::Switch (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("SWITCH"), Name)
+  :ComponentShape(w, h, wxT("switch"), Name)
 {
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);
 

@@ -52,7 +52,7 @@ IMPLEMENT_DYNAMIC_CLASS (Summer, ComponentShape)
 */
 
 Summer::Summer (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("SUMMER"), Name),
+  :ComponentShape(w, h, wxT("summer"), Name),
    bias(0)
 {
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);

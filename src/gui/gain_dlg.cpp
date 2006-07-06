@@ -51,9 +51,9 @@ GainPropertyDialog::GainPropertyDialog(Gain * componment, const wxArrayString & 
     label_order = new wxStaticText(notebook_Main_pane_basic, -1, _("Order:"));
     text_ctrl_name = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &name) );
     const wxString combo_box_type_choices[] = {
-        wxT("PURE_GAIN"),
-        wxT("AEROSURFACE_SCALE"),
-        wxT("SCHEDULED_GAIN")
+        wxT("pure_gain"),
+        wxT("aerosurface_scale"),
+        wxT("scheduled_gain")
     };
     combo_box_type = new wxComboBox(notebook_Main_pane_basic, ID_TYPE, wxT(""), wxDefaultPosition, wxDefaultSize, 3, combo_box_type_choices, wxCB_READONLY,wxGenericValidator(&type));
     text_ctrl_order = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &order));

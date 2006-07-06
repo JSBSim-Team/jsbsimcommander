@@ -44,7 +44,7 @@
 IMPLEMENT_DYNAMIC_CLASS (FCSFunction, ComponentShape)
 
 FCSFunction::FCSFunction (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("FUNCTION"), Name)
+  :ComponentShape(w, h, wxT("function"), Name)
 {
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);
 

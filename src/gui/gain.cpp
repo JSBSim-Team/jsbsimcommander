@@ -42,10 +42,13 @@ WX_DEFINE_LIST(MyPairList);
 IMPLEMENT_DYNAMIC_CLASS (Gain, ComponentShape)
 
 Gain::Gain (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("PURE_GAIN"), Name),
+  :ComponentShape(w, h, wxT("pure_gain"), Name),
    gain(1),
+   asDomainMin(-1),
+   asDomainMax(1),
    asMin(0),
-   asMax(0)
+   asMax(0),
+   zero_centered(true)
 {
   Table.DeleteContents(true);
 
@@ -69,7 +72,7 @@ void
 Gain::OnDraw (wxDC & dc)
 {
   ComponentShape::OnDraw (dc);
-  if ( type == wxT("PURE_GAIN") )
+  if ( type == wxT("pure_gain") )
     {
       wxString tmp = wxString::Format(wxT("%g"), gain);
       wxCoord w,h;
@@ -92,7 +95,7 @@ Gain::OnDraw (wxDC & dc)
         Select(false);
       }
     }
-  else if ( type == wxT("SCHEDULED_GAIN") )
+  else if ( type == wxT("scheduled_gain") )
     {
       wxPoint c[3];
       
@@ -150,12 +153,16 @@ Gain::WriteAttributes (wxExpr * clause)
 
   clause->AddAttributeValue (wxT ("gain"), gain);
 
-  if ( type == wxT("AEROSURFACE_SCALE") )
+  if ( type == wxT("aerosurface_scale") )
     {
       clause->AddAttributeValue (wxT ("asMax"), asMax);
       clause->AddAttributeValue (wxT ("asMin"), asMin);
+      clause->AddAttributeValue (wxT ("asDomainMax"), asDomainMax);
+      clause->AddAttributeValue (wxT ("asDomainMin"), asDomainMin);
+      long tmp = (long)zero_centered;
+      clause->AddAttributeValue (wxT ("zero_centered"), tmp);
     }
-  else if ( type == wxT("SCHEDULED_GAIN") )
+  else if ( type == wxT("scheduled_gain") )
     {
       clause->AddAttributeValueString (wxT ("indep"), indep);
       wxExpr *list = new wxExpr(wxExprList);
@@ -179,12 +186,17 @@ Gain::ReadAttributes (wxExpr * clause)
 
   clause->GetAttributeValue(wxT ("gain"), gain);
 
-  if ( type == wxT("AEROSURFACE_SCALE") )
+  if ( type == wxT("aerosurface_scale") )
     {
       clause->GetAttributeValue (wxT ("asMax"), asMax);
       clause->GetAttributeValue (wxT ("asMin"), asMin);
+      clause->GetAttributeValue (wxT ("asDomainMax"), asDomainMax);
+      clause->GetAttributeValue (wxT ("asDomainMin"), asDomainMin);
+      long tmp;
+      clause->GetAttributeValue (wxT ("zero_centered"), tmp);
+      zero_centered = (bool)tmp;
     }
-  else if ( type == wxT("SCHEDULED_GAIN") )
+  else if ( type == wxT("scheduled_gain") )
     {
       clause->GetAttributeValue (wxT ("indep"), indep);
       Table.Clear();
@@ -216,6 +228,9 @@ Gain::Copy (wxShape & copy)
 
   Gain & GainCopy = (Gain &) copy;
   GainCopy.gain = gain;
+  GainCopy.asDomainMin = asDomainMin;
+  GainCopy.asDomainMax = asDomainMax;
+  GainCopy.zero_centered = zero_centered;
   GainCopy.asMin = asMin;
   GainCopy.asMax = asMax;
   GainCopy.indep = indep;
@@ -239,17 +254,28 @@ Gain::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   
   ExportInputs(stream,Pre);
 
-  if (gain != 1 || type == wxT("PURE_GAIN"))
-    stream << Pre << wxT("<gain> ")<< wxString::Format(wxT("%g"), gain) << wxT(" </gain>") << endl;
+  if (gain != 1 || type == wxT("pure_gain"))
+    stream << Pre << wxT("<gain>")<< wxString::Format(wxT("%g"), gain) << wxT("</gain>") << endl;
 
-  if (type == wxT("AEROSURFACE_SCALE"))
+  if (type == wxT("aerosurface_scale"))
   {
-    stream << Pre << wxT("<limit>")<< endl;
-    stream << Pre << wxT("  <min> ")<< wxString::Format(wxT("%g"), asMin) << wxT(" </min>") << endl;
-    stream << Pre << wxT("  <max> ")<< wxString::Format(wxT("%g"), asMax) << wxT(" </max>") << endl;
-    stream << Pre << wxT("</limit>")<< endl;
+    if (asDomainMin != -1 || asDomainMax != 1)
+   {
+    stream << Pre << wxT("<domain>")<< endl;
+    stream << Pre << wxT("  <min>")<< wxString::Format(wxT("%g"), asDomainMin) << wxT("</min>") << endl;
+    stream << Pre << wxT("  <max>")<< wxString::Format(wxT("%g"), asDomainMax) << wxT("</max>") << endl;
+    stream << Pre << wxT("</domain>")<< endl;
+   }
+    stream << Pre << wxT("<range>")<< endl;
+    stream << Pre << wxT("  <min>")<< wxString::Format(wxT("%g"), asMin) << wxT("</min>") << endl;
+    stream << Pre << wxT("  <max>")<< wxString::Format(wxT("%g"), asMax) << wxT("</max>") << endl;
+    stream << Pre << wxT("</range>")<< endl;
+    if (!zero_centered)
+    {
+      stream << Pre << wxT("<zero_centered>false</zero_centered>")<< endl;
+    }
   }
-  else if ((type == wxT("SCHEDULED_GAIN")))
+  else if ((type == wxT("scheduled_gain")))
   {
     stream << Pre << wxT("<table>")<< endl;
     stream << Pre << wxT("  <independentVar> ") << indep << wxT(" </independentVar>") << endl;
@@ -282,17 +308,17 @@ Gain::ImportXML(JSBSim::Element * el)
     gain = el->FindElementValueAsNumber("gain");
   }
 
-  if (type == wxT("PURE_GAIN")) {
+  if (type == wxT("pure_gain")) {
     if ( !el->FindElement("gain") ) {
       cerr << "No GAIN supplied for PURE_GAIN component: " << name << endl;
       exit(-1);
     }
   }
 
-  if (type == wxT("AEROSURFACE_SCALE")) 
+  if (type == wxT("aerosurface_scale")) 
   {
-    JSBSim::Element * scale_el = el->FindElement("limit");
-    if (scale_el->FindElement("max") && scale_el->FindElement("min") )
+    JSBSim::Element * scale_el = el->FindElement("range");
+    if (scale_el && scale_el->FindElement("max") && scale_el->FindElement("min") )
     {
       asMax = scale_el->FindElementValueAsNumber("max");
       asMin = scale_el->FindElementValueAsNumber("min");
@@ -301,9 +327,20 @@ Gain::ImportXML(JSBSim::Element * el)
               "aerosurface scale component" << endl;
       exit(-1);
     }
+    scale_el = el->FindElement("domain");
+    if (scale_el && scale_el->FindElement("max") && scale_el->FindElement("min") )
+    {
+      asDomainMax = scale_el->FindElementValueAsNumber("max");
+      asDomainMin = scale_el->FindElementValueAsNumber("min");
+    }
+    wxString zc = el->FindElementValue("zero_centered");
+    if (zc == wxT("false"))
+    {
+      zero_centered = false;
+    }
   }
 
-  if (type == wxT("SCHEDULED_GAIN")) 
+  if (type == wxT("scheduled_gain")) 
   {
     JSBSim::Element * table_el;
     if (table_el = el->FindElement("table")) 

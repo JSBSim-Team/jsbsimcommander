@@ -1187,9 +1187,9 @@ ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefi
 	   c = wxT("-");
          MISOShape * misoshape = (MISOShape *)shape;
 	 if (misoshape->IsKindOf(CLASSINFO(ComponentShape)))
-	   stream << prefix << wxT("<input> ")<< c << mkName( misoshape->GetName(), true ) << wxT(" </input>") << endl;
+	   stream << prefix << wxT("<input>")<< c << mkName( misoshape->GetName(), true ) << wxT("</input>") << endl;
 	 else
-	   stream << prefix << wxT("<input> ")<< c << misoshape->GetName() << wxT(" </input>") << endl;
+	   stream << prefix << wxT("<input>")<< c << misoshape->GetName() << wxT("</input>") << endl;
       }
     }
     node = node->GetNext();
@@ -1242,7 +1242,7 @@ ComponentShape::ExportOutput(wxTextOutputStream & stream, const wxString & prefi
       //output
       if (result)
       {
-	stream << prefix << wxT("<output> ")<< result->GetName() << wxT(" </output>") << endl;
+	stream << prefix << wxT("<output>")<< result->GetName() << wxT("</output>") << endl;
       }
       break; //only one output
     }

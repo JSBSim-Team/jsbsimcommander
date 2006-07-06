@@ -33,7 +33,8 @@ class Gain: public ComponentShape
 
 protected:
   double gain;
-  double asMin, asMax;
+  double asDomainMin, asDomainMax, asMin, asMax;
+  bool zero_centered;
   wxString indep;
   MyPairList Table;
 

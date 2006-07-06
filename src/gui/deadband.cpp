@@ -40,7 +40,7 @@
 IMPLEMENT_DYNAMIC_CLASS (DeadBand, ComponentShape)
 
 DeadBand::DeadBand (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("DEADBAND"), Name),
+  :ComponentShape(w, h, wxT("deadband"), Name),
    deadbandwidth(0),
    gain(1)
 {

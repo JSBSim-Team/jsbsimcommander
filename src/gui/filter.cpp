@@ -75,7 +75,7 @@ Filter::OnDraw (wxDC & dc)
   c[1].x = -c[0].x;
   dc.DrawLines (2, c, WXROUND (m_xpos), WXROUND (m_ypos));
   wxString str1, str2;
-  if (type == wxT("LAG_FILTER"))
+  if (type == wxT("lag_filter"))
   {
     str1 = wxString::Format(wxT("%s"), c1.c_str());
     if (c1.IsEmpty() || c1[0] == wxT('-'))
@@ -87,7 +87,7 @@ Filter::OnDraw (wxDC & dc)
       str2 = wxString::Format(wxT("S+%s"), c1.c_str());    
     }
   }
-  else if (type == wxT("LEAD_LAG_FILTER"))
+  else if (type == wxT("lead_lag_filter"))
   {
     if (c2.IsEmpty() || c2[0] == wxT('-'))
     {
@@ -106,7 +106,7 @@ Filter::OnDraw (wxDC & dc)
       str2 = wxString::Format(wxT("%sS+%s"), c3.c_str(), c4.c_str());    
     }
   }
-  else if (type == wxT("SECOND_ORDER_FILTER"))
+  else if (type == wxT("second_order_filter"))
   {
     if (c2.IsEmpty() || c2[0] == wxT('-'))
     {
@@ -153,7 +153,7 @@ Filter::OnDraw (wxDC & dc)
       }
     }  
   }
-  else if (type == wxT("WASHOUT_FILTER"))
+  else if (type == wxT("washout_filter"))
   {
     str1 = wxT("S");
     if (c1.IsEmpty() || c1[0] == wxT('-'))
@@ -165,7 +165,7 @@ Filter::OnDraw (wxDC & dc)
       str2 = wxString::Format(wxT("S+%s"), c1.c_str());    
     }
   }
-  else if (type == wxT("INTEGRATOR"))
+  else if (type == wxT("integrator"))
   {
     str1 = c1;
     str2 = wxT("S");
@@ -219,41 +219,11 @@ Filter::ReadAttributes (wxExpr * clause)
 
   double tmp;
   clause->GetAttributeValue(wxT ("c1"), c1);
-  if (c1.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c1"), tmp);
-    c1 = wxString::Format(wxT("%g"), tmp);
-  }
   clause->GetAttributeValue(wxT ("c2"), c2);
-  if (c2.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c2"), tmp);
-    c2 = wxString::Format(wxT("%g"), tmp);
-  }
   clause->GetAttributeValue(wxT ("c3"), c3);
-  if (c3.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c3"), tmp);
-    c3 = wxString::Format(wxT("%g"), tmp);
-  }
   clause->GetAttributeValue(wxT ("c4"), c4);
-  if (c4.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c4"), tmp);
-    c4 = wxString::Format(wxT("%g"), tmp);
-  }
   clause->GetAttributeValue(wxT ("c5"), c5);
-  if (c5.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c5"), tmp);
-    c5 = wxString::Format(wxT("%g"), tmp);
-  }
   clause->GetAttributeValue(wxT ("c6"), c6);
-  if (c6.IsEmpty())
-  {
-    clause->GetAttributeValue(wxT ("c6"), tmp);
-    c6 = wxString::Format(wxT("%g"), tmp);
-  }
 
   clause->GetAttributeValue (wxT ("trigger"), trigger);
 }
@@ -287,11 +257,17 @@ Filter::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   
   ExportInputs(stream,Pre);
 
+  if (!c1.IsEmpty())
     stream << Pre << wxT("<c1>")<< c1 << wxT("</c1>") << endl;
+  if (!c2.IsEmpty())
     stream << Pre << wxT("<c2>")<< c2 << wxT("</c2>") << endl;
+  if (!c3.IsEmpty())
     stream << Pre << wxT("<c3>")<< c3 << wxT("</c3>") << endl;
+  if (!c4.IsEmpty())
     stream << Pre << wxT("<c4>")<< c4 << wxT("</c4>") << endl;
+  if (!c5.IsEmpty())
     stream << Pre << wxT("<c5>")<< c5 << wxT("</c5>") << endl;
+  if (!c6.IsEmpty())
     stream << Pre << wxT("<c6>")<< c6 << wxT("</c6>") << endl;
 
   if (trigger.Length() !=0 )
@@ -315,7 +291,7 @@ Filter::ImportXML(JSBSim::Element * el)
   if (el->FindElement("c5")) c5 = el->FindElementValue("c5");
   if (el->FindElement("c6")) c6 = el->FindElementValue("c6");
   if (el->FindElement("trigger")) {
-    trigger =  el->FindElementValue("trigger").c_str();
+    trigger =  el->FindElementValue("trigger");
   }
 
   return strings;

@@ -52,7 +52,7 @@ IMPLEMENT_DYNAMIC_CLASS (PID, ComponentShape)
 */
 
 PID::PID (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("PID"), Name),
+  :ComponentShape(w, h, wxT("pid"), Name),
    Kp(1), Ki(0), Kd(0)
 {
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);

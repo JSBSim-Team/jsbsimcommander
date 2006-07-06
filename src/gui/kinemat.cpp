@@ -42,7 +42,7 @@ WX_DEFINE_LIST(MySettingPairList);
 IMPLEMENT_DYNAMIC_CLASS (Kinemat, ComponentShape)
 
 Kinemat::Kinemat (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("KINEMAT"), Name),
+  :ComponentShape(w, h, wxT("kinemat"), Name),
    isscale(true)
 {
   pairlist.DeleteContents(true);
@@ -161,8 +161,8 @@ Kinemat::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     {
       MySettingPair * p = node->GetData();
       stream << Pre << wxT("  <setting>") << endl;
-      stream << Pre << wxT("    <position> ") << wxString::Format(wxT("%g"), p->pos) << wxT(" </position>") << endl;
-      stream << Pre << wxT("    <time> ") << wxString::Format(wxT("%g"), p->time) << wxT(" </time>") << endl;      
+      stream << Pre << wxT("    <position>") << wxString::Format(wxT("%g"), p->pos) << wxT("</position>") << endl;
+      stream << Pre << wxT("    <time>") << wxString::Format(wxT("%g"), p->time) << wxT("</time>") << endl;      
       stream << Pre << wxT("  </setting>") << endl;
       node = node->GetNext();
     }
