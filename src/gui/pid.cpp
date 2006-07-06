@@ -162,16 +162,22 @@ void PID::Copy (wxShape & copy)
 
 void PID::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 {
-  ExportHead(stream, prefix);
+  stream << endl << prefix << wxT("<pid name=\"") << name << wxT("\">") << endl; // emits "<pid name="">"
 
   wxString Pre = prefix + wxT("  ");
 
   ExportInputs(stream,Pre);
 
+  if (Kp != 0.0) stream << prefix << wxT("<kp> ") << Kp << wxT(" </kp>") << endl;
+  if (Ki != 0.0) stream << prefix << wxT("<ki> ") << Ki << wxT(" </ki>") << endl;
+  if (Kd != 0.0) stream << prefix << wxT("<kd> ") << Kd << wxT(" </kd>") << endl;
+//  if (Trigger.size() > 0) stream
+
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
 
-  ExportTail(stream, prefix);
+  stream << prefix << wxT("</pid>") << endl;  // emits "</pid>"
+
 }
 
 /**

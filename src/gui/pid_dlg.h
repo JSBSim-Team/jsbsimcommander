@@ -16,6 +16,7 @@
 #define PIDPROPERTYDIALOG_H
 
 // begin wxGlade: ::dependencies
+#include <wx/tglbtn.h>
 // end wxGlade
 
 
@@ -62,6 +63,7 @@ protected:
     wxButton* button_trigger;
     wxTextCtrl* text_ctrl_trigger_prop;
     wxStaticText* label_1;
+    wxToggleButton* button_invert_input;
     wxTextCtrl* text_ctrl_input_prop;
     wxStaticText* label_output_property;
     wxTextCtrl* text_ctrl_output_prop;
@@ -75,6 +77,7 @@ protected:
 
 public:
     void OnCheckboxClip(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnClickInvertInput(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressOK(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressCancel(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressHelp(wxCommandEvent &event); // wxGlade: <event_handler>

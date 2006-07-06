@@ -26,6 +26,7 @@ protected:
   double Kp;
   double Ki;
   double Kd;
+  wxString Trigger;
 
 public:
   PID (double w = 0.0, double h = 0.0, const wxString & Name = wxT("pid"));
@@ -42,12 +43,14 @@ public:
   // Does the copying for this object
   void Copy (wxShape & copy);
 
-  inline double GetKp() const {return Kp;}
+  inline double GetKp(void) const {return Kp;}
   inline void SetKp(const double & d) {Kp = d;}
-  inline double GetKi() const {return Ki;}
+  inline double GetKi(void) const {return Ki;}
   inline void SetKi(const double & d) {Ki = d;}
-  inline double GetKd() const {return Kd;}
+  inline double GetKd(void) const {return Kd;}
   inline void SetKd(const double & d) {Kd = d;}
+  inline wxString GetTrigger(void) const {return Trigger;}
+  inline void SetTrigger(wxString str) {Trigger = str;}
 };
 
 #endif // _FCSBUILDER_PID_H_

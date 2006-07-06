@@ -51,6 +51,7 @@
 BEGIN_EVENT_TABLE(PIDPropertyDialog, wxDialog)
     // begin wxGlade: PIDPropertyDialog::event_table
     EVT_CHECKBOX(-1, PIDPropertyDialog::OnCheckboxClip)
+    EVT_TOGGLEBUTTON(-1, PIDPropertyDialog::OnClickInvertInput)
     EVT_BUTTON(wxID_OK, PIDPropertyDialog::OnButtonPressOK)
     EVT_BUTTON(wxID_CANCEL, PIDPropertyDialog::OnButtonPressCancel)
     EVT_BUTTON(-1, PIDPropertyDialog::OnButtonPressHelp)
@@ -92,6 +93,7 @@ PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const 
     button_trigger = new wxButton(panel_toplevel, -1, wxT("Select Trigger"));
     text_ctrl_trigger_prop = new wxTextCtrl(panel_toplevel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
     label_1 = new wxStaticText(panel_toplevel, -1, wxT("Input Property:"));
+    button_invert_input = new wxToggleButton(panel_toplevel, -1, wxT("+"));
     text_ctrl_input_prop = new wxTextCtrl(panel_toplevel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
     label_output_property = new wxStaticText(panel_toplevel, -1, wxT("Output Property:"));
     text_ctrl_output_prop = new wxTextCtrl(panel_toplevel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
@@ -125,6 +127,15 @@ void PIDPropertyDialog::OnCheckboxClip(wxCommandEvent &event)
   }
 
   event.Skip();
+}
+
+/**
+*              ==================================================================
+*/
+
+void PIDPropertyDialog::OnClickInvertInput(wxCommandEvent &event)
+{
+    event.Skip();
 }
 
 /**
@@ -190,6 +201,9 @@ void PIDPropertyDialog::set_properties()
     button_trigger->SetToolTip(wxT("Clicking this button will bring up the property browser."));
     text_ctrl_trigger_prop->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION));
     text_ctrl_trigger_prop->SetToolTip(wxT("This is the \"trigger\" property. If the value of the trigger property is non-zero, the input to the integrator will stop, to prevent integrator wind-up."));
+    button_invert_input->SetMinSize(wxSize(21, 21));
+    button_invert_input->SetToolTip(wxT("Depress this button to invert the input property."));
+    button_invert_input->Enable(false);
     text_ctrl_input_prop->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION));
     text_ctrl_input_prop->SetToolTip(wxT("This is the input property to the component. This is selected via connecting up the components in the editor."));
     text_ctrl_output_prop->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_INACTIVECAPTION));
@@ -211,6 +225,7 @@ void PIDPropertyDialog::do_layout()
     wxFlexGridSizer* grid_sizer_top_interior = new wxFlexGridSizer(4, 1, 5, 0);
     wxStaticBoxSizer* sizer_inout = new wxStaticBoxSizer(sizer_inout_staticbox, wxHORIZONTAL);
     wxFlexGridSizer* grid_sizer_inout = new wxFlexGridSizer(2, 2, 5, 5);
+    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(1, 2, 0, 2);
     wxStaticBoxSizer* sizer_pid_top = new wxStaticBoxSizer(sizer_pid_top_staticbox, wxHORIZONTAL);
     wxBoxSizer* sizer_pid = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* sizer_trigger = new wxStaticBoxSizer(sizer_trigger_staticbox, wxHORIZONTAL);
@@ -258,7 +273,10 @@ void PIDPropertyDialog::do_layout()
     sizer_pid_top->Add(sizer_pid, 1, wxEXPAND, 0);
     grid_sizer_top_interior->Add(sizer_pid_top, 1, wxEXPAND, 0);
     grid_sizer_inout->Add(label_1, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 0);
-    grid_sizer_inout->Add(text_ctrl_input_prop, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_1->Add(button_invert_input, 0, wxADJUST_MINSIZE, 0);
+    grid_sizer_1->Add(text_ctrl_input_prop, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
+    grid_sizer_1->AddGrowableCol(1);
+    grid_sizer_inout->Add(grid_sizer_1, 1, wxEXPAND, 0);
     grid_sizer_inout->Add(label_output_property, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 0);
     grid_sizer_inout->Add(text_ctrl_output_prop, 0, wxEXPAND|wxADJUST_MINSIZE, 0);
     grid_sizer_inout->AddGrowableCol(1);
@@ -325,6 +343,12 @@ void PIDPropertyDialog::GetDataIn(PID * g)
       text_ctrl_clip_min->Enable(false);
       text_ctrl_clip_min->SetBackgroundColour(wxSYS_COLOUR_INACTIVECAPTION);
   }
+
+  wxArrayString inputs = g->GetInputNames();
+//  wxString output = g->GetOuputName();
+
+  *text_ctrl_input_prop << inputs[0];
+  *text_ctrl_output_prop << g->GetOutputName();
 }
 
 /**
@@ -349,9 +373,4 @@ void PIDPropertyDialog::SetDataOut(PID * g)
   g->SetKi(tmp);
   kd.ToDouble(&tmp);
   g->SetKd(tmp);
-
-//  double w = g->GetWidth();
-//  double h = g->GetHeight();
-//  g->ClearAttachments ();
-//  g->GetAttachments ().Append (new wxAttachmentPoint (0,  w * 0.5, 0.0));
 }
