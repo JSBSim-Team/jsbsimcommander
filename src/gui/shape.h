@@ -230,6 +230,12 @@ public:
    */
   wxArrayString GetInputNames() const;
 
+  /**
+   * Get the name of output.
+   * Based on the line attached to this component.
+   */
+  wxString GetOutputName() const;
+
   /// Does the copying for this object
   void Copy (wxShape & copy);
 

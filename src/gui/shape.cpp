@@ -1250,6 +1250,38 @@ ComponentShape::ExportOutput(wxTextOutputStream & stream, const wxString & prefi
   }
 }
 
+wxString
+ComponentShape::GetOutputName() const
+{
+  wxString rslt = wxT("NULL");
+  wxNode * node = GetLines().GetFirst();
+  while (node)
+  {
+    wxLineShape * data = (wxLineShape *)node->GetData();
+    if (data->GetFrom() == this)  // if this line point from this shape
+    {
+      wxShape * shape = data->GetTo(); // input shape
+      DestinationShape * result = NULL;
+      if (shape->IsKindOf(CLASSINFO(SIMOShape)))
+      {
+	result = GetOutputNode((SIMOShape *)shape);
+      }
+      else if (shape->IsKindOf(CLASSINFO(DestinationShape)))
+      {
+	result = (DestinationShape *)shape;
+      }
+      //output
+      if (result)
+      {
+	rslt = result->GetName();
+      }
+      break; //only one output
+    }
+    node = node->GetNext();
+  }
+  return rslt;
+}
+
 wxArrayString
 ComponentShape::ImportXML(JSBSim::Element * el)
 {
