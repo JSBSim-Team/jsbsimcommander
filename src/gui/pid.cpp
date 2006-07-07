@@ -162,22 +162,21 @@ void PID::Copy (wxShape & copy)
 
 void PID::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 {
-  stream << endl << prefix << wxT("<pid name=\"") << name << wxT("\">") << endl; // emits "<pid name="">"
+  ExportHead(stream, prefix);
 
   wxString Pre = prefix + wxT("  ");
 
   ExportInputs(stream,Pre);
 
-  if (Kp != 0.0) stream << prefix << wxT("<kp> ") << Kp << wxT(" </kp>") << endl;
-  if (Ki != 0.0) stream << prefix << wxT("<ki> ") << Ki << wxT(" </ki>") << endl;
-  if (Kd != 0.0) stream << prefix << wxT("<kd> ") << Kd << wxT(" </kd>") << endl;
+  if (Kp != 0.0) stream << Pre << wxT("<kp> ") << Kp << wxT(" </kp>") << endl;
+  if (Ki != 0.0) stream << Pre << wxT("<ki> ") << Ki << wxT(" </ki>") << endl;
+  if (Kd != 0.0) stream << Pre << wxT("<kd> ") << Kd << wxT(" </kd>") << endl;
 //  if (Trigger.size() > 0) stream
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
 
-  stream << prefix << wxT("</pid>") << endl;  // emits "</pid>"
-
+  ExportTail(stream, prefix);
 }
 
 /**
@@ -187,6 +186,12 @@ void PID::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 wxArrayString PID::ImportXML(JSBSim::Element * el)
 {
   wxArrayString strings = ComponentShape::ImportXML(el);
+
+  if ( el->FindElement("kp") ) Kp = el->FindElementValueAsNumber("kp");
+  if ( el->FindElement("ki") ) Ki = el->FindElementValueAsNumber("ki");
+  if ( el->FindElement("kd") ) Kd = el->FindElementValueAsNumber("kd");
+
+  if ( el->FindElement("trigger") ) Trigger = el->FindElementValue("trigger");
 
   return strings;
 }

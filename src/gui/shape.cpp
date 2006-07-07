@@ -107,7 +107,7 @@ void MyEvtHandler::OnRightClick(double x, double y, int keys, int WXUNUSED(attac
       }
       GetShape()->Select(true);
   }
-    
+
   ((MyCanvas *)GetShape()->GetCanvas())->ShowMenu();
 }
 
@@ -226,7 +226,7 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
 	      node = node->GetNext ();
 	    }
 	}
-      
+
   {
       wxLineShape * theShape;
 	    theShape = new wxLineShape;
@@ -246,7 +246,7 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
 	    canvas->GetDiagram ()->AddShape (theShape);
 
 	    GetShape()->AddLine ((wxLineShape *) theShape, otherShape, attachment, new_attachment);
-      
+
 	    if (GetShape()->IsKindOf (CLASSINFO (MISOShape)))
       {
         ((MISOShape *) GetShape())->NormalizeLine ((wxLineShape *) theShape);
@@ -275,7 +275,7 @@ IMPLEMENT_DYNAMIC_CLASS (SIMOShape, wxEllipseShape)
 SIMOShape::SIMOShape (double w, double h):
 wxEllipseShape (w, h)
 {
-  
+
 }
 
 
@@ -345,7 +345,7 @@ MISOShape::ShowType(wxDC & dc)
       w = w1>=w2?w1:w2;
       h = h1+h2+4;
       dc.DrawText(str1,WXROUND (GetX()-w1*0.5),WXROUND (GetY()-h1-2));
-      dc.DrawText(str2,WXROUND (GetX()-w2*0.5),WXROUND (GetY()+2));      
+      dc.DrawText(str2,WXROUND (GetX()-w2*0.5),WXROUND (GetY()+2));
     }
 
   bool flag = false;
@@ -379,7 +379,7 @@ MISOShape::OnDraw (wxDC & dc)
 
   dc.GetTextExtent(name,&w,&h);
   dc.DrawText(name,WXROUND (GetX()-w*0.5),WXROUND (GetY()+m_height*0.5+5));
-  
+
   while (node)
     {
       p = (wxAttachmentPoint *) node->GetData ();
@@ -456,7 +456,7 @@ MISOShape::WriteAttributes (wxExpr * clause)
 
   clause->AddAttributeValueString (wxT ("property node name"), name);
   clause->AddAttributeValueString (wxT ("property node type"), type);
-  
+
 }
 
 void
@@ -734,7 +734,7 @@ MISOShape::OnMovePost (wxDC & dc, double x, double y, double old_x,
 
 
 IMPLEMENT_DYNAMIC_CLASS (SourceShape, MISOShape)
-  
+
 SourceShape::SourceShape (double w, double h, const wxString & Name):
   MISOShape (w, h, wxT("Source"), Name)
 {
@@ -745,16 +745,16 @@ SourceShape::SourceShape (double w, double h, const wxString & Name):
   SetCornerRadius (10);
 }
 
-void 
+void
 SourceShape::OnDraw (wxDC & dc)
 {
   MISOShape::OnDraw (dc);
 
-  wxPoint c[7];  
+  wxPoint c[7];
   wxCoord  h,w;
   h = ((wxCoord )m_height - 4*arr_size)/2;
   w = ((wxCoord )m_width - 4*arr_size)/2;
-  
+
   c[0].x = -w;
   c[0].y = h;
   c[1].x = 0;
@@ -796,16 +796,16 @@ DestinationShape::DestinationShape (double w, double h, const wxString & Name):
   SetCornerRadius (10);
 }
 
-void 
+void
 DestinationShape::OnDraw (wxDC & dc)
 {
   MISOShape::OnDraw (dc);
 
-  wxPoint c[7];  
+  wxPoint c[7];
   wxCoord  h,w;
   h = ((wxCoord )m_height - 4*arr_size)/2;
   w = ((wxCoord )m_width - 4*arr_size)/2;
-  
+
   c[0].x = w;
   c[0].y = h;
   c[1].x = 0;
@@ -854,7 +854,7 @@ ComponentShape::~ComponentShape()
   //input_sign_list.Clear();
 }
 
-void 
+void
 ComponentShape::OnDraw (wxDC & dc)
 {
   MISOShape::OnDraw (dc);
@@ -934,9 +934,9 @@ ComponentShape::WriteAttributes (wxExpr * clause)
       if (*b)
 	list->Append(new wxExpr(1L));
       else
-	list->Append(new wxExpr(0L));	
+	list->Append(new wxExpr(0L));
       node = node->GetNext();
-    }  
+    }
   clause->AddAttributeValue(wxT("InputS"), list);
 }
 
@@ -986,7 +986,7 @@ ComponentShape::ReadAttributes (wxExpr * clause)
 }
 #endif
 
-void 
+void
 ComponentShape::Copy (wxShape & copy)
 {
   MISOShape::Copy (copy);
@@ -1058,7 +1058,7 @@ ComponentShape::SetOrder(long int & o)
   order = o;
 }
 
-void 
+void
 ComponentShape::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 {
   ExportHead(stream, prefix);
@@ -1067,11 +1067,11 @@ ComponentShape::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   ExportInputs(stream,Pre);
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
-  
+
   ExportTail(stream, prefix);
 }
 
-void 
+void
 ComponentShape::ExportCliper(wxTextOutputStream & stream, const wxString & prefix)
 {
   if (clipable)
@@ -1083,13 +1083,13 @@ ComponentShape::ExportCliper(wxTextOutputStream & stream, const wxString & prefi
   }
 }
 
-wxString 
-ComponentShape::mkName(wxString name, bool lowercase) 
+wxString
+ComponentShape::mkName(wxString name, bool lowercase)
 {
   if (lowercase)
     name.LowerCase();
-  
-  for(size_t i = 0, n = name.Length(); i < n ; i++) 
+
+  for(size_t i = 0, n = name.Length(); i < n ; i++)
   {
     if( name[i] == ' ' )
       name[i]='-';
@@ -1147,7 +1147,7 @@ ComponentShape::GetInputNames() const
   return rslt;
 }
 
-void 
+void
 ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefix)
 {
   wxNode * node = GetLines().GetFirst();
@@ -1220,7 +1220,7 @@ ComponentShape::GetOutputNode(SIMOShape * shape)
   return NULL;
 }
 
-void 
+void
 ComponentShape::ExportOutput(wxTextOutputStream & stream, const wxString & prefix)
 {
   wxNode * node = GetLines().GetFirst();
@@ -1306,26 +1306,20 @@ ComponentShape::ImportXML(JSBSim::Element * el)
   input_sign_list.Clear();
   ClearAttachments ();
   GetAttachments ().Append (new wxAttachmentPoint (0,  w * 0.5, 0.0));
-  
+
   JSBSim::Element * output_element = el->FindElement("output");
   if (output_element)
   {
     wxString output_name = output_element->GetDataLine().c_str();
-    size_t i = 0u;
-    while (output_name[i]==' ' && output_name[i]!='\0')
-      ++i;
-    wxString tmp;
-    while (output_name[i]!=' ' && output_name[i]!='\0')
-    {
-      tmp += output_name[i++];
-    }
-    array.Add(tmp);
-  }
-  else
-  {
+
+    output_name.Trim(true); // trim spaces from right
+    output_name.Trim(false); // trim spaces from left
+
+    array.Add(output_name);
+  } else {
     array.Add(wxString(wxT("")));
   }
- 
+
   JSBSim::Element * input_element = el->FindElement("input");
 
   if (!input_element)
@@ -1335,31 +1329,23 @@ ComponentShape::ImportXML(JSBSim::Element * el)
   while (input_element)
   {
     wxString input_name = input_element->GetDataLine().c_str();
-    size_t i = 0u;
-    while (input_name[i]==' ' && input_name[i]!='\0')
-      ++i;
-    bool sign_flag = false;
-    if (input_name[i]=='-' && input_name[i]!='\0')
-    {
-      sign_flag = true;
-      ++i;
-    }
-    wxString tmp;
-    while (input_name[i]!=' ' && input_name[i]!='\0')
-    {
-      tmp += input_name[i++];
-    }
 
-    if (!tmp.IsEmpty())
+    input_name.Trim(true);
+    input_name.Trim(false);
+
+    bool sign_flag = false;
+    if (input_name[0] == '-' && input_name[1]!='\0') sign_flag = true;
+
+    if (!input_name.IsEmpty())
     {
       input_sign_list.Append(new bool(sign_flag));
       GetAttachments ().Append (new wxAttachmentPoint (input_port_num++, -w * 0.5, 0.0));
-      array.Add(tmp);
+      array.Add(input_name);
     }
-  
+
     input_element = el->FindNextElement("input");
   }
-  
+
   SetAttachmentSize(w,h);
 
   return array;
