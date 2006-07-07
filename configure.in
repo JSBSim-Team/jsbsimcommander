@@ -17,7 +17,7 @@ AC_LANG_CPLUSPLUS
 
 # Check for wx
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.6.0, [wxWin=1], [wxWin=0], [], [--unicode=no])
+AM_PATH_WXCONFIG(2.6.0, [wxWin=1], [wxWin=0], [xrc html adv core xml base], [])
      if test "$wxWin" != 1; then
         AC_MSG_ERROR([
                 wxWidgets must be installed on your system
@@ -29,7 +29,17 @@ AM_PATH_WXCONFIG(2.6.0, [wxWin=1], [wxWin=0], [], [--unicode=no])
                 equivalent variable and wxWidgets version is 2.6.0 or above.
         ])
      fi
-WX_INCLUDES="`wx-config --unicode=no --cxxflags | awk '{print $1 \"  \" $2}'`"
+WX_INCLUDES="`echo ${WX_CXXFLAGS} | awk '{print $1 \"  \" $2}'`"
+echo checking for WX_INCLUDES... ${WX_INCLUDES}
+AC_SUBST(WX_INCLUDES)
+AM_PATH_WXRC([HAVE_WXRC=1], [HAVE_WXRC=0])
+     if test "x$HAVE_WXRC" != x1; then
+         AC_MSG_ERROR([
+                The wxrc program was not installed or not found.
+     
+                Please check the wxWidgets installation.
+         ])
+     fi
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -65,7 +75,6 @@ AC_SEARCH_LIBS(libiconv, iconv)
   
 AC_SUBST(COMMANDER_RES)
 AC_SUBST(WIN32_LDADD)
-AC_SUBST(WX_INCLUDES)
 
 AC_OUTPUT( \
     Makefile \
