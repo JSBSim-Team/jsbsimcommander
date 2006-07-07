@@ -236,7 +236,7 @@ FilterPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
 void
 FilterPropertyDialog::aftertypechange()
 {
-  if ( combo_box_type->GetValue() == wxT("LAG_FILTER") )
+  if ( combo_box_type->GetValue() == wxT("lag_filter") )
   {
     text_ctrl_c1->Enable(true);
     text_ctrl_c2->Enable(false);
@@ -246,7 +246,7 @@ FilterPropertyDialog::aftertypechange()
     text_ctrl_c6->Enable(false);
     bitmap_show->SetBitmap(wxBITMAP(lag));
   }
-  else if (combo_box_type->GetValue() == wxT("LEAD_LAG_FILTER") )
+  else if (combo_box_type->GetValue() == wxT("lead_lag_filter") )
   {
     text_ctrl_c1->Enable(true);
     text_ctrl_c2->Enable(true);
@@ -256,7 +256,7 @@ FilterPropertyDialog::aftertypechange()
     text_ctrl_c6->Enable(false);
     bitmap_show->SetBitmap(wxBITMAP(ledlag));
   }
-  else if (combo_box_type->GetValue() == wxT("SECOND_ORDER_FILTER") )
+  else if (combo_box_type->GetValue() == wxT("second_order_filter") )
   {
     text_ctrl_c1->Enable(true);
     text_ctrl_c2->Enable(true);
@@ -266,7 +266,7 @@ FilterPropertyDialog::aftertypechange()
     text_ctrl_c6->Enable(true);
     bitmap_show->SetBitmap(wxBITMAP(scdorder));
   }
-  else if (combo_box_type->GetValue() == wxT("WASHOUT_FILTER") )
+  else if (combo_box_type->GetValue() == wxT("washout_filter") )
   {
     text_ctrl_c1->Enable(true);
     text_ctrl_c2->Enable(false);
@@ -276,7 +276,7 @@ FilterPropertyDialog::aftertypechange()
     text_ctrl_c6->Enable(false);
     bitmap_show->SetBitmap(wxBITMAP(washout));
   }
-  else if (combo_box_type->GetValue() == wxT("INTEGRATOR") )
+  else if (combo_box_type->GetValue() == wxT("integrator") )
   {
     text_ctrl_c1->Enable(true);
     text_ctrl_c2->Enable(false);
