@@ -2027,7 +2027,7 @@ bool AircraftDialog::Load(const wxString &fn)
   controls_file_parser = new JSBSim::FGXMLParse;
   try
   {
-    readXML (fn.c_str(), *controls_file_parser);
+    readXML (wx2cstr(fn), *controls_file_parser);
   }
   catch (...)
   {
@@ -2048,9 +2048,9 @@ bool AircraftDialog::Load(const wxString &fn)
 
   if (flag)
   {
-    text_ctrl_info_name->SetValue(document->GetAttributeValue("name"));
-    text_ctrl_info_cfgver->SetValue(document->GetAttributeValue("version"));
-    combo_box_info_level->SetValue(document->GetAttributeValue("release"));
+    text_ctrl_info_name->SetValue(std2wxstr(document->GetAttributeValue("name")));
+    text_ctrl_info_cfgver->SetValue(std2wxstr(document->GetAttributeValue("version")));
+    combo_box_info_level->SetValue(std2wxstr(document->GetAttributeValue("release")));
   }
   else
   {
@@ -2187,7 +2187,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
 
   if ( tmp = el->FindElement("author"))
   {
-    text_ctrl_info_author->SetValue(tmp->GetDataLine());
+    text_ctrl_info_author->SetValue(std2wxstr(tmp->GetDataLine()));
   }
   else
   {
@@ -2196,7 +2196,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
 
   if ( tmp = el->FindElement("filecreationdate"))
   {
-    text_ctrl_info_date->SetValue(tmp->GetDataLine());
+    text_ctrl_info_date->SetValue(std2wxstr(tmp->GetDataLine()));
   }
   else
   {
@@ -2206,7 +2206,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
 
   if ( tmp = el->FindElement("version"))
   {
-    text_ctrl_info_ver->SetValue(tmp->GetDataLine());
+    text_ctrl_info_ver->SetValue(std2wxstr(tmp->GetDataLine()));
   }
   else
   {
@@ -2216,7 +2216,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
 
   if ( tmp = el->FindElement("email"))
   {
-    text_ctrl_info_email->SetValue(tmp->GetDataLine());
+    text_ctrl_info_email->SetValue(std2wxstr(tmp->GetDataLine()));
   }
   else
   {
@@ -2229,7 +2229,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
   {
     for (int i = 0 ; i < tmp->GetNumDataLines(); ++i)
     {
-      wxString str = tmp->GetDataLine(i);
+      wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
       while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
@@ -2251,7 +2251,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
   {
     for (int i = 0 ; i < tmp->GetNumDataLines(); ++i)
     {
-      wxString str = tmp->GetDataLine(i);
+      wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
       while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
@@ -2273,7 +2273,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
   {
     for (int i = 0 ; i < tmp->GetNumDataLines(); ++i)
     {
-      wxString str = tmp->GetDataLine(i);
+      wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
       while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
@@ -2295,7 +2295,7 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
   {
     for (int i = 0 ; i < tmp->GetNumDataLines(); ++i)
     {
-      wxString str = tmp->GetDataLine(i);
+      wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
       while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
@@ -2318,10 +2318,10 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
     int i;
     for (i=0; i < 10 && tmp; ++i)
     {
-      grid_info_refs->SetCellValue(i, 0, tmp->GetAttributeValue("refID"));
-      grid_info_refs->SetCellValue(i, 1, tmp->GetAttributeValue("author"));
-      grid_info_refs->SetCellValue(i, 2, tmp->GetAttributeValue("title"));
-      grid_info_refs->SetCellValue(i, 3, tmp->GetAttributeValue("date"));
+      grid_info_refs->SetCellValue(i, 0, std2wxstr(tmp->GetAttributeValue("refID")));
+      grid_info_refs->SetCellValue(i, 1, std2wxstr(tmp->GetAttributeValue("author")));
+      grid_info_refs->SetCellValue(i, 2, std2wxstr(tmp->GetAttributeValue("title")));
+      grid_info_refs->SetCellValue(i, 3, std2wxstr(tmp->GetAttributeValue("date")));
       tmp = el->FindNextElement("reference");
     }
     for (; i<10; ++i)
@@ -2406,8 +2406,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("wingarea"))
   {
-    text_ctrl_wingarea->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_wingarea->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_wingarea->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_wingarea->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2417,8 +2417,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("wingspan"))
   {
-    text_ctrl_wingspan->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_wingspan->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_wingspan->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_wingspan->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2428,8 +2428,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("chord"))
   {
-    text_ctrl_chord->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_chord->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_chord->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_chord->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2439,8 +2439,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("wing_incidence"))
   {
-    text_ctrl_wincidence->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_wincidence->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_wincidence->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_wincidence->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2450,8 +2450,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("htailarea"))
   {
-    text_ctrl_htailarea->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_htailarea->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_htailarea->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_htailarea->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2461,8 +2461,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("htailarm"))
   {
-    text_ctrl_htailarm->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_htailarm->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_htailarm->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_htailarm->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2472,8 +2472,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("vtailarea"))
   {
-    text_ctrl_vtailarea->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_vtailarea->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_vtailarea->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_vtailarea->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2483,8 +2483,8 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
   if (tmp = el->FindElement("vtailarm"))
   {
-    text_ctrl_vtailarm->SetValue(wxString::Format("%g", tmp->GetDataAsNumber()));
-    combo_box_vtailarm->SetValue(tmp->GetAttributeValue("unit"));
+    text_ctrl_vtailarm->SetValue(wxString::Format(wxT("%g"), tmp->GetDataAsNumber()));
+    combo_box_vtailarm->SetValue(std2wxstr(tmp->GetAttributeValue("unit")));
   }
   else
   {
@@ -2514,24 +2514,24 @@ void AircraftDialog::LoadMetrics(JSBSim::Element * el)
 
     if (loc_name == "AERORP")
     {
-      combo_box_arp_unit->SetValue(loc->GetAttributeValue("unit"));
-      text_ctrl_arp_x->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("x")));
-      text_ctrl_arp_y->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("y")));
-      text_ctrl_arp_z->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("z")));
+      combo_box_arp_unit->SetValue(std2wxstr(loc->GetAttributeValue("unit")));
+      text_ctrl_arp_x->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("x")));
+      text_ctrl_arp_y->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("y")));
+      text_ctrl_arp_z->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("z")));
     }
     else if (loc_name == "EYEPOINT")
     {
-      combo_box_ep_unit->SetValue(loc->GetAttributeValue("unit"));
-      text_ctrl_ep_x->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("x")));
-      text_ctrl_ep_y->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("y")));
-      text_ctrl_ep_z->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("z")));
+      combo_box_ep_unit->SetValue(std2wxstr(loc->GetAttributeValue("unit")));
+      text_ctrl_ep_x->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("x")));
+      text_ctrl_ep_y->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("y")));
+      text_ctrl_ep_z->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("z")));
     }
     else if (loc_name == "VRP")
     {
-      combo_box_vrp_unit->SetValue(loc->GetAttributeValue("unit"));
-      text_ctrl_vrp_x->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("x")));
-      text_ctrl_vrp_y->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("y")));
-      text_ctrl_vrp_z->SetValue(wxString::Format("%g", loc->FindElementValueAsNumber("z")));
+      combo_box_vrp_unit->SetValue(std2wxstr(loc->GetAttributeValue("unit")));
+      text_ctrl_vrp_x->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("x")));
+      text_ctrl_vrp_y->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("y")));
+      text_ctrl_vrp_z->SetValue(wxString::Format(wxT("%g"), loc->FindElementValueAsNumber("z")));
     }
 
     loc = el->FindNextElement("location");
@@ -2581,8 +2581,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   JSBSim::Element * temp_element;
 
   if (temp_element = el->FindElement("ixx")) {
-    text_ctrl_ixx->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_ixx->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_ixx->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_ixx->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_ixx->SetValue(wxT("0"));
@@ -2590,8 +2590,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   }
 
   if (temp_element = el->FindElement("iyy")) {
-    text_ctrl_iyy->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_iyy->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_iyy->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_iyy->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_iyy->SetValue(wxT("0"));
@@ -2599,8 +2599,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   }
 
   if (temp_element = el->FindElement("izz")) {
-    text_ctrl_izz->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_izz->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_izz->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_izz->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_izz->SetValue(wxT("0"));
@@ -2608,8 +2608,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   }
 
   if (temp_element = el->FindElement("ixz")) {
-    text_ctrl_ixz->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_ixz->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_ixz->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_ixz->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_ixz->SetValue(wxT("0"));
@@ -2617,8 +2617,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   }
 
   if (temp_element = el->FindElement("iyz")) {
-    text_ctrl_iyz->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_iyz->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_iyz->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_iyz->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_iyz->SetValue(wxT("0"));
@@ -2626,8 +2626,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   }
 
   if (temp_element = el->FindElement("ixy")) {
-    text_ctrl_ixy->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_ixy->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_ixy->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_ixy->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_ixy->SetValue(wxT("0"));
@@ -2636,8 +2636,8 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
 
 
   if (temp_element = el->FindElement("emptywt")) {
-    text_ctrl_mass->SetValue(wxString::Format("%g", temp_element->GetDataAsNumber()));
-    combo_box_mass_unit->SetValue(temp_element->GetAttributeValue("unit"));
+    text_ctrl_mass->SetValue(wxString::Format(wxT("%g"), temp_element->GetDataAsNumber()));
+    combo_box_mass_unit->SetValue(std2wxstr(temp_element->GetAttributeValue("unit")));
   }
   else {
     text_ctrl_mass->SetValue(wxT("0"));
@@ -2651,12 +2651,12 @@ void AircraftDialog::LoadMass(JSBSim::Element * el)
   JSBSim::Element * el_loc;
   el_loc = el->FindElement("location");
   while (el_loc) {
-    if (el_loc->GetAttributeValue("name")=="CG")
+    if (std2wxstr(el_loc->GetAttributeValue("name"))==wxT("CG"))
     {
-      text_ctrl_mass_x->SetValue(wxString::Format("%g", el_loc->FindElementValueAsNumber("x")));
-      text_ctrl_mass_y->SetValue(wxString::Format("%g", el_loc->FindElementValueAsNumber("y")));
-      text_ctrl_mass_z->SetValue(wxString::Format("%g", el_loc->FindElementValueAsNumber("z")));
-      combo_box_mass_locunit->SetValue(el_loc->GetAttributeValue("unit"));
+      text_ctrl_mass_x->SetValue(wxString::Format(wxT("%g"), el_loc->FindElementValueAsNumber("x")));
+      text_ctrl_mass_y->SetValue(wxString::Format(wxT("%g"), el_loc->FindElementValueAsNumber("y")));
+      text_ctrl_mass_z->SetValue(wxString::Format(wxT("%g"), el_loc->FindElementValueAsNumber("z")));
+      combo_box_mass_locunit->SetValue(std2wxstr(el_loc->GetAttributeValue("unit")));
     }
     el_loc = el->FindNextElement("location");
   }
@@ -2840,7 +2840,7 @@ void AircraftDialog::SavePropulsion(wxTextOutputStream &out, const wxString & pr
 void AircraftDialog::LoadFCS(JSBSim::Element * el)
 {
   notebook_ac_pane_fcs->ClearAll();
-  fcsfile = el->GetAttributeValue("file");
+  fcsfile = std2wxstr(el->GetAttributeValue("file"));
   if ( !fcsfile.IsEmpty() )
   {
     wxString file = text_ctrl_info_file->GetValue();
@@ -2885,7 +2885,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   JSBSim::FGXMLParse output_file_parser;
   JSBSim::Element *document, *property_element;
 
-  wxString fname = el->GetAttributeValue("file");
+  wxString fname = std2wxstr(el->GetAttributeValue("file"));
   if (!fname.IsEmpty()) {
     wxString filename = text_ctrl_info_file->GetValue();
     wxString path=wxEmptyString;
@@ -2893,7 +2893,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
     wxString output_file_name = path + fname + wxT(".xml");
 
     std::ifstream output_file;
-    output_file.open(output_file_name.c_str());
+    output_file.open(wx2cstr(output_file_name));
     try
     {
       readXML(output_file, output_file_parser);
@@ -2910,8 +2910,8 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
 
   wxString   name = wxT("JSBout.csv");
   wxString   type = wxT("CSV");
-  name = document->GetAttributeValue("name");
-  type = document->GetAttributeValue("type");
+  name = std2wxstr(document->GetAttributeValue("name"));
+  type = std2wxstr(document->GetAttributeValue("type"));
   if (type == wxT("socket"))
   {
      wxMessageBox(_("socket type is not surported right now. I will use CSV instead."), wxT("Info"), wxOK | wxICON_INFORMATION, NULL);
@@ -2927,7 +2927,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   combo_box_output_type->SetValue(type);
 
   if (!document->GetAttributeValue("rate").empty()) {
-    text_ctrl_output_rate->SetValue(wxString::Format("%d", (int)document->GetAttributeValueAsNumber("rate")));
+    text_ctrl_output_rate->SetValue(wxString::Format(wxT("%g"), (int)document->GetAttributeValueAsNumber("rate")));
   } else {
     text_ctrl_output_rate->SetValue(wxT("100"));
   }
@@ -2988,7 +2988,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   list_box_output_adds->Clear();
   property_element = document->FindElement("property");
   while (property_element) {
-    list_box_output_adds->Append(property_element->GetDataLine());
+    list_box_output_adds->Append(std2wxstr(property_element->GetDataLine()));
     property_element = document->FindNextElement("property");
   }
 }

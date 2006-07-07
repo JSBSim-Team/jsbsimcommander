@@ -193,7 +193,7 @@ void
 KinematPropertyDialog::GetDataIn(Kinemat * k)
 {
   name       = k->GetName();
-  order      = wxString::Format("%ld",k->GetOrder());
+  order      = wxString::Format(wxT("%ld"),k->GetOrder());
   clipable   = k->IsClipable();
   clipmax    = k->GetClipMax();
   clipmin    = k->GetClipMin();
@@ -208,8 +208,8 @@ KinematPropertyDialog::GetDataIn(Kinemat * k)
   while (node)
     {
       MySettingPair * value = node->GetData();
-      grid_kinemat->SetCellValue(i,0,wxString::Format("%g",value->pos));
-      grid_kinemat->SetCellValue(i,1,wxString::Format("%g",value->time));
+      grid_kinemat->SetCellValue(i,0,wxString::Format(wxT("%g"),value->pos));
+      grid_kinemat->SetCellValue(i,1,wxString::Format(wxT("%g"),value->time));
       node = node->GetNext();
       ++i;
     }

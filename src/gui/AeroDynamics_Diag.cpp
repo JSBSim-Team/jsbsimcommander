@@ -140,16 +140,16 @@ void AeroDynamicsDialog::OnEnableH(wxCommandEvent & event)
 void AeroDynamicsDialog::Load(const TreeItemData_aerodynamics * data)
 {
   checkbox_a_enable->SetValue(data->has_alphalimits);
-  //text_ctrl_a_min->SetValue(wxString::Format("%g", data->alphaclmin));
-  //text_ctrl_a_max->SetValue(wxString::Format("%g", data->alphaclmax));
-  alpha_max = wxString::Format("%g", data->alphaclmax);
-  alpha_min = wxString::Format("%g", data->alphaclmin);
+  //text_ctrl_a_min->SetValue(wxString::Format(wxT("%g"), data->alphaclmin));
+  //text_ctrl_a_max->SetValue(wxString::Format(wxT("%g"), data->alphaclmax));
+  alpha_max = wxString::Format(wxT("%g"), data->alphaclmax);
+  alpha_min = wxString::Format(wxT("%g"), data->alphaclmin);
  
   checkbox_h_enable->SetValue(data->has_hysteresis_limits);
-  //text_ctrl_h_min->SetValue(wxString::Format("%g", data->alphahystmin));
-  //text_ctrl_h_max->SetValue(wxString::Format("%g", data->alphahystmax));
-  hysteresis_max = wxString::Format("%g", data->alphahystmax);
-  hysteresis_min = wxString::Format("%g", data->alphahystmin);
+  //text_ctrl_h_min->SetValue(wxString::Format(wxT("%g"), data->alphahystmin));
+  //text_ctrl_h_max->SetValue(wxString::Format(wxT("%g"), data->alphahystmax));
+  hysteresis_max = wxString::Format(wxT("%g"), data->alphahystmax);
+  hysteresis_min = wxString::Format(wxT("%g"), data->alphahystmin);
  
   if (checkbox_a_enable->GetValue())
   {
