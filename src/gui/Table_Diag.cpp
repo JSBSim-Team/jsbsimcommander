@@ -659,8 +659,8 @@ void TableDialog::updateGrid1D()
     grid_value->SetColLabelValue(0, _("Value"));
     for (int i=1; i<= nRows; ++i)
     {
-      grid_value->SetRowLabelValue(i-1, wxString::Format("%g", cur_table->GetValue(i, 0u)));
-      grid_value->SetCellValue(i-1, 0, wxString::Format("%g", cur_table->GetValue(i, 1u)));
+      grid_value->SetRowLabelValue(i-1, wxString::Format(wxT("%g"), cur_table->GetValue(i, 0u)));
+      grid_value->SetCellValue(i-1, 0, wxString::Format(wxT("%g"), cur_table->GetValue(i, 1u)));
     }
     grid_value->EndBatch();
   }
@@ -705,12 +705,12 @@ void TableDialog::updateGrid2D()
     
     grid_value->BeginBatch();
     for (int i=1; i <= nCols; ++i)
-      grid_value->SetColLabelValue(i-1, wxString::Format("%g", cur_table->GetValue(0u, i)));
+      grid_value->SetColLabelValue(i-1, wxString::Format(wxT("%g"), cur_table->GetValue(0u, i)));
     for (int i=1; i <= nRows; ++i)
     {
-      grid_value->SetRowLabelValue(i-1, wxString::Format("%g", cur_table->GetValue(i, 0u)));
+      grid_value->SetRowLabelValue(i-1, wxString::Format(wxT("%g"), cur_table->GetValue(i, 0u)));
       for (int j=1; j <= nCols; ++j)
-        grid_value->SetCellValue(i-1, j-1, wxString::Format("%g", cur_table->GetValue(i, j)));
+        grid_value->SetCellValue(i-1, j-1, wxString::Format(wxT("%g"), cur_table->GetValue(i, j)));
     }
     grid_value->EndBatch();
   }
@@ -732,7 +732,7 @@ void TableDialog::OnChangeCellValue(wxGridEvent & event)
     else
     {
       grid_value->BeginBatch();
-      grid_value->SetCellValue(row_no, col_no, wxString::Format("%g", old_value));
+      grid_value->SetCellValue(row_no, col_no, wxString::Format(wxT("%g"), old_value));
       grid_value->EndBatch();
     }
   }
@@ -817,7 +817,7 @@ void TableDialog::OnReadInTablefromClipboard(wxCommandEvent & event)
   if (list.size()<1)
     return;
 
-  if (::wxMessageBox(_("Do you want to add ") + wxString::Format("%d", list.size()) + _(" numbers from clipboard to grid from row=") + wxString::Format("%d", cur_row_no) + _(", col=") + wxString::Format("%d", cur_col_no), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
+  if (::wxMessageBox(_("Do you want to add ") + wxString::Format(wxT("%d"), list.size()) + _(" numbers from clipboard to grid from row=") + wxString::Format(wxT("%d"), cur_row_no) + _(", col=") + wxString::Format(wxT("%d"), cur_col_no), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
   {
     unsigned int nRows = cur_table->GetNumRows();
     unsigned int nCols = cur_table->GetNumCols();
@@ -860,7 +860,7 @@ void TableDialog::OnRebuildTable(wxCommandEvent & event)
   unsigned int nRows = (unsigned int)list[1];
   if (list.size() == 2+nCols+nRows+nCols*nRows && nCols > 1 && nRows > 1)
   {
-    if (::wxMessageBox(_("Do you want to rebuild the current 2D table ") + wxString::Format("in %d cols and %d rows using %d", nCols, nRows, list.size()) + _(" numbers from clipboard"), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
+    if (::wxMessageBox(_("Do you want to rebuild the current 2D table ") + wxString::Format(wxT("in %d cols and %d rows using %d"), nCols, nRows, list.size()) + _(" numbers from clipboard"), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
     {
       int i = 2;
       cur_table->SetTable(nRows, nCols);
@@ -905,7 +905,7 @@ void TableDialog::OnRebuildFrame(wxCommandEvent & event)
   unsigned int nTables = (unsigned int)list[2];
   if (list.size() == 3+nCols+nRows+nTables+nCols*nRows*nTables && nCols > 1 && nRows > 1 && nTables > 1)
   {
-    if (::wxMessageBox(_("Do you want to rebuild the 3D table ") + wxString::Format("in %d cols , %d rows and %d tables using %d", nCols, nRows, nTables, list.size()) + _(" numbers from clipboard"), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
+    if (::wxMessageBox(_("Do you want to rebuild the 3D table ") + wxString::Format(wxT("in %d cols , %d rows and %d tables using %d"), nCols, nRows, nTables, list.size()) + _(" numbers from clipboard"), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
     {
       int i = 3;
       Table3D tab3d;
@@ -1399,7 +1399,7 @@ void ParameterDialog::Load(std::vector<double> list, bool editable, bool cancela
   list_box_parameter->Clear();
   for (int i=0; i<list.size(); ++i)
   {
-    list_box_parameter->Append(wxString::Format("%g", list[i]));
+    list_box_parameter->Append(wxString::Format(wxT("%g"), list[i]));
   }
 }
 
@@ -1463,7 +1463,7 @@ void ParameterDialog::AddNumber(double value)
     list_box_parameter->GetString(i).ToDouble(&tmp);
     if (value < tmp)
     {
-      list_box_parameter->Insert(wxString::Format("%g", value), i);
+      list_box_parameter->Insert(wxString::Format(wxT("%g"), value), i);
       return;
     }
     else if (value == tmp)
@@ -1471,5 +1471,5 @@ void ParameterDialog::AddNumber(double value)
       return;
     }
   }
-  list_box_parameter->Append(wxString::Format("%g", value));  
+  list_box_parameter->Append(wxString::Format(wxT("%g"), value));  
 }

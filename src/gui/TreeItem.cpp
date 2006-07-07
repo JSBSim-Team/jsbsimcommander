@@ -209,7 +209,7 @@ void TreeItemEvtHandler::OnAddFunc(wxCommandEvent & event)
       data->Init(tree);
       data->Type = TreeItemData_function::eTopLevel;
       data->type = wxT("function");
-      data->name = wxString::Format("aero/function/func%lu", t);
+      data->name = wxString::Format(wxT("aero/function/func%lu"), t);
     }
     else if (dynamic_cast<TreeItemData_axis *>(tree->GetItemData(tree->GetSelection())))
     {
@@ -217,7 +217,7 @@ void TreeItemEvtHandler::OnAddFunc(wxCommandEvent & event)
       data->Init(tree);
       data->Type = TreeItemData_function::eTopLevel;
       data->type = wxT("function");
-      data->name = wxString::Format("aero/function/func%lu", t);
+      data->name = wxString::Format(wxT("aero/function/func%lu"), t);
     }
     else if (dynamic_cast<TreeItemData_script_root *>(tree->GetItemData(tree->GetSelection())))
     {
@@ -225,7 +225,7 @@ void TreeItemEvtHandler::OnAddFunc(wxCommandEvent & event)
       data->Init(tree);
       data->Type = TreeItemData_function::eTopLevel;
       data->type = wxT("function");
-      data->name = wxString::Format("script/func%lu", t);
+      data->name = wxString::Format(wxT("script/func%lu"), t);
     }
     else if (dynamic_cast<TreeItemData_func_root *>(tree->GetItemData(tree->GetSelection())))
     {
@@ -233,7 +233,7 @@ void TreeItemEvtHandler::OnAddFunc(wxCommandEvent & event)
       data->Init(tree);
       data->Type = TreeItemData_function::eTopLevel;
       data->type = wxT("function");
-      data->name = wxString::Format("function/func%lu", t);
+      data->name = wxString::Format(wxT("function/func%lu"), t);
     }
     else
     {
@@ -591,8 +591,8 @@ void TreeItemData_axis::Init(wxTreeCtrl* t)
 
 void TreeItemData_axis::Load(JSBSim::Element * el)
 {
-  name = el->GetAttributeValue("name");
-  unit = el->GetAttributeValue("unit");
+  name = std2wxstr(el->GetAttributeValue("name"));
+  unit = std2wxstr(el->GetAttributeValue("unit"));
   if (unit.IsEmpty())
   {
     if (name == wxT("DRAG") || name == wxT("SIDE") || name == wxT("LIFT") ||
@@ -709,11 +709,11 @@ void TreeItemData_function::Init(wxTreeCtrl* t)
 
 void TreeItemData_function::Load(JSBSim::Element * el)
 {
-  type = el->GetName();
+  type = std2wxstr(el->GetName());
   if ( type == wxT("function"))
   {
     Type = eTopLevel;
-    name = el->GetAttributeValue("name");
+    name = std2wxstr(el->GetAttributeValue("name"));
     tree->SetItemText(GetId(), name);
     tree->SetItemImage(GetId(), 24);
     tree->SetItemImage(GetId(), 24, wxTreeItemIcon_Selected);
@@ -898,7 +898,7 @@ void TreeItemData_function::Load(JSBSim::Element * el)
   {
     if (el_sub->GetName() == "description")
     {
-      description = el_sub->GetDataLine();
+      description = std2wxstr(el_sub->GetDataLine());
       if (Type == eTopLevel)
       {
         tree->SetItemText(GetId(), name + wxT("(") + description + wxT(")"));
@@ -910,7 +910,7 @@ void TreeItemData_function::Load(JSBSim::Element * el)
     }
     else
     {
-      wxString type_sub = el_sub->GetName();
+      wxString type_sub = std2wxstr(el_sub->GetName());
       TreeItemData_ebase * tmp;
       if ( type_sub == wxT("property"))
       {
@@ -1193,7 +1193,7 @@ void TreeItemData_Property::Init(wxTreeCtrl* t)
 
 void TreeItemData_Property::Load(JSBSim::Element * el)
 {
-  value = el->GetDataLine(); 
+  value = std2wxstr(el->GetDataLine()); 
   tree->SetItemText(GetId(), value);
   tree->SetItemImage(GetId(), 25);
   tree->SetItemImage(GetId(), 25, wxTreeItemIcon_Selected);
@@ -1246,7 +1246,7 @@ void TreeItemData_Value::Init(wxTreeCtrl* t)
 void TreeItemData_Value::Load(JSBSim::Element * el)
 {
   value = el->GetDataAsNumber();
-  tree->SetItemText(GetId(), wxString::Format("%g",value));
+  tree->SetItemText(GetId(), wxString::Format(wxT("%g"),value));
   tree->SetItemImage(GetId(), 27);
   tree->SetItemImage(GetId(), 27, wxTreeItemIcon_Selected);
 }
@@ -1268,14 +1268,14 @@ void TreeItemData_Value::PrepareMenu(wxMenu & menu)
 
 wxString TreeItemData_Value::GetExpression()
 {
-  return wxString::Format("%g",value);
+  return wxString::Format(wxT("%g"),value);
 }
 
 int TreeItemData_Value::ShowDialog(void * data)
 {
   int result;
   double bak = value;
-  wxString val = wxString::Format("%g", value);
+  wxString val = wxString::Format(wxT("%g"), value);
   val = ::wxGetTextFromUser(_("Value:"), _("Input Value"), val, tree);
   if ( val.ToDouble(&value) )
   {
@@ -1310,7 +1310,7 @@ void TreeItemData_Table::Load(JSBSim::Element * el)
 {
   std::stringstream buf;
   wxString property_string;
-  name = el->GetAttributeValue("name");
+  name = std2wxstr(el->GetAttributeValue("name"));
   JSBSim::Element *tableData;
   int dimension = 0;
 
@@ -1324,7 +1324,7 @@ void TreeItemData_Table::Load(JSBSim::Element * el)
   independentVar_row = independentVar_column = independentVar_table = independentVar_frame = wxEmptyString;
   
   while (axisElement) {
-    property_string = axisElement->GetDataLine();
+    property_string = std2wxstr(axisElement->GetDataLine());
     if (axisElement->GetAttributeValue("lookup") == string("row")) {
       independentVar_row = property_string;
     } else if (axisElement->GetAttributeValue("lookup") == string("column")) {

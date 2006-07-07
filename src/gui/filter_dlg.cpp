@@ -311,7 +311,7 @@ FilterPropertyDialog::GetDataIn(Filter * shape)
   name       = shape->GetName();
   type       = shape->GetType();
   combo_box_type->SetValue(type);
-  order      = wxString::Format("%ld",shape->GetOrder());
+  order      = wxString::Format(wxT("%ld"),shape->GetOrder());
   clipable   = shape->IsClipable();
   clipmax    = shape->GetClipMax();
   clipmin    = shape->GetClipMin();

@@ -25,6 +25,7 @@
 #include "doc.h"
 #include "view.h"
 #include "shape.h"
+#include "MyApp.h"
 
 
 #include <wx/listimpl.cpp>
@@ -859,7 +860,7 @@ ComponentShape::OnDraw (wxDC & dc)
 {
   MISOShape::OnDraw (dc);
 
-  wxString str(wxString::Format("%ld",order));
+  wxString str(wxString::Format(wxT("%ld"),order));
   wxCoord w,h;
   dc.GetTextExtent(str,&w,&h);
   dc.DrawText(str,WXROUND (GetX()-m_width*0.5),WXROUND (GetY()-m_height*0.5-h-2));
@@ -1285,13 +1286,13 @@ ComponentShape::GetOutputName() const
 wxArrayString
 ComponentShape::ImportXML(JSBSim::Element * el)
 {
-  name = el->GetAttributeValue("name").c_str();
+  name = std2wxstr(el->GetAttributeValue("name"));
 
   JSBSim::Element * clipto = el->FindElement("clipto");
   if (clipto)
   {
-    clipmin = clipto->FindElementValue("min");
-    clipmax = clipto->FindElementValue("max");
+    clipmin = std2wxstr(clipto->FindElementValue("min"));
+    clipmax = std2wxstr(clipto->FindElementValue("max"));
     if (!clipmin.IsEmpty() && !clipmax.IsEmpty())
       clipable = true;
     else
@@ -1310,7 +1311,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
   JSBSim::Element * output_element = el->FindElement("output");
   if (output_element)
   {
-    wxString output_name = output_element->GetDataLine().c_str();
+    wxString output_name = std2wxstr(output_element->GetDataLine());
 
     output_name.Trim(true); // trim spaces from right
     output_name.Trim(false); // trim spaces from left
@@ -1328,7 +1329,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
   int input_port_num = 1;
   while (input_element)
   {
-    wxString input_name = input_element->GetDataLine().c_str();
+    wxString input_name = std2wxstr(input_element->GetDataLine());
 
     input_name.Trim(true);
     input_name.Trim(false);

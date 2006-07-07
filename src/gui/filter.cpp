@@ -35,6 +35,7 @@
 
 #include "shape.h"
 #include "filter.h"
+#include "MyApp.h"
 
 
 IMPLEMENT_DYNAMIC_CLASS (Filter, ComponentShape)
@@ -284,14 +285,14 @@ Filter::ImportXML(JSBSim::Element * el)
 {
   wxArrayString strings = ComponentShape::ImportXML(el);
 
-  if (el->FindElement("c1")) c1 = el->FindElementValue("c1");
-  if (el->FindElement("c2")) c2 = el->FindElementValue("c2");
-  if (el->FindElement("c3")) c3 = el->FindElementValue("c3");
-  if (el->FindElement("c4")) c4 = el->FindElementValue("c4");
-  if (el->FindElement("c5")) c5 = el->FindElementValue("c5");
-  if (el->FindElement("c6")) c6 = el->FindElementValue("c6");
+  if (el->FindElement("c1")) c1 = std2wxstr(el->FindElementValue("c1"));
+  if (el->FindElement("c2")) c2 = std2wxstr(el->FindElementValue("c2"));
+  if (el->FindElement("c3")) c3 = std2wxstr(el->FindElementValue("c3"));
+  if (el->FindElement("c4")) c4 = std2wxstr(el->FindElementValue("c4"));
+  if (el->FindElement("c5")) c5 = std2wxstr(el->FindElementValue("c5"));
+  if (el->FindElement("c6")) c6 = std2wxstr(el->FindElementValue("c6"));
   if (el->FindElement("trigger")) {
-    trigger =  el->FindElementValue("trigger");
+    trigger =  std2wxstr(el->FindElementValue("trigger"));
   }
 
   return strings;
