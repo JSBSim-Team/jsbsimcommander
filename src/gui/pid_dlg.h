@@ -79,6 +79,7 @@ public:
     void OnCheckboxClip(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnClickInvertInput(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressOK(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnButtonPressTrigger(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressCancel(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnButtonPressHelp(wxCommandEvent &event); // wxGlade: <event_handler>
     void GetDataIn(PID * g);

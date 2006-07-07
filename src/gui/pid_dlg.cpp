@@ -43,6 +43,8 @@
 #include "shape.h"
 #include "pid.h"
 #include "pid_dlg.h"
+#include "Property_Diag.h"
+#include "Commander.h"
 
 /**
 * Event Table ==================================================================
@@ -53,6 +55,7 @@ BEGIN_EVENT_TABLE(PIDPropertyDialog, wxDialog)
     EVT_CHECKBOX(-1, PIDPropertyDialog::OnCheckboxClip)
     EVT_TOGGLEBUTTON(-1, PIDPropertyDialog::OnClickInvertInput)
     EVT_BUTTON(wxID_OK, PIDPropertyDialog::OnButtonPressOK)
+    EVT_BUTTON(10, PIDPropertyDialog::OnButtonPressTrigger)
     EVT_BUTTON(wxID_CANCEL, PIDPropertyDialog::OnButtonPressCancel)
     EVT_BUTTON(-1, PIDPropertyDialog::OnButtonPressHelp)
     // end wxGlade
@@ -63,7 +66,7 @@ END_EVENT_TABLE();
 */
 
 PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP)
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
 {
     // begin wxGlade: PIDPropertyDialog::PIDPropertyDialog
     panel_toplevel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL|wxWS_EX_VALIDATE_RECURSIVELY);
@@ -90,7 +93,7 @@ PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const 
     text_ctrl_ki = new wxTextCtrl(panel_toplevel, -1, wxT("0"), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &ki));
     label_kd = new wxStaticText(panel_toplevel, -1, wxT("Kd:"));
     text_ctrl_kd = new wxTextCtrl(panel_toplevel, -1, wxT("0"), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &kd));
-    button_trigger = new wxButton(panel_toplevel, -1, wxT("Select Trigger"));
+    button_trigger = new wxButton(panel_toplevel, 10, wxT("Select Trigger"));
     text_ctrl_trigger_prop = new wxTextCtrl(panel_toplevel, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
     label_1 = new wxStaticText(panel_toplevel, -1, wxT("Input Property:"));
     button_invert_input = new wxToggleButton(panel_toplevel, -1, wxT("+"));
@@ -148,6 +151,16 @@ void PIDPropertyDialog::OnButtonPressOK(wxCommandEvent &event)
     panel_toplevel->TransferDataFromWindow();
 
   event.Skip();
+}
+
+/**
+*              ==================================================================
+*/
+
+void PIDPropertyDialog::OnButtonPressTrigger(wxCommandEvent &event)
+{
+  if (GetPropertyDialog()->ShowModal() == wxID_OK)
+    text_ctrl_trigger_prop->SetValue(GetPropertyDialog()->GetResult());
 }
 
 /**
@@ -345,7 +358,6 @@ void PIDPropertyDialog::GetDataIn(PID * g)
   }
 
   wxArrayString inputs = g->GetInputNames();
-//  wxString output = g->GetOuputName();
 
   *text_ctrl_input_prop << inputs[0];
   *text_ctrl_output_prop << g->GetOutputName();
