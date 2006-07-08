@@ -62,7 +62,7 @@ PID::PID (double w, double h, const wxString & Name )
   GetAttachments ().Append (new wxAttachmentPoint (0, w * 0.5, 0.0));
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
 
-  input_sign_list.Append(new bool(false));
+//  input_sign_list.Append(new bool(false));
   InputIsInverted = false;
 }
 
@@ -173,7 +173,6 @@ void PID::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   if (Kp != 0.0) stream << Pre << wxT("<kp> ") << Kp << wxT(" </kp>") << endl;
   if (Ki != 0.0) stream << Pre << wxT("<ki> ") << Ki << wxT(" </ki>") << endl;
   if (Kd != 0.0) stream << Pre << wxT("<kd> ") << Kd << wxT(" </kd>") << endl;
-//  if (Trigger.size() > 0) stream
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
@@ -195,7 +194,7 @@ wxArrayString PID::ImportXML(JSBSim::Element * el)
 
   if ( el->FindElement("trigger") ) Trigger = std2wxstr(el->FindElementValue("trigger"));
 
-  InputIsInverted = input_sign_list[0];
+  InputIsInverted = *((GetInputSignList().Item(0))->GetData());
 
   return strings;
 }

@@ -1323,8 +1323,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
 
   JSBSim::Element * input_element = el->FindElement("input");
 
-  if (!input_element)
-    return array;
+  if (!input_element) return array;
 
   int input_port_num = 1;
   while (input_element)
