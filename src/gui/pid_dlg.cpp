@@ -44,7 +44,12 @@
 #include "pid.h"
 #include "pid_dlg.h"
 #include "Property_Diag.h"
-#include "Commander.h"
+#include "MyApp.h"
+
+// All non-MSW platforms use an xpm. MSW uses an .ico file
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
+    #include "pid.xpm"
+#endif
 
 /**
 * Event Table ==================================================================
@@ -191,7 +196,7 @@ void PIDPropertyDialog::set_properties()
     // begin wxGlade: PIDPropertyDialog::set_properties
     SetTitle(wxT("PID Component Editor"));
     wxIcon _icon;
-    _icon.CopyFromBitmap(wxBitmap(wxT("src\\bitmaps\\pid.bmp"), wxBITMAP_TYPE_ANY));
+    _icon.CopyFromBitmap(wxBITMAP(pid));
     SetIcon(_icon);
     text_ctrl_name->SetToolTip(wxT("This is the name of the component. It can be a property name, or a human readable name, such as \"Pitch Feedback PID Control\". In the latter case, the name will be converted internally to a property name. In the given example, this will be \"fcs/pitch-feedback-pid-control\"."));
     text_ctrl_name->SetFocus();
