@@ -132,6 +132,8 @@ bool DiagramDocument::SaveObject(MyDiagram * diagram, const wxString & name)
   {
     wxString buf = p->GetFileName();
     buf = buf.BeforeLast(wxFileName::GetPathSeparator());
+    if (buf.IsEmpty())
+      buf = wxT(".");
     buf += wxFileName::GetPathSeparator() + name + wxT(".dia");
     diagram->SaveFile (buf);
   }
@@ -303,7 +305,7 @@ bool DiagramDocument::ImportXML(const wxString & filename)
 
   try
   {
-    readXML (filename.c_str(), controls_file_parser);
+    readXML (wx2stdstr(filename).c_str(), controls_file_parser);
   }
   catch (...)
   {

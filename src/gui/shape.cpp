@@ -1183,7 +1183,7 @@ ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefi
       {
 	 int a = data->GetAttachmentTo();
 	 bool b = *(input_sign_list.Item(a-1)->GetData());
-	 wxString c;
+	 wxString c=wxEmptyString;
 	 if (b)
 	   c = wxT("-");
          MISOShape * misoshape = (MISOShape *)shape;
@@ -1335,7 +1335,11 @@ ComponentShape::ImportXML(JSBSim::Element * el)
     input_name.Trim(false);
 
     bool sign_flag = false;
-    if (input_name[0] == '-' && input_name[1]!='\0') sign_flag = true;
+    if (input_name[0] == wxT('-') && input_name[1]!= wxT('\0'))
+    {
+      sign_flag = true;
+      input_name.Remove(0u,1u);
+    }
 
     if (!input_name.IsEmpty())
     {
