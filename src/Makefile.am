@@ -69,5 +69,5 @@ noinst_LIBRARIES = libJSBSim.a
 
 libJSBSim_a_SOURCES =  FGJSBBase.cpp
 
-noinst_HEADERS = initprops.h Commander.h FGJSBBase.h MyApp.h
+noinst_HEADERS = initprops.h FGJSBBase.h MyApp.h
 
