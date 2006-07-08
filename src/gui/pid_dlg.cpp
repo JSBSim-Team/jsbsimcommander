@@ -143,7 +143,10 @@ void PIDPropertyDialog::OnCheckboxClip(wxCommandEvent &event)
 
 void PIDPropertyDialog::OnClickInvertInput(wxCommandEvent &event)
 {
-    event.Skip();
+  if (button_invert_input->GetValue()) button_invert_input->SetLabel("-");
+  else button_invert_input->SetLabel("+");
+
+  event.Skip();
 }
 
 /**
@@ -364,8 +367,21 @@ void PIDPropertyDialog::GetDataIn(PID * g)
 
   wxArrayString inputs = g->GetInputNames();
 
-  *text_ctrl_input_prop << inputs[0];
   *text_ctrl_output_prop << g->GetOutputName();
+
+  if (inputs[0] != "NULL")
+  {
+    button_invert_input->Enable();
+    if (g->GetInputIsInverted()) {
+      button_invert_input->SetValue(true);
+      button_invert_input->SetLabel("-");
+    } else {
+      button_invert_input->SetValue(false);
+      button_invert_input->SetLabel("+");
+    }
+  }
+  *text_ctrl_input_prop << inputs[0];
+  *text_ctrl_trigger_prop << g->GetTrigger();
 }
 
 /**
@@ -390,4 +406,11 @@ void PIDPropertyDialog::SetDataOut(PID * g)
   g->SetKi(tmp);
   kd.ToDouble(&tmp);
   g->SetKd(tmp);
+
+  g->SetTrigger(text_ctrl_trigger_prop->GetValue());
+
+  g->SetInputIsInverted(false);
+  if (text_ctrl_input_prop->GetValue() != "NULL") // true if input prop is present
+    if (button_invert_input->GetValue()) // true if inverted
+      g->SetInputIsInverted(true);
 }

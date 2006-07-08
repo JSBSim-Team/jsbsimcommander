@@ -1345,6 +1345,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
     {
       input_sign_list.Append(new bool(sign_flag));
       GetAttachments ().Append (new wxAttachmentPoint (input_port_num++, -w * 0.5, 0.0));
+      if (input_name[0] == '-') input_name.Remove(0,1); // remove "-" sign from text string
       array.Add(input_name);
     }
 

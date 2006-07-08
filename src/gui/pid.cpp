@@ -63,6 +63,7 @@ PID::PID (double w, double h, const wxString & Name )
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
 
   input_sign_list.Append(new bool(false));
+  InputIsInverted = false;
 }
 
 
@@ -193,6 +194,8 @@ wxArrayString PID::ImportXML(JSBSim::Element * el)
   if ( el->FindElement("kd") ) Kd = el->FindElementValueAsNumber("kd");
 
   if ( el->FindElement("trigger") ) Trigger = std2wxstr(el->FindElementValue("trigger"));
+
+  InputIsInverted = input_sign_list[0];
 
   return strings;
 }
