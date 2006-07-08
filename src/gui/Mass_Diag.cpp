@@ -28,6 +28,7 @@
 #include <wx/datetime.h>
 
 #include "Mass_Diag.h"
+#include "MyApp.h"
 
 ClientData_pm::ClientData_pm()
   : weight(0), weight_unit(wxT("KG")),
@@ -39,7 +40,7 @@ ClientData_pm::ClientData_pm()
 
 void ClientData_pm::Load(JSBSim::Element * el)
 {
-  name = el->GetAttributeValue("name");
+  name = std2wxstr(el->GetAttributeValue("name"));
   if (name.IsEmpty())
     name = wxT("Unknown");
   
@@ -48,14 +49,14 @@ void ClientData_pm::Load(JSBSim::Element * el)
   if (temp_element = el->FindElement("weight"))
   {
     weight = temp_element->GetDataAsNumber();
-    weight_unit = temp_element->GetAttributeValue("unit");
+    weight_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     if (weight_unit.IsEmpty())
       weight_unit = wxT("LBS");
   }
   
   if (temp_element = el->FindElement("location"))
   {
-    loc_unit = temp_element->GetAttributeValue("unit");
+    loc_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     if (loc_unit.IsEmpty())
       loc_unit = wxT("IN");
     x = temp_element->FindElementValueAsNumber("x");
@@ -81,7 +82,7 @@ void ClientData_pm::Save(wxTextOutputStream & out, const wxString & prefix)
 
 wxString ClientData_pm::GetText() const
 {
-  return wxString::Format("%s is %g %s at point [%g, %g, %g] in %s ", name.c_str(), weight, weight_unit.c_str(), x, y, z, loc_unit.c_str());
+  return wxString::Format(wxT("%s is %g %s at point [%g, %g, %g] in %s "), name.c_str(), weight, weight_unit.c_str(), x, y, z, loc_unit.c_str());
 }
 
 void ClientData_pm::ShowDialog()
@@ -187,11 +188,11 @@ void PMDialog::do_layout()
 void PMDialog::Load(const ClientData_pm * data)
 {
   text_ctrl_name->SetValue(data->name);
-  text_ctrl_weight->SetValue(wxString::Format("%g",data->weight));
+  text_ctrl_weight->SetValue(wxString::Format(wxT("%g"),data->weight));
   combo_box_weight->SetStringSelection(data->weight_unit);
-  text_ctrl_location_x->SetValue(wxString::Format("%g", data->x));
-  text_ctrl_location_y->SetValue(wxString::Format("%g", data->y));
-  text_ctrl_location_z->SetValue(wxString::Format("%g", data->z));
+  text_ctrl_location_x->SetValue(wxString::Format(wxT("%g"), data->x));
+  text_ctrl_location_y->SetValue(wxString::Format(wxT("%g"), data->y));
+  text_ctrl_location_z->SetValue(wxString::Format(wxT("%g"), data->z));
   combo_box_location->SetStringSelection(data->loc_unit);
 }
 

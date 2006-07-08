@@ -30,7 +30,7 @@
 #include <wx/xrc/xmlres.h>          // XRC XML resouces
 #include <wx/image.h>               // wxImage
 
-#include "Commander.h"
+#include "MyApp.h"
 #include "AircraftDialog.h"
 #include "Property_Diag.h"
 #include "EngineMgr_Diag.h"
@@ -217,7 +217,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
   if (wxApp::OnCmdLineParsed(parser))
   {
     wxString dir;
-    if (parser.Found("resource", &dir))
+    if (parser.Found(wxT("resource"), &dir))
     {
       rc_dir.Open(dir);
     }
@@ -225,7 +225,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     {
       rc_dir.Open(AppDirectory+wxFileName::GetPathSeparator()+wxT("rc"));
     }
-    if (parser.Found("about", &dir))
+    if (parser.Found(wxT("about"), &dir))
     {
       about_img_file = dir;
     }

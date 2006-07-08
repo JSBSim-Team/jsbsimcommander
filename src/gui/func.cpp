@@ -39,6 +39,7 @@
 
 #include "shape.h"
 #include "func.h"
+#include "MyApp.h"
 
 
 IMPLEMENT_DYNAMIC_CLASS (FCSFunction, ComponentShape)
@@ -58,7 +59,7 @@ FCSFunction::FCSFunction (double w, double h, const wxString & Name )
   wxStringOutputStream os(&function);
   wxTextOutputStream out(os,wxEOL_UNIX);
   out << wxT("<?xml version=\"1.0\"?>\n");
-  wxString name = wxString::Format("fcs/function/func%lu", wxDateTime::Now().GetTicks());
+  wxString name = wxString::Format(wxT("fcs/function/func%lu"), wxDateTime::Now().GetTicks());
   out << wxT("<function name=\"") << name << wxT("\">\n");
   out << wxT(" <value>1.000000</value>\n");
   out << wxT("</function>\n");
@@ -216,33 +217,33 @@ void CopyTo(wxTextOutputStream & out, JSBSim::Element * el, const wxString & pre
   wxString attr = wxEmptyString;
   for (int i=0; i<attribute_num ; ++i)
   {
-    string key = el->GetAttributeKey(i);
-    attr += wxT(" ") + key + wxT("=\"") + el->GetAttributeValue(key) + wxT("\"");
+    string key =el->GetAttributeKey(i);
+    attr += wxT(" ") + std2wxstr(key) + wxT("=\"") + std2wxstr(el->GetAttributeValue(key)) + wxT("\"");
   }
   int children_num = el->GetNumElements();
   if (children_num ==0)
   {
-    out << prefix << wxT("<") << el->GetName() << attr << wxT(">");
+    out << prefix << wxT("<") << std2wxstr(el->GetName()) << attr << wxT(">");
     int line_num = el->GetNumDataLines();
     if (line_num>1)
       out << wxT("\n");
     for (int i=0; i< line_num; ++i)
     {
-      out << el->GetDataLine(i);
+      out << std2wxstr(el->GetDataLine(i));
       if (i<line_num-1) out << wxT("\n");
     }
-    out << wxT("</") << el->GetName() << wxT(">\n");
+    out << wxT("</") << std2wxstr(el->GetName()) << wxT(">\n");
   }
   else
   {
-    out << prefix << wxT("<") << el->GetName() << attr << wxT(">\n");
+    out << prefix << wxT("<") << std2wxstr(el->GetName()) << attr << wxT(">\n");
     JSBSim::Element * tmp = el->GetElement();
     while (tmp)
     {
       CopyTo(out, tmp, prefix+wxT("    "));
       tmp = el->GetNextElement();
     }
-    out << prefix << wxT("</") << el->GetName() << wxT(">\n");
+    out << prefix << wxT("</") << std2wxstr(el->GetName()) << wxT(">\n");
   }
 }
 

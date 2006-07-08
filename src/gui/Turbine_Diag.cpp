@@ -30,6 +30,7 @@
 
 #include "Turbine_Diag.h"
 #include "TreeItem.h"
+#include "MyApp.h"
 
 #ifndef __WXMSW__
 #include "aero_icon.xpm"
@@ -244,7 +245,7 @@ bool TurbineDialog::Load(const wxString & fn)
 
   try
   {
-    readXML (filename.c_str(), controls_file_parser);
+    readXML (wx2stdstr(filename).c_str(), controls_file_parser);
   }
   catch (...)
   {
@@ -257,7 +258,7 @@ bool TurbineDialog::Load(const wxString & fn)
   
   JSBSim::Element * tmp;
   
-  *text_ctrl_name << document->GetAttributeValue("name");
+  *text_ctrl_name << std2wxstr(document->GetAttributeValue("name"));
   
   if ( tmp = document->FindElement("bypassratio"))
   {
@@ -267,14 +268,14 @@ bool TurbineDialog::Load(const wxString & fn)
   if ( tmp = document->FindElement("milthrust"))
   {
     *text_ctrl_mil << tmp->GetDataAsNumber();
-    wxString unit = tmp->GetAttributeValue("unit");
+    wxString unit = std2wxstr(tmp->GetAttributeValue("unit"));
     combo_box_mil->SetValue(unit);
   }
 
   if ( tmp = document->FindElement("maxthrust"))
   {
     *text_ctrl_max << tmp->GetDataAsNumber();
-    wxString unit = tmp->GetAttributeValue("unit");
+    wxString unit = std2wxstr(tmp->GetAttributeValue("unit"));
     combo_box_max->SetValue(unit);
   }
 
@@ -312,7 +313,7 @@ bool TurbineDialog::Load(const wxString & fn)
   bool flag = false;
   tmp = document->FindElement("function");
   while (tmp) {
-    wxString name = tmp->GetAttributeValue("name");
+    wxString name = std2wxstr(tmp->GetAttributeValue("name"));
     if (name == wxT("IdleThrust"))
     {
       flag = true;
@@ -342,14 +343,14 @@ bool TurbineDialog::Load(const wxString & fn)
     wxTreeItemId idv = tree_ctrl_func->AppendItem(idf, wxT("0.02"), 27, 27, val);
     val->Init(tree_ctrl_func);
     val->value = 0.02;
-    tree_ctrl_func->SetItemText(idv, wxString::Format("%g",val->value));
+    tree_ctrl_func->SetItemText(idv, wxString::Format(wxT("%g"),val->value));
     tree_ctrl_func->SetItemImage(idv, 27);
   }
 
   flag = false;
   tmp = document->FindElement("function");
   while (tmp) {
-    wxString name = tmp->GetAttributeValue("name");
+    wxString name = std2wxstr(tmp->GetAttributeValue("name"));
     if (name == wxT("MilThrust"))
     {
       flag = true;
@@ -379,14 +380,14 @@ bool TurbineDialog::Load(const wxString & fn)
     wxTreeItemId idv = tree_ctrl_func->AppendItem(idf, wxT("1.0"), 27, 27, val);
     val->Init(tree_ctrl_func);
     val->value = 1.0;
-    tree_ctrl_func->SetItemText(idv, wxString::Format("%g",val->value));
+    tree_ctrl_func->SetItemText(idv, wxString::Format(wxT("%g"),val->value));
     tree_ctrl_func->SetItemImage(idv, 27);
   }
 
   flag = false;
   tmp = document->FindElement("function");
   while (tmp) {
-    wxString name = tmp->GetAttributeValue("name");
+    wxString name = std2wxstr(tmp->GetAttributeValue("name"));
     if (name == wxT("AugThrust"))
     {
       flag = true;
@@ -416,7 +417,7 @@ bool TurbineDialog::Load(const wxString & fn)
     wxTreeItemId idv = tree_ctrl_func->AppendItem(idf, wxT("1.0"), 27, 27, val);
     val->Init(tree_ctrl_func);
     val->value = 1.0;
-    tree_ctrl_func->SetItemText(idv, wxString::Format("%g",val->value));
+    tree_ctrl_func->SetItemText(idv, wxString::Format(wxT("%g"),val->value));
     tree_ctrl_func->SetItemImage(idv, 27);
   }
   

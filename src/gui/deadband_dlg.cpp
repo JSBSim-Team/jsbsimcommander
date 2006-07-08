@@ -197,15 +197,15 @@ void
 DeadBandPropertyDialog::GetDataIn(DeadBand * shape)
 {
   name       = shape->GetName();
-  order      = wxString::Format("%ld",shape->GetOrder());
+  order      = wxString::Format(wxT("%ld"), shape->GetOrder());
   clipable   = shape->IsClipable();
   clipmax    = shape->GetClipMax();
   clipmin    = shape->GetClipMin();
 
   input1     = *(shape->GetInputSignList().GetFirst()->GetData())?1:0;
 
-  width      = wxString::Format("%g",shape->GetDeadBandWidth());
-  gain       = wxString::Format("%g",shape->GetGain());
+  width      = wxString::Format(wxT("%g"), shape->GetDeadBandWidth());
+  gain       = wxString::Format(wxT("%g"), shape->GetGain());
 
   if (clipable)
     {

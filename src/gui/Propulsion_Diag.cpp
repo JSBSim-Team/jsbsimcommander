@@ -26,6 +26,7 @@
 
 #include <wx/valgen.h>
 #include "Propulsion_Diag.h"
+#include "MyApp.h"
 
 ClientData_engine::ClientData_engine(const wxString & e, const wxString & t)
 {
@@ -38,18 +39,18 @@ ClientData_engine::ClientData_engine(const wxString & e, const wxString & t)
 
 void ClientData_engine::Load(JSBSim::Element * el)
 {
-  file_e = el->GetAttributeValue("file");
+  file_e = std2wxstr(el->GetAttributeValue("file"));
   JSBSim::Element * tmp;
   if (tmp = el->FindElement("location"))
   {
-    loc_e.unit = tmp->GetAttributeValue("unit");
+    loc_e.unit = std2wxstr(tmp->GetAttributeValue("unit"));
     loc_e.x1    = tmp->FindElementValueAsNumber("x");
     loc_e.x2    = tmp->FindElementValueAsNumber("y");
     loc_e.x3    = tmp->FindElementValueAsNumber("z");
   }
   if (tmp = el->FindElement("orient"))
   {
-    ori_e.unit = tmp->GetAttributeValue("unit");
+    ori_e.unit = std2wxstr(tmp->GetAttributeValue("unit"));
     ori_e.x1    = tmp->FindElementValueAsNumber("roll");
     ori_e.x2    = tmp->FindElementValueAsNumber("pitch");
     ori_e.x3    = tmp->FindElementValueAsNumber("yaw");
@@ -65,17 +66,17 @@ void ClientData_engine::Load(JSBSim::Element * el)
   JSBSim::Element * thr;
   if (thr = el->FindElement("thruster"))
   {
-    file_t = thr->GetAttributeValue("file");
+    file_t = std2wxstr(thr->GetAttributeValue("file"));
     if (tmp = thr->FindElement("location"))
     {
-    loc_t.unit = tmp->GetAttributeValue("unit");
+    loc_t.unit = std2wxstr(tmp->GetAttributeValue("unit"));
     loc_t.x1    = tmp->FindElementValueAsNumber("x");
     loc_t.x2    = tmp->FindElementValueAsNumber("y");
     loc_t.x3    = tmp->FindElementValueAsNumber("z");
     }
     if (tmp = thr->FindElement("orient"))
     {
-    ori_t.unit = tmp->GetAttributeValue("unit");
+    ori_t.unit = std2wxstr(tmp->GetAttributeValue("unit"));
     ori_t.x1    = tmp->FindElementValueAsNumber("roll");
     ori_t.x2    = tmp->FindElementValueAsNumber("pitch");
     ori_t.x3    = tmp->FindElementValueAsNumber("yaw");
@@ -136,21 +137,21 @@ ClientData_tank::ClientData_tank()
 
 void ClientData_tank::Load(JSBSim::Element * el)
 {
-  type = el->GetAttributeValue("type");
+  type = std2wxstr(el->GetAttributeValue("type"));
   JSBSim::Element * tmp;
   if (tmp = el->FindElement("capacity"))
   {
-    capacity_unit = tmp->GetAttributeValue("unit");
+    capacity_unit = std2wxstr(tmp->GetAttributeValue("unit"));
     capacity = tmp->GetDataAsNumber();
   }
   if (tmp = el->FindElement("contents"))
   {
-    contents_unit = tmp->GetAttributeValue("unit");
+    contents_unit = std2wxstr(tmp->GetAttributeValue("unit"));
     contents = tmp->GetDataAsNumber();
   }
   if (tmp = el->FindElement("location"))
   {
-    loc.unit = tmp->GetAttributeValue("unit");
+    loc.unit = std2wxstr(tmp->GetAttributeValue("unit"));
     loc.x1    = tmp->FindElementValueAsNumber("x");
     loc.x2    = tmp->FindElementValueAsNumber("y");
     loc.x3    = tmp->FindElementValueAsNumber("z");
@@ -174,15 +175,15 @@ void ClientData_tank::Save(wxTextOutputStream & out, const wxString & prefix)
 
 wxString ClientData_tank::GetText()
 {
-  return type + wxString::Format(" weighs %g  %s at [%g, %g, %g] in %s", contents, contents_unit.c_str(), loc.x1, loc.x2, loc.x3, loc.unit.c_str());  
+  return type + wxString::Format(wxT(" weighs %g  %s at [%g, %g, %g] in %s"), contents, contents_unit.c_str(), loc.x1, loc.x2, loc.x3, loc.unit.c_str());  
 }
 
 
 MyColumn4Str & MyColumn4Str::operator = (const MyColumn3 & s)
 {
-  x1 = wxString::Format("%g", s.x1);
-  x2 = wxString::Format("%g", s.x2);
-  x3 = wxString::Format("%g", s.x3);
+  x1 = wxString::Format(wxT("%g"), s.x1);
+  x2 = wxString::Format(wxT("%g"), s.x2);
+  x3 = wxString::Format(wxT("%g"), s.x3);
   unit = s.unit;
   return *this;
 }
@@ -377,7 +378,7 @@ void EngineThrusterDialog::Load(const ClientData_engine * data)
   feed.Empty();
   for (size_t i = 0u; i < data->feed_list.size(); ++i)
   {
-    feed += wxString::Format("%d ", data->feed_list[i]);
+    feed += wxString::Format(wxT("%d "), data->feed_list[i]);
   }
 }
 
@@ -552,9 +553,9 @@ void TankDialog::do_layout()
 void TankDialog::Load(const ClientData_tank * data)
 {
     type = data->type;
-    capacity = wxString::Format("%g", data->capacity);
+    capacity = wxString::Format(wxT("%g"), data->capacity);
     capacity_unit = data->capacity_unit;
-    contents = wxString::Format("%g", data->contents);
+    contents = wxString::Format(wxT("%g"), data->contents);
     contents_unit = data->contents_unit;
     loc = data->loc;
 }

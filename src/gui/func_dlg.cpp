@@ -324,7 +324,7 @@ void
 FCSFunctionDialog::GetDataIn(FCSFunction * s)
 {
   name       = s->GetName();
-  order      = wxString::Format("%ld",s->GetOrder());
+  order      = wxString::Format(wxT("%ld"),s->GetOrder());
   clipable   = s->IsClipable();
   clipmax    = s->GetClipMax();
   clipmin    = s->GetClipMin();
@@ -388,7 +388,7 @@ FCSFunctionDialog::GetDataIn(FCSFunction * s)
     tree_func->DeleteAllItems();
     function_data = new TreeItemData_function;
     function_data->Init(tree_func);
-    function_data->name = wxString::Format("fcs/function/func%lu", wxDateTime::Now().GetTicks());
+    function_data->name = wxString::Format(wxT("fcs/function/func%lu"), wxDateTime::Now().GetTicks());
     function_data->type = wxT("function");
     function_data->Type = TreeItemData_function::eTopLevel;
     root = tree_func->AddRoot(function_data->name, 24, 24, function_data);
@@ -476,7 +476,7 @@ void
 FCSFunctionDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
 {
   list_box_input->Append(wxT("positive"));
-  wxString tmp = wxT("$INPUT") + wxString::Format("%d",list_box_input->GetCount());
+  wxString tmp = wxT("$INPUT") + wxString::Format(wxT("%d"),list_box_input->GetCount());
 }
 
 
@@ -486,7 +486,7 @@ FCSFunctionDialog::OnInputRemove (wxCommandEvent & WXUNUSED(event))
   if ( list_box_input->GetCount() <= 1)
     return;
 
-  wxString tmp = wxT("$INPUT") + wxString::Format("%d",list_box_input->GetCount());
+  wxString tmp = wxT("$INPUT") + wxString::Format(wxT("%d"),list_box_input->GetCount());
   
   int pos =  list_box_input->GetSelection();
   list_box_input->Delete(pos);

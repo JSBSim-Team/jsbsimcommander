@@ -153,7 +153,7 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
         if (theShape->IsKindOf(CLASSINFO(MISOShape)))
         {
           MISOShape * shape = (MISOShape *)theShape;
-          shape->SetName(shape->GetName() + wxString::Format("_%ld", (dynamic_cast<DiagramDocument *>(GetParent()->GetParent()))->unused++));
+          shape->SetName(shape->GetName() + wxString::Format(wxT("_%ld"), (dynamic_cast<DiagramDocument *>(GetParent()->GetParent()))->unused++));
         }
               if (theShape->IsKindOf(CLASSINFO(ComponentShape)))
                  ((ComponentShape*)theShape)->SetOrder();

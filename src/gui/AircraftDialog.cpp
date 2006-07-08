@@ -2027,7 +2027,7 @@ bool AircraftDialog::Load(const wxString &fn)
   controls_file_parser = new JSBSim::FGXMLParse;
   try
   {
-    readXML (wx2cstr(fn), *controls_file_parser);
+    readXML (wx2stdstr(fn).c_str(), *controls_file_parser);
   }
   catch (...)
   {
@@ -2893,7 +2893,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
     wxString output_file_name = path + fname + wxT(".xml");
 
     std::ifstream output_file;
-    output_file.open(wx2cstr(output_file_name));
+    output_file.open(wx2stdstr(output_file_name).c_str());
     try
     {
       readXML(output_file, output_file_parser);

@@ -32,6 +32,7 @@ FORWARD DECLARATIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 class MyFrame;
+class AircraftDialog;
 class PropertyDialog;
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,6 +100,7 @@ public:
   int OnExit (void);
 
   MyFrame * frame;
+  AircraftDialog * dlg;
 
   wxArrayString source_property;
   wxArrayString source_desc;
@@ -147,8 +149,6 @@ inline wxString std2wxstr(const std::string &str){return wxString(str.c_str(), w
 
 inline wxString c2wxstr(const char *str){return wxString(str, wxConvUTF8);}
 
-inline std::string wx2stdstr(const wxString &str){return (const char*)str.mb_str(wxConvUTF8);}
-
-inline const char* wx2cstr(const wxString &str){return (const char*)str.mb_str(wxConvUTF8);}
+inline std::string wx2stdstr(const wxString &str){ return (const char *)(str.mb_str(wxConvUTF8)); }
 
 #endif  // _MYAPP_H_

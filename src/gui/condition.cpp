@@ -33,6 +33,7 @@
 #include "wx/ogl/ogl.h"
 #include "FGXMLParse.h"
 #include "condition.h"
+#include "MyApp.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(ConditionList);
@@ -293,12 +294,12 @@ void Condition::ImportXML(string test, wxArrayString & array)
   end = test.find_first_of(" ",start+1);
   property2 = test.substr(start,end-start);
 
-  TestParam1 = alias(property1.c_str(), array);
+  TestParam1 = alias(std2wxstr(property1), array);
   Comparison = mComparison[conditional];
   if (property2.find_first_not_of("-.0123456789eE") == string::npos) {
-    TestParam2 = property2.c_str();
+    TestParam2 = std2wxstr(property2);
   } else {
-    TestParam2 = alias(property2.c_str(), array);
+    TestParam2 = alias(std2wxstr(property2), array);
   }
 }
 
@@ -310,7 +311,7 @@ wxString alias(wxString value, wxArrayString & array)
   {
     result = array.Add(value);
   }
-  return wxT("$INPUT") + wxString::Format("%d", result);
+  return wxT("$INPUT") + wxString::Format(wxT("%d"), result);
 }
 
 

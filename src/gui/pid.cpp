@@ -40,6 +40,7 @@
 #include "wx/ogl/ogl.h"
 
 #include "FGXMLElement.h"
+#include "MyApp.h"
 
 #include "shape.h"
 #include "pid.h"
@@ -191,7 +192,7 @@ wxArrayString PID::ImportXML(JSBSim::Element * el)
   if ( el->FindElement("ki") ) Ki = el->FindElementValueAsNumber("ki");
   if ( el->FindElement("kd") ) Kd = el->FindElementValueAsNumber("kd");
 
-  if ( el->FindElement("trigger") ) Trigger = el->FindElementValue("trigger");
+  if ( el->FindElement("trigger") ) Trigger = std2wxstr(el->FindElementValue("trigger"));
 
   return strings;
 }

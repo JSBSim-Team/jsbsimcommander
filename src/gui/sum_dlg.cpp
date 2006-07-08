@@ -150,12 +150,12 @@ void SummerPropertyDialog::OnClipable(wxCommandEvent & WXUNUSED(event) )
 void SummerPropertyDialog::GetDataIn(const Summer * g)
 {
   name       = g->GetName();
-  order      = wxString::Format("%ld",g->GetOrder());
+  order      = wxString::Format(wxT("%ld"),g->GetOrder());
   clipable   = g->IsClipable();
   clipmax    = g->GetClipMax();
   clipmin    = g->GetClipMin();
 
-  bias       = wxString::Format("%g",g->GetBias());
+  bias       = wxString::Format(wxT("%g"),g->GetBias());
 
   list_box_input->Clear();
   const wxMyBoolListNode * node = g->GetInputSignList().GetFirst();

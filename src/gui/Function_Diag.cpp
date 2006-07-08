@@ -357,12 +357,12 @@ void FunctionDialog::OnSelectType(wxCommandEvent & event)
         }
         else
         {
-          text_ctrl_name->SetValue(wxString::Format("function/func%lu", wxDateTime::Now().GetTicks()));
+          text_ctrl_name->SetValue(wxString::Format(wxT("function/func%lu"), wxDateTime::Now().GetTicks()));
         }
       }
       else
       {
-        text_ctrl_name->SetValue(wxString::Format("function/func%lu", wxDateTime::Now().GetTicks()));
+        text_ctrl_name->SetValue(wxString::Format(wxT("function/func%lu"), wxDateTime::Now().GetTicks()));
       }
     }
   }

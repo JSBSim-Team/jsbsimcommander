@@ -295,7 +295,7 @@ void
 SwitchPropertyDialog::GetDataIn(Switch * s)
 {
   name       = s->GetName();
-  order      = wxString::Format("%ld",s->GetOrder());
+  order      = wxString::Format(wxT("%ld"),s->GetOrder());
   clipable   = s->IsClipable();
   clipmax    = s->GetClipMax();
   clipmin    = s->GetClipMin();
@@ -315,7 +315,7 @@ SwitchPropertyDialog::GetDataIn(Switch * s)
 	{
 	  list_box_input->Append(wxT("positive"));
 	}
-      wxString tmp = wxT("$INPUT") + wxString::Format("%d",i);
+      wxString tmp = wxT("$INPUT") + wxString::Format(wxT("%d"),i);
       combo_box_output->Append(tmp);
       combo_box_para1->Append(tmp);
       combo_box_para2->Append(tmp);
@@ -624,7 +624,7 @@ void
 SwitchPropertyDialog::OnInputAdd (wxCommandEvent & WXUNUSED(event))
 {
   list_box_input->Append(wxT("positive"));
-  wxString tmp = wxT("$INPUT") + wxString::Format("%d",list_box_input->GetCount());
+  wxString tmp = wxT("$INPUT") + wxString::Format(wxT("%d"),list_box_input->GetCount());
   combo_box_output->Append(tmp);
   combo_box_para1->Append(tmp);
   combo_box_para2->Append(tmp);
@@ -637,7 +637,7 @@ SwitchPropertyDialog::OnInputRemove (wxCommandEvent & WXUNUSED(event))
   if ( list_box_input->GetCount() <= 1)
     return;
 
-  wxString tmp = wxT("$INPUT") + wxString::Format("%d",list_box_input->GetCount());
+  wxString tmp = wxT("$INPUT") + wxString::Format(wxT("%d"),list_box_input->GetCount());
   int i = combo_box_output->FindString(tmp);
   combo_box_output->Delete(i);
   combo_box_para1->Delete(i);

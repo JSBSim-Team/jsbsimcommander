@@ -27,6 +27,7 @@
 #include <wx/datetime.h>
 
 #include "LGear_Diag.h"
+#include "MyApp.h"
 
 ClientData_LGear::ClientData_LGear()
   : type(wxT("BOGEY")),
@@ -49,11 +50,11 @@ ClientData_LGear::ClientData_LGear()
 
 void ClientData_LGear::Load(JSBSim::Element * el)
 {
-  name = el->GetAttributeValue("name");
+  name = std2wxstr(el->GetAttributeValue("name"));
   if (name.IsEmpty())
     name = wxT("Unknown");
   
-  type = el->GetAttributeValue("type");
+  type = std2wxstr(el->GetAttributeValue("type"));
   if (type.IsEmpty())
     type = wxT("BOGEY");
 
@@ -61,7 +62,7 @@ void ClientData_LGear::Load(JSBSim::Element * el)
 
   if (temp_element = el->FindElement("location"))
   {
-    loc_unit = temp_element->GetAttributeValue("unit");
+    loc_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     if (loc_unit.IsEmpty())
       loc_unit = wxT("IN");
     x = temp_element->FindElementValueAsNumber("x");
@@ -86,25 +87,25 @@ void ClientData_LGear::Load(JSBSim::Element * el)
   
   if (temp_element = el->FindElement("spring_coeff"))
   {
-    spring_coeff_unit = temp_element->GetAttributeValue("unit");
+    spring_coeff_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     spring_coeff = temp_element->GetDataAsNumber();
   }
 
   if (temp_element = el->FindElement("damping_coeff"))
   {
-    damping_coeff_unit = temp_element->GetAttributeValue("unit");
+    damping_coeff_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     damping_coeff = temp_element->GetDataAsNumber();
   }
 
   if (temp_element = el->FindElement("max_steer"))
   {
-    max_steer_unit = temp_element->GetAttributeValue("unit");
+    max_steer_unit = std2wxstr(temp_element->GetAttributeValue("unit"));
     max_steer = temp_element->GetDataAsNumber();
   }
 
   if (temp_element = el->FindElement("brake_group"))
   {
-    brake_group = temp_element->GetDataLine();
+    brake_group = std2wxstr(temp_element->GetDataLine());
     size_t s,e;
     size_t len = brake_group.Length();
     s = 0;
@@ -143,7 +144,7 @@ void ClientData_LGear::Save(wxTextOutputStream & out, const wxString & prefix)
 
 wxString ClientData_LGear::GetText() const
 {
-  return name + wxT(" at ") + wxString::Format("point [%g, %g, %g]", x, y, z) +  wxT(" in ") + loc_unit + wxT(" (in ") + brake_group + wxT(" brake group)");
+  return name + wxT(" at ") + wxString::Format(wxT("point [%g, %g, %g]"), x, y, z) +  wxT(" in ") + loc_unit + wxT(" (in ") + brake_group + wxT(" brake group)");
 }
 
 void ClientData_LGear::ShowDialog()
@@ -323,18 +324,18 @@ void LGearDialog::Load(const ClientData_LGear * data)
 {
   text_ctrl_name->SetValue(data->name);
   text_ctrl_type->SetValue(data->type);
-  text_ctrl_x->SetValue(wxString::Format("%g", data->x));
-  text_ctrl_y->SetValue(wxString::Format("%g", data->y));
-  text_ctrl_z->SetValue(wxString::Format("%g", data->z));
+  text_ctrl_x->SetValue(wxString::Format(wxT("%g"), data->x));
+  text_ctrl_y->SetValue(wxString::Format(wxT("%g"), data->y));
+  text_ctrl_z->SetValue(wxString::Format(wxT("%g"), data->z));
   combo_box_unit->SetValue(data->loc_unit);
-  text_ctrl_spring->SetValue(wxString::Format("%g", data->spring_coeff));
+  text_ctrl_spring->SetValue(wxString::Format(wxT("%g"), data->spring_coeff));
   combo_box_spring->SetValue(data->spring_coeff_unit);
-  text_ctrl_damping->SetValue(wxString::Format("%g", data->damping_coeff));
+  text_ctrl_damping->SetValue(wxString::Format(wxT("%g"), data->damping_coeff));
   combo_box_damping->SetValue(data->damping_coeff_unit);
-  text_ctrl_static_friction->SetValue(wxString::Format("%g", data->static_friction));
-  text_ctrl_dynamic_friction->SetValue(wxString::Format("%g", data->dynamic_friction));
-  text_ctrl_rolling_friction->SetValue(wxString::Format("%g", data->rolling_friction));
-  text_ctrl_max_steer->SetValue(wxString::Format("%g", data->max_steer));
+  text_ctrl_static_friction->SetValue(wxString::Format(wxT("%g"), data->static_friction));
+  text_ctrl_dynamic_friction->SetValue(wxString::Format(wxT("%g"), data->dynamic_friction));
+  text_ctrl_rolling_friction->SetValue(wxString::Format(wxT("%g"), data->rolling_friction));
+  text_ctrl_max_steer->SetValue(wxString::Format(wxT("%g"), data->max_steer));
   combo_box_max_steer->SetValue(data->max_steer_unit);
   combo_box_brake_group->SetValue(data->brake_group);
   checkbox_retractable->SetValue(data->retractable);

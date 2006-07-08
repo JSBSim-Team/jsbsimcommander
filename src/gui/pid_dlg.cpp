@@ -336,14 +336,14 @@ bool PIDPropertyDialog::Show( bool show)
 void PIDPropertyDialog::GetDataIn(PID * g)
 {
   name     = g->GetName();
-  order    = wxString::Format("%ld",g->GetOrder());
+  order    = wxString::Format(wxT("%ld"), g->GetOrder());
   clipable = g->IsClipable();
   clip_max = g->GetClipMax();
   clip_min = g->GetClipMin();
 
-  kp = wxString::Format("%g",g->GetKp());
-  ki = wxString::Format("%g",g->GetKi());
-  kd = wxString::Format("%g",g->GetKd());
+  kp = wxString::Format(wxT("%g"), g->GetKp());
+  ki = wxString::Format(wxT("%g"), g->GetKi());
+  kd = wxString::Format(wxT("%g"), g->GetKd());
 
   if (clipable) {
       text_ctrl_clip_max->Enable(true);

@@ -260,17 +260,17 @@ GainPropertyDialog::GetDataIn(Gain * g)
 {
   name       = g->GetName();
   type       = g->GetType();
-  order      = wxString::Format("%ld",g->GetOrder());
+  order      = wxString::Format(wxT("%ld"),g->GetOrder());
   clipable   = g->IsClipable();
   clipmax    = g->GetClipMax();
   clipmin    = g->GetClipMin();
 
   input1     = *(g->GetInputSignList().GetFirst()->GetData())?1:0;
 
-  gain       = wxString::Format("%g",g->GetGain());
+  gain       = wxString::Format(wxT("%g"), g->GetGain());
 
-  as_max     = wxString::Format("%g",g->GetAeroSurfaceMax());
-  as_min     = wxString::Format("%g",g->GetAeroSurfaceMin());
+  as_max     = wxString::Format(wxT("%g"), g->GetAeroSurfaceMax());
+  as_min     = wxString::Format(wxT("%g"), g->GetAeroSurfaceMin());
   
   indep      = g->GetIndependVar();
 
@@ -280,8 +280,8 @@ GainPropertyDialog::GetDataIn(Gain * g)
   while (node)
     {
       MyPair * value = node->GetData();
-      grid_table->SetCellValue(i,0,wxString::Format("%g",value->x));
-      grid_table->SetCellValue(i,1,wxString::Format("%g",value->y));
+      grid_table->SetCellValue(i,0,wxString::Format(wxT("%g"), value->x));
+      grid_table->SetCellValue(i,1,wxString::Format(wxT("%g"), value->y));
       node = node->GetNext();
       ++i;
     }

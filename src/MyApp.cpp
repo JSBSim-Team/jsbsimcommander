@@ -186,7 +186,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
   if (wxApp::OnCmdLineParsed(parser))
   {
     wxString dir;
-    if (parser.Found("resource", &dir))
+    if (parser.Found(wxT("resource"), &dir))
     {
       rc_dir.Open(dir);
     }
@@ -194,7 +194,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     {
       rc_dir.Open(AppDirectory+wxFileName::GetPathSeparator()+wxT("rc"));
     }
-    if (parser.Found("about", &dir))
+    if (parser.Found(wxT("about"), &dir))
     {
       about_img_file = dir;
     }
@@ -255,4 +255,5 @@ PropertyDialog *GetPropertyDialog (void)
 {
   return wxGetApp().property_dialog;
 }
+
 

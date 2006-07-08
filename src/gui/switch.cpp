@@ -35,6 +35,7 @@
 
 #include "shape.h"
 #include "switch.h"
+#include "MyApp.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(TestList);
@@ -199,23 +200,23 @@ void Test::ImportXML(JSBSim::Element * test_element, wxArrayString & array)
     }
 
     if (test_element->GetName() != "output") { // this is not an output element
-      value = test_element->GetAttributeValue("value").c_str();
+      value = test_element->GetAttributeValue("value");
       if (value.empty()) {
         cerr << "No VALUE supplied for switch component" << endl;
       }
         if (value.find_first_not_of("-.0123456789eE") == string::npos) {
           // if true (and execution falls into this block), "value" is a number.
-          Output = value.c_str();
+          Output = std2wxstr(value);
         } else {
           // "value" must be a property if execution passes to here.
 	  wxString sign;
           if (value[0] == '-') {
-            sign = "-";
+            sign = wxT("-");
             value.erase(0,1);
           } else {
-            sign = "";
+            sign = wxEmptyString;
           }
-          Output = sign + alias(value.c_str(), array);
+          Output = sign + alias(std2wxstr(value), array);
         }
       
     }

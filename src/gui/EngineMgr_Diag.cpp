@@ -223,7 +223,7 @@ void EngineMgrDialog::InitEngineCfg()
         JSBSim::FGXMLParse * controls_file_parser = new JSBSim::FGXMLParse;
         try
         {
-          readXML (fullpath.c_str(), *controls_file_parser);
+          readXML (wx2stdstr(fullpath).c_str(), *controls_file_parser);
         }
         catch (...)
         {
@@ -235,7 +235,7 @@ void EngineMgrDialog::InitEngineCfg()
         if (flag)
         {
           document = controls_file_parser->GetDocument();
-          wxString type = document->GetName();
+          wxString type = std2wxstr(document->GetName());
           wxString prefix = filename + wxT("/");
           config->Write(prefix + wxT("type"), type);
           config->Write(prefix + wxT("name"), filename);

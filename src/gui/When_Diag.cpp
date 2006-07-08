@@ -61,8 +61,8 @@ wxString Parameter::GetText() const
 
 void Parameter::Load(JSBSim::Element * el)
 {
-  name = el->GetAttributeValue("name");
-  wxString comp = el->GetAttributeValue("comparison");
+  name = std2wxstr(el->GetAttributeValue("name"));
+  wxString comp = std2wxstr(el->GetAttributeValue("comparison"));
   if (comp == wxT("lt"))
     comparison = FG_LT;
   else if (comp == wxT("le"))
@@ -75,7 +75,7 @@ void Parameter::Load(JSBSim::Element * el)
     comparison = FG_GT;
   else if (comp == wxT("ne"))
     comparison = FG_NE;
-  value = el->GetAttributeValue("value");
+  value = std2wxstr(el->GetAttributeValue("value"));
 }
 
 void Parameter::Save(wxTextOutputStream & out, const wxString & prefix)
@@ -121,10 +121,10 @@ wxString Set::GetText() const
       rslt += wxT("Step");
       break;
     case FG_RAMP:
-      rslt += wxString::Format("Ramp, tc = %s sec", tc.c_str());
+      rslt += wxString::Format(wxT("Ramp, tc = %s sec"), tc.c_str());
       break;
     case FG_EXP:
-      rslt += wxString::Format("Exp, tc = %s sec", tc.c_str());
+      rslt += wxString::Format(wxT("Exp, tc = %s sec"), tc.c_str());
       break;
   }
   if (persistent)
@@ -136,17 +136,17 @@ wxString Set::GetText() const
 void Set::Load(JSBSim::Element * el)
 {
   wxString tmp;
-  name = el->GetAttributeValue("name");
+  name = std2wxstr(el->GetAttributeValue("name"));
   
-  tmp = el->GetAttributeValue("type");
+  tmp = std2wxstr(el->GetAttributeValue("type"));
   if (tmp == wxT("FG_DELTA"))
    type = FG_DELTA;
   else
     type = FG_VALUE;
   
-  value = el->GetAttributeValue("value");
+  value = std2wxstr(el->GetAttributeValue("value"));
   
-  tmp = el->GetAttributeValue("action");
+  tmp = std2wxstr(el->GetAttributeValue("action"));
   if (tmp == wxT("FG_STEP"))
     action = FG_STEP;
   else if (tmp == wxT("FG_EXP"))
@@ -154,14 +154,14 @@ void Set::Load(JSBSim::Element * el)
   else
     action = FG_RAMP;
   
-  tmp = el->GetAttributeValue("persistent");
+  tmp = std2wxstr(el->GetAttributeValue("persistent"));
   if (tmp == wxT("true"))
     persistent = true;
   else
     persistent = false;
   
   if (action != FG_STEP)
-    tc = el->GetAttributeValue("tc");
+    tc = std2wxstr(el->GetAttributeValue("tc"));
   else
     tc = wxT("1.0");
 }

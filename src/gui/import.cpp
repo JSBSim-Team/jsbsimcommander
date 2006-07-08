@@ -37,16 +37,16 @@
 #include "kinemat.h"
 #include "func.h"
 #include "import.h"
-#include "Commander.h"
+#include "MyApp.h"
 #include "Property_Diag.h"
 
 void DiagramDocument::Import(JSBSim::Element * el)
 {
   // read type in
-  type = el->GetName().c_str();
+  type = std2wxstr(el->GetName());
 
   // read name in
-  name = el->GetAttributeValue("name").c_str();
+  name = std2wxstr(el->GetAttributeValue("name"));
 
   // read properties in
   bool flag = false;
@@ -56,7 +56,7 @@ void DiagramDocument::Import(JSBSim::Element * el)
   {
     if (!flag)
       flag = true;
-    prop_addition.Add(wxString(property->GetDataLine().c_str()));
+    prop_addition.Add(std2wxstr(property->GetDataLine()));
     property = el->FindNextElement("property");
   }
 
@@ -73,7 +73,7 @@ void DiagramDocument::Import(JSBSim::Element * el)
   JSBSim::Element * channel = el->FindElement("channel");
   while (channel)
   {
-    wxString channel_name = channel->GetAttributeValue("name");
+    wxString channel_name = std2wxstr(channel->GetAttributeValue("name"));
     Channel c = CreateChannel (channel_name);
     //Load the channel diagram, if present.
     if (LoadObject(c.diagram, c.name))
@@ -116,7 +116,7 @@ void DiagramDocument::Import(JSBSim::Element * el)
       } else if (type == "function") {
         shape = new FCSFunction;
       } else {
-        wxString str = type.c_str();
+        wxString str = std2wxstr(type);
         str = _("Unknown component(") + str + _(")\n Please check the file.");
         ::wxMessageBox(str, _("Error"), wxOK | wxICON_ERROR );
         throw str;
@@ -127,7 +127,7 @@ void DiagramDocument::Import(JSBSim::Element * el)
       c.diagram->AddShape (shape);
       shape->SetOrder();
 
-      shape->SetType(wxString(type.c_str()));
+      shape->SetType(std2wxstr(type));
       wxArrayString inputs = shape->ImportXML(component);
       shape->SetCentreResize (false);
       shape->SetPen (wxBLACK_PEN);

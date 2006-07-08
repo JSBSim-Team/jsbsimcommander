@@ -35,6 +35,7 @@
 
 #include "shape.h"
 #include "gain.h"
+#include "MyApp.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(MyPairList);
@@ -333,7 +334,7 @@ Gain::ImportXML(JSBSim::Element * el)
       asDomainMax = scale_el->FindElementValueAsNumber("max");
       asDomainMin = scale_el->FindElementValueAsNumber("min");
     }
-    wxString zc = el->FindElementValue("zero_centered");
+    wxString zc = std2wxstr(el->FindElementValue("zero_centered"));
     if (zc == wxT("false"))
     {
       zero_centered = false;
@@ -345,12 +346,12 @@ Gain::ImportXML(JSBSim::Element * el)
     JSBSim::Element * table_el;
     if (table_el = el->FindElement("table")) 
     {
-      indep = table_el->FindElementValue("independentVar").c_str();
+      indep = std2wxstr(table_el->FindElementValue("independentVar"));
       JSBSim::Element * tablevalue_el = table_el->FindElement("tableData");
       Table.Clear();
       for ( int i = 0; i < tablevalue_el->GetNumDataLines();++i)
       {
-	wxString tmp = tablevalue_el->GetDataLine(i).c_str();
+	wxString tmp = std2wxstr(tablevalue_el->GetDataLine(i));
 	MyPair * pair = new MyPair;
 	size_t head1,tail1,head2;
 	size_t j = 0;
