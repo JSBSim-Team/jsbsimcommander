@@ -22,16 +22,9 @@
 #include "wx/event.h"
 #include "wx/dynarray.h"
 
-#ifdef WXMAKINGDLL_PLOT
-    #define WXDLLIMPEXP_PLOT WXEXPORT
-    #define WXDLLIMPEXP_DATA_PLOT(type) WXEXPORT type
-#elif defined(WXUSINGDLL)
-    #define WXDLLIMPEXP_PLOT WXIMPORT
-    #define WXDLLIMPEXP_DATA_PLOT(type) WXIMPORT type
-#else // not making nor using DLL
-    #define WXDLLIMPEXP_PLOT
-    #define WXDLLIMPEXP_DATA_PLOT(type) type
-#endif
+// not making nor using DLL
+#define WXDLLIMPEXP_PLOT
+#define WXDLLIMPEXP_DATA_PLOT(type) type
 
 //-----------------------------------------------------------------------------
 // classes
