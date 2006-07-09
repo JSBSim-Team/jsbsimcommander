@@ -74,10 +74,8 @@ public:
   wxString type;
   wxString name;
 
-#if wxUSE_STD_IOSTREAM
   bool SaveObject(MyDiagram * diagram, const wxString & name);
   bool LoadObject(MyDiagram * diagram, const wxString & name);
-#endif
 
   wxDiagram *GetActiveDiagram ();
   wxShape *FindSelectedShape (void);

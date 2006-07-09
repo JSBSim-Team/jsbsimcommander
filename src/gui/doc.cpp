@@ -120,8 +120,6 @@ void DiagramDocument::ClearAll()
   channels.clear();
 }
 
-#if wxUSE_STD_IOSTREAM
-
 bool DiagramDocument::SaveObject(MyDiagram * diagram, const wxString & name)
 {
   if (name.Length()==0)
@@ -174,10 +172,6 @@ bool DiagramDocument::LoadObject(MyDiagram * diagram, const wxString & name)
 
   return false;
 }
-
-#else
-#error set wxUSE_STD_IOSTREAM=1
-#endif
 
 /***************************************************************
 bool DiagramDocument::OnSaveDocument(const wxString& filename)
