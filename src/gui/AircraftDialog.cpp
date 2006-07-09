@@ -2927,7 +2927,7 @@ void AircraftDialog::LoadOutput(JSBSim::Element * el)
   combo_box_output_type->SetValue(type);
 
   if (!document->GetAttributeValue("rate").empty()) {
-    text_ctrl_output_rate->SetValue(wxString::Format(wxT("%g"), (int)document->GetAttributeValueAsNumber("rate")));
+    text_ctrl_output_rate->SetValue(wxString::Format(wxT("%d"), (int)document->GetAttributeValueAsNumber("rate")));
   } else {
     text_ctrl_output_rate->SetValue(wxT("100"));
   }
