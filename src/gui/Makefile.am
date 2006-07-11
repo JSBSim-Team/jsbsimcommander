@@ -32,6 +32,6 @@ LGear_Diag.h         condition.h        gain.h         switch_dlg.h \
 Mass_Diag.h          deadband.h         gain_dlg.h     toolbar.h \
 Property_Diag.h      deadband_dlg.h     import.h       view.h \
 Propulsion_Diag.h    doc.h              kinemat.h      EngineMgr_Diag.h \
-MyFrame.h            pid.cpp            pid_dlg.cpp
+MyFrame.h            pid.h              pid_dlg.h
 
 
