@@ -74,7 +74,9 @@ PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const 
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
 {
     // begin wxGlade: PIDPropertyDialog::PIDPropertyDialog
-    panel_toplevel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL|wxWS_EX_VALIDATE_RECURSIVELY);
+    notebook_1 = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, wxWS_EX_VALIDATE_RECURSIVELY);
+    notebook_1_pane_1 = new wxPanel(notebook_1, -1);
+    panel_toplevel = new wxPanel(notebook_1_pane_1, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL);
     sizer_clip_staticbox = new wxStaticBox(panel_toplevel, -1, wxT("Clipping"));
     sizer_trigger_staticbox = new wxStaticBox(panel_toplevel, -1, wxT("Trigger property"));
     sizer_pid_top_staticbox = new wxStaticBox(panel_toplevel, -1, wxT("PID Control Characteristics"));
@@ -108,6 +110,7 @@ PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const 
     button_OK = new wxButton(this, wxID_OK, wxT("OK"));
     button_Cancel = new wxButton(this, wxID_CANCEL, wxT("Cancel"));
     button_Help = new wxButton(this, -1, wxT("Help"));
+    text_ctrl_1 = new wxTextCtrl(notebook_1, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &description));
 
     set_properties();
     do_layout();
@@ -198,6 +201,7 @@ void PIDPropertyDialog::set_properties()
 {
     // begin wxGlade: PIDPropertyDialog::set_properties
     SetTitle(wxT("PID Component Editor"));
+    SetSize(wxSize(327, 533));
     wxIcon _icon;
     _icon.CopyFromBitmap(wxBITMAP(pid));
     SetIcon(_icon);
@@ -241,8 +245,9 @@ void PIDPropertyDialog::set_properties()
 void PIDPropertyDialog::do_layout()
 {
     // begin wxGlade: PIDPropertyDialog::do_layout
-    wxFlexGridSizer* grid_sizer_toplevel = new wxFlexGridSizer(3, 1, 5, 0);
+    wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(2, 1, 5, 0);
     wxBoxSizer* sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_1 = new wxBoxSizer(wxHORIZONTAL);
     wxFlexGridSizer* grid_sizer_top_interior = new wxFlexGridSizer(4, 1, 5, 0);
     wxStaticBoxSizer* sizer_inout = new wxStaticBoxSizer(sizer_inout_staticbox, wxHORIZONTAL);
     wxFlexGridSizer* grid_sizer_inout = new wxFlexGridSizer(2, 2, 5, 5);
@@ -309,18 +314,26 @@ void PIDPropertyDialog::do_layout()
     grid_sizer_top_interior->SetSizeHints(panel_toplevel);
     grid_sizer_top_interior->AddGrowableRow(3);
     grid_sizer_top_interior->AddGrowableCol(0);
-    grid_sizer_toplevel->Add(panel_toplevel, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_1->Add(panel_toplevel, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    notebook_1_pane_1->SetAutoLayout(true);
+    notebook_1_pane_1->SetSizer(sizer_1);
+    sizer_1->Fit(notebook_1_pane_1);
+    sizer_1->SetSizeHints(notebook_1_pane_1);
+    notebook_1->AddPage(notebook_1_pane_1, wxT("Properties"));
+    notebook_1->AddPage(text_ctrl_1, wxT("Comments"));
+    grid_sizer_2->Add(notebook_1, 1, wxEXPAND, 0);
     sizer_buttons->Add(button_OK, 0, wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5);
     sizer_buttons->Add(button_Cancel, 0, wxLEFT|wxRIGHT, 5);
     sizer_buttons->Add(button_Help, 0, wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5);
-    grid_sizer_toplevel->Add(sizer_buttons, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 5);
+    grid_sizer_2->Add(sizer_buttons, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 5);
     SetAutoLayout(true);
-    SetSizer(grid_sizer_toplevel);
-    grid_sizer_toplevel->Fit(this);
-    grid_sizer_toplevel->SetSizeHints(this);
-    grid_sizer_toplevel->AddGrowableRow(0);
-    grid_sizer_toplevel->AddGrowableCol(0);
+    SetSizer(grid_sizer_2);
+    grid_sizer_2->Fit(this);
+    grid_sizer_2->SetSizeHints(this);
+    grid_sizer_2->AddGrowableRow(0);
+    grid_sizer_2->AddGrowableCol(0);
     Layout();
+    Centre();
     // end wxGlade
 }
 
@@ -344,6 +357,7 @@ bool PIDPropertyDialog::Show( bool show)
 void PIDPropertyDialog::GetDataIn(PID * g)
 {
   name     = g->GetName();
+  description  = g->GetDescription();
   order    = wxString::Format(wxT("%ld"), g->GetOrder());
   clipable = g->IsClipable();
   clip_max = g->GetClipMax();
@@ -368,20 +382,22 @@ void PIDPropertyDialog::GetDataIn(PID * g)
   wxArrayString inputs = g->GetInputNames();
 
   *text_ctrl_output_prop << g->GetOutputName();
-
-  if (inputs[0] != wxT("NULL"))
-  {
-    button_invert_input->Enable();
-    if (g->GetInputIsInverted()) {
-      button_invert_input->SetValue(true);
-      button_invert_input->SetLabel(wxT("-"));
-    } else {
-      button_invert_input->SetValue(false);
-      button_invert_input->SetLabel(wxT("+"));
+  if (inputs.GetCount() > 0) {
+    if (inputs[0] != wxT("NULL"))
+    {
+      button_invert_input->Enable();
+      if (g->GetInputIsInverted()) {
+        button_invert_input->SetValue(true);
+        button_invert_input->SetLabel(wxT("-"));
+      } else {
+        button_invert_input->SetValue(false);
+        button_invert_input->SetLabel(wxT("+"));
+      }
     }
+    *text_ctrl_input_prop << inputs[0];
   }
-  *text_ctrl_input_prop << inputs[0];
   *text_ctrl_trigger_prop << g->GetTrigger();
+  *text_ctrl_1 << g->GetDescription();
 }
 
 /**
@@ -391,6 +407,8 @@ void PIDPropertyDialog::GetDataIn(PID * g)
 void PIDPropertyDialog::SetDataOut(PID * g)
 {
   g->SetName(name);
+  g->SetDescription(description);
+
   long int tmpl;
   order.ToLong(&tmpl);
   g->SetOrder(tmpl);
@@ -408,6 +426,7 @@ void PIDPropertyDialog::SetDataOut(PID * g)
   g->SetKd(tmp);
 
   g->SetTrigger(text_ctrl_trigger_prop->GetValue());
+  g->SetDescription(text_ctrl_1->GetValue());
 
   g->SetInputIsInverted(false);
   if (text_ctrl_input_prop->GetValue() != wxT("NULL")) // true if input prop is present

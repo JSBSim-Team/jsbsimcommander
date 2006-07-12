@@ -118,7 +118,7 @@ void MyEvtHandler::OnRightClick(double x, double y, int keys, int WXUNUSED(attac
 
 void
 MyEvtHandler::OnBeginDragRight (double x, double y, int WXUNUSED (keys),
-				int attachment)
+                                int attachment)
 {
 
   wxClientDC dc (GetShape()->GetCanvas ());
@@ -128,7 +128,7 @@ MyEvtHandler::OnBeginDragRight (double x, double y, int WXUNUSED (keys),
     {
       //output port should be attachment 0
       if (attachment > 0)
-	return;
+        return;
     }
 
   wxPen dottedPen (wxColour (0, 0, 0), 1, wxDOT);
@@ -143,7 +143,7 @@ MyEvtHandler::OnBeginDragRight (double x, double y, int WXUNUSED (keys),
 
 void
 MyEvtHandler::OnDragRight (bool WXUNUSED (draw), double x, double y,
-			   int WXUNUSED (keys), int attachment)
+                           int WXUNUSED (keys), int attachment)
 {
   wxClientDC dc (GetShape()->GetCanvas ());
   GetShape()->GetCanvas ()->PrepareDC (dc);
@@ -152,7 +152,7 @@ MyEvtHandler::OnDragRight (bool WXUNUSED (draw), double x, double y,
     {
       //output port should be attachment 0
       if (attachment > 0)
-	return;
+        return;
     }
 
   wxPen dottedPen (wxColour (0, 0, 0), 1, wxDOT);
@@ -166,7 +166,7 @@ MyEvtHandler::OnDragRight (bool WXUNUSED (draw), double x, double y,
 
 void
 MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
-			      int attachment)
+                              int attachment)
 {
   GetShape()->GetCanvas ()->ReleaseMouse ();
   MyCanvas *canvas = (MyCanvas *) GetShape()->GetCanvas ();
@@ -179,89 +179,89 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
   if (otherShape && !otherShape->IsKindOf (CLASSINFO (wxLineShape)))
     {
       if (GetShape()->IsKindOf (CLASSINFO (MISOShape)))
-	{
-	  //output port should be attachment 0
-	  if (attachment > 0)
-	    return;
-	  // do not link to myself
-	  if (otherShape == GetShape())
-	    return;
+        {
+          //output port should be attachment 0
+          if (attachment > 0)
+            return;
+          // do not link to myself
+          if (otherShape == GetShape())
+            return;
 
-	  wxNode *node = GetShape()->GetLines ().GetFirst ();
-	  while (node)
-	    {
-	      wxLineShape *p = (wxLineShape *) node->GetData ();
-	      //only have one output line
-	      if (p->GetFrom () == GetShape())
-		return;
-	      node = node->GetNext ();
-	    }
-	}
+          wxNode *node = GetShape()->GetLines ().GetFirst ();
+          while (node)
+            {
+              wxLineShape *p = (wxLineShape *) node->GetData ();
+              //only have one output line
+              if (p->GetFrom () == GetShape())
+                return;
+              node = node->GetNext ();
+            }
+        }
 
       if (otherShape->IsKindOf (CLASSINFO (MISOShape)))
-	{
-	  //input port should not be attachment 0
-	  if (new_attachment == 0)
-	    return;
+        {
+          //input port should not be attachment 0
+          if (new_attachment == 0)
+            return;
 
-	  wxNode *node = otherShape->GetLines ().GetFirst ();
-	  while (node)
-	    {
-	      wxLineShape *p = (wxLineShape *) node->GetData ();
-	      //one input port, one input line
-	      if (p->GetAttachmentTo () == new_attachment
-		  && p->GetTo () == otherShape)
-		return;
-	      node = node->GetNext ();
-	    }
+          wxNode *node = otherShape->GetLines ().GetFirst ();
+          while (node)
+            {
+              wxLineShape *p = (wxLineShape *) node->GetData ();
+              //one input port, one input line
+              if (p->GetAttachmentTo () == new_attachment
+                  && p->GetTo () == otherShape)
+                return;
+              node = node->GetNext ();
+            }
 
-	}
+        }
       if (otherShape->IsKindOf(CLASSINFO(SIMOShape)))
-	{
-	  wxNode *node = otherShape->GetLines ().GetFirst ();
-	  while (node)
-	    {
-	      wxLineShape *p = (wxLineShape *) node->GetData ();
-	      if (p->GetTo () == otherShape)
-		return;		//otherShape has already had a input line
-	      node = node->GetNext ();
-	    }
-	}
+        {
+          wxNode *node = otherShape->GetLines ().GetFirst ();
+          while (node)
+            {
+              wxLineShape *p = (wxLineShape *) node->GetData ();
+              if (p->GetTo () == otherShape)
+                return;                //otherShape has already had a input line
+              node = node->GetNext ();
+            }
+        }
 
   {
       wxLineShape * theShape;
-	    theShape = new wxLineShape;
-	    theShape->AssignNewIds ();
-	    theShape->SetEventHandler(new MyEvtHandler(theShape, theShape));
-	    theShape->SetPen (wxBLACK_PEN);
-	    theShape->SetBrush (wxRED_BRUSH);
+            theShape = new wxLineShape;
+            theShape->AssignNewIds ();
+            theShape->SetEventHandler(new MyEvtHandler(theShape, theShape));
+            theShape->SetPen (wxBLACK_PEN);
+            theShape->SetBrush (wxRED_BRUSH);
 
-	    wxLineShape *lineShape = theShape;
+            wxLineShape *lineShape = theShape;
 
-	    // Yes, you can have more than 2 control points, in which case
-	    // it becomes a multi-segment line.
-	    lineShape->MakeLineControlPoints (3);
-	    lineShape->AddArrow (ARROW_ARROW, ARROW_POSITION_END, 10.0, 0.0,
-				 _T ("Normal arrowhead"));
+            // Yes, you can have more than 2 control points, in which case
+            // it becomes a multi-segment line.
+            lineShape->MakeLineControlPoints (3);
+            lineShape->AddArrow (ARROW_ARROW, ARROW_POSITION_END, 10.0, 0.0,
+                                 _T ("Normal arrowhead"));
 
-	    canvas->GetDiagram ()->AddShape (theShape);
+            canvas->GetDiagram ()->AddShape (theShape);
 
-	    GetShape()->AddLine ((wxLineShape *) theShape, otherShape, attachment, new_attachment);
+            GetShape()->AddLine ((wxLineShape *) theShape, otherShape, attachment, new_attachment);
 
-	    if (GetShape()->IsKindOf (CLASSINFO (MISOShape)))
+            if (GetShape()->IsKindOf (CLASSINFO (MISOShape)))
       {
         ((MISOShape *) GetShape())->NormalizeLine ((wxLineShape *) theShape);
       }
 
-	    theShape->Show (true);
+            theShape->Show (true);
 
-	    wxClientDC dc (canvas);
-	    canvas->PrepareDC (dc);
+            wxClientDC dc (canvas);
+            canvas->PrepareDC (dc);
 
-	    // It won't get drawn properly unless you move both
-	    // connected images
-	    GetShape()->Move (dc, GetShape()->GetX (), GetShape()->GetY ());
-	    otherShape->Move (dc, otherShape->GetX (), otherShape->GetY ());
+            // It won't get drawn properly unless you move both
+            // connected images
+            GetShape()->Move (dc, GetShape()->GetX (), GetShape()->GetY ());
+            otherShape->Move (dc, otherShape->GetX (), otherShape->GetY ());
   }
     }
 }
@@ -312,15 +312,15 @@ MISOShape::SetNodePos ()
     {
       tmp = (wxAttachmentPoint *) node->GetData ();
       if (tmp->m_id > 0)
-	{
-	  tmp->m_x = -width;
-	  tmp->m_y = -0.5 * m_height + height * tmp->m_id;
-	}
+        {
+          tmp->m_x = -width;
+          tmp->m_y = -0.5 * m_height + height * tmp->m_id;
+        }
       else
-	{
-	  tmp->m_x = width;
-	  tmp->m_y = 0.0;
-	}
+        {
+          tmp->m_x = width;
+          tmp->m_y = 0.0;
+        }
       node = node->GetNext ();
     }
 
@@ -385,45 +385,45 @@ MISOShape::OnDraw (wxDC & dc)
     {
       p = (wxAttachmentPoint *) node->GetData ();
       if (p->m_id > 0)
-	{
-	  if (is_draw_reverse)
-	    {
-	      tmp[0].x = WXROUND (p->m_x);
-	      tmp[0].y = WXROUND (p->m_y) - arr_size;
-	      tmp[1].x = WXROUND (p->m_x) - arr_size;
-	      tmp[1].y = WXROUND (p->m_y);
-	      tmp[2].x = WXROUND (p->m_x);
-	      tmp[2].y = WXROUND (p->m_y) + arr_size;
-	    }
-	  else
-	    {
-	      tmp[0].x = WXROUND (p->m_x);
-	      tmp[0].y = WXROUND (p->m_y) - arr_size;
-	      tmp[1].x = WXROUND (p->m_x) + arr_size;
-	      tmp[1].y = WXROUND (p->m_y);
-	      tmp[2].x = WXROUND (p->m_x);
-	      tmp[2].y = WXROUND (p->m_y) + arr_size;
-	    }
-	}
+        {
+          if (is_draw_reverse)
+            {
+              tmp[0].x = WXROUND (p->m_x);
+              tmp[0].y = WXROUND (p->m_y) - arr_size;
+              tmp[1].x = WXROUND (p->m_x) - arr_size;
+              tmp[1].y = WXROUND (p->m_y);
+              tmp[2].x = WXROUND (p->m_x);
+              tmp[2].y = WXROUND (p->m_y) + arr_size;
+            }
+          else
+            {
+              tmp[0].x = WXROUND (p->m_x);
+              tmp[0].y = WXROUND (p->m_y) - arr_size;
+              tmp[1].x = WXROUND (p->m_x) + arr_size;
+              tmp[1].y = WXROUND (p->m_y);
+              tmp[2].x = WXROUND (p->m_x);
+              tmp[2].y = WXROUND (p->m_y) + arr_size;
+            }
+        }
       else
-	{
-	  tmp[1].x = WXROUND (p->m_x);
-	  tmp[1].y = WXROUND (p->m_y);
-	  if (is_draw_reverse)
-	    {
-	      tmp[0].x = tmp[1].x + arr_size;
-	      tmp[0].y = tmp[1].y - arr_size;
-	      tmp[2].x = tmp[1].x + arr_size;
-	      tmp[2].y = tmp[1].y + arr_size;
-	    }
-	  else
-	    {
-	      tmp[0].x = tmp[1].x - arr_size;
-	      tmp[0].y = tmp[1].y - arr_size;
-	      tmp[2].x = tmp[1].x - arr_size;
-	      tmp[2].y = tmp[1].y + arr_size;
-	    }
-	}
+        {
+          tmp[1].x = WXROUND (p->m_x);
+          tmp[1].y = WXROUND (p->m_y);
+          if (is_draw_reverse)
+            {
+              tmp[0].x = tmp[1].x + arr_size;
+              tmp[0].y = tmp[1].y - arr_size;
+              tmp[2].x = tmp[1].x + arr_size;
+              tmp[2].y = tmp[1].y + arr_size;
+            }
+          else
+            {
+              tmp[0].x = tmp[1].x - arr_size;
+              tmp[0].y = tmp[1].y - arr_size;
+              tmp[2].x = tmp[1].x - arr_size;
+              tmp[2].y = tmp[1].y + arr_size;
+            }
+        }
       dc.DrawLines (3, tmp, WXROUND (m_xpos), WXROUND (m_ypos));
       node = node->GetNext ();
     }
@@ -504,15 +504,15 @@ MISOShape::GetNumberOfAttachments () const
 
 inline bool
 MISOShape::GetAttachmentPosition (int attachment, double *x, double *y,
-				    int nth, int no_arcs, wxLineShape * line)
+                                    int nth, int no_arcs, wxLineShape * line)
 {
   return wxRectangleShape::GetAttachmentPosition (attachment, x, y, nth,
-						  no_arcs, line);
+                                                  no_arcs, line);
 }
 
 void
 MISOShape::OnChangeAttachment (int attachment, wxLineShape * line,
-				 wxList & ordering)
+                                 wxList & ordering)
 {
   //check if it should be changed.
   if (line->GetTo () == this && attachment == 0 || line->GetFrom () == this
@@ -524,7 +524,7 @@ MISOShape::OnChangeAttachment (int attachment, wxLineShape * line,
       MoveLinks (dc);
 
       if (!GetCanvas ()->GetQuickEditMode ())
-	GetCanvas ()->Redraw (dc);
+        GetCanvas ()->Redraw (dc);
 
       return;
     }
@@ -562,19 +562,19 @@ MISOShape::NormalizeLine (wxLineShape * line)
       && to_reverse && fromx > tox)
     {
       if (to_reverse)
-	step_size *= -1;
+        step_size *= -1;
       double coeff = (fromx + tox) * 0.5;
       // modify coeff by attachment point pos
       coeff -= step_size * ( attach_to - center_to );
       if (line->GetLineControlPoints ()->GetCount () == 4)
-	{
-	  double c =
-	    ((wxRealPoint *) line->GetLineControlPoints ()->Item (1)->
-	     GetData ())->x;
-	  if (fromx < tox && c < tox - 10 && c > fromx + 10 || fromx > tox
-	      && c > tox + 10 && c < fromx - 10)
-	    coeff = c;
-	}
+        {
+          double c =
+            ((wxRealPoint *) line->GetLineControlPoints ()->Item (1)->
+             GetData ())->x;
+          if (fromx < tox && c < tox - 10 && c > fromx + 10 || fromx > tox
+              && c > tox + 10 && c < fromx - 10)
+            coeff = c;
+        }
       line->MakeLineControlPoints (4);
       wxNode *node = line->GetLineControlPoints ()->GetFirst ();
       wxRealPoint *p;
@@ -595,7 +595,7 @@ MISOShape::NormalizeLine (wxLineShape * line)
       p->y = toy;
     }
   else if (!from_reverse && to_reverse && fromx < tox || from_reverse
-	   && !to_reverse && fromx > tox)
+           && !to_reverse && fromx > tox)
     {
       line->MakeLineControlPoints (4);
       wxNode *node = line->GetLineControlPoints ()->GetFirst ();
@@ -617,7 +617,7 @@ MISOShape::NormalizeLine (wxLineShape * line)
       p->y = toy;
     }
   else if (!from_reverse && to_reverse && fromx > tox || from_reverse
-	   && !to_reverse && fromx < tox)
+           && !to_reverse && fromx < tox)
     {
       line->MakeLineControlPoints (4);
       wxNode *node = line->GetLineControlPoints ()->GetFirst ();
@@ -639,7 +639,7 @@ MISOShape::NormalizeLine (wxLineShape * line)
       p->y = toy;
     }
   else if (from_reverse && to_reverse && fromx < tox || !from_reverse
-	   && !to_reverse && fromx > tox)
+           && !to_reverse && fromx > tox)
     {
       line->MakeLineControlPoints (6);
       wxNode *node = line->GetLineControlPoints ()->GetFirst ();
@@ -724,7 +724,7 @@ MISOShape::OnEndSize (double WXUNUSED (x), double WXUNUSED (y))
 
 void
 MISOShape::OnMovePost (wxDC & dc, double x, double y, double old_x,
-			 double old_y, bool display)
+                         double old_y, bool display)
 {
   wxRectangleShape::OnMovePost (dc, x, y, old_x, old_y, display);
 
@@ -845,7 +845,8 @@ ComponentShape::ComponentShape (double w, double h, const wxString & Type, const
   order(-9999),
   clipable(false),
   clipmax(wxEmptyString),
-  clipmin(wxEmptyString)
+  clipmin(wxEmptyString),
+  description(wxEmptyString)
 {
   input_sign_list.DeleteContents(true);
 }
@@ -872,27 +873,27 @@ ComponentShape::OnDraw (wxDC & dc)
     {
       p = (wxAttachmentPoint *) node->GetData ();
       if (p->m_id > 0 && snode)
-	{
+        {
           if (*(snode->GetData()))
-	  {
-	    if (is_draw_reverse)
-	    {
-	      tmp[0].x = WXROUND (p->m_x);
-	      tmp[0].y = WXROUND (p->m_y);
-	      tmp[1].x = WXROUND (p->m_x) - arr_size;
-	      tmp[1].y = WXROUND (p->m_y);
-	    }
-	    else
-	    {
-	      tmp[0].x = WXROUND (p->m_x);
-	      tmp[0].y = WXROUND (p->m_y);
-	      tmp[1].x = WXROUND (p->m_x) + arr_size;
-	      tmp[1].y = WXROUND (p->m_y);
-	    }
+          {
+            if (is_draw_reverse)
+            {
+              tmp[0].x = WXROUND (p->m_x);
+              tmp[0].y = WXROUND (p->m_y);
+              tmp[1].x = WXROUND (p->m_x) - arr_size;
+              tmp[1].y = WXROUND (p->m_y);
+            }
+            else
+            {
+              tmp[0].x = WXROUND (p->m_x);
+              tmp[0].y = WXROUND (p->m_y);
+              tmp[1].x = WXROUND (p->m_x) + arr_size;
+              tmp[1].y = WXROUND (p->m_y);
+            }
             dc.DrawLines (2, tmp, WXROUND (m_xpos), WXROUND (m_ypos));
-	  }
-	  snode = snode->GetNext();
-	}
+          }
+          snode = snode->GetNext();
+        }
       node = node->GetNext ();
     }
   if (clipable)
@@ -933,9 +934,9 @@ ComponentShape::WriteAttributes (wxExpr * clause)
     {
       bool * b = node->GetData();
       if (*b)
-	list->Append(new wxExpr(1L));
+        list->Append(new wxExpr(1L));
       else
-	list->Append(new wxExpr(0L));
+        list->Append(new wxExpr(0L));
       node = node->GetNext();
     }
   clause->AddAttributeValue(wxT("InputS"), list);
@@ -978,9 +979,9 @@ ComponentShape::ReadAttributes (wxExpr * clause)
     while (pointExpr)
     {
       if (pointExpr->IntegerValue() )
-	input_sign_list.Append(new bool(true));
+        input_sign_list.Append(new bool(true));
       else
-	input_sign_list.Append(new bool(false));
+        input_sign_list.Append(new bool(false));
       pointExpr = pointExpr->GetNext();
     }
   }
@@ -999,6 +1000,7 @@ ComponentShape::Copy (wxShape & copy)
   ComponmentCopy.clipable = clipable;
   ComponmentCopy.clipmax = clipmax;
   ComponmentCopy.clipmin = clipmin;
+  ComponmentCopy.description = description;
 
   ComponmentCopy.input_sign_list.Clear();
   wxMyBoolListNode * node = input_sign_list.GetFirst();
@@ -1022,12 +1024,12 @@ ComponentShape::SetOrder()
     {
       wxShape *eachShape = (wxShape *) node->GetData ();
       if ( eachShape->IsKindOf(CLASSINFO(ComponentShape)))
-	{
-	  ComponentShape * theShape = (ComponentShape *)eachShape;
-	  if ( theShape->GetOrder() > order )
-	    order = theShape->GetOrder();
-	}
-	node = node->GetNext ();
+        {
+          ComponentShape * theShape = (ComponentShape *)eachShape;
+          if ( theShape->GetOrder() > order )
+            order = theShape->GetOrder();
+        }
+        node = node->GetNext ();
     }
   order += 10;
 }
@@ -1045,16 +1047,16 @@ ComponentShape::SetOrder(long int & o)
     {
       wxShape *eachShape = (wxShape *) node->GetData ();
       if ( eachShape->IsKindOf(CLASSINFO(ComponentShape)))
-	{
-	  ComponentShape * theShape = (ComponentShape *)eachShape;
-	  if ( theShape->GetOrder() == o )
-	    {
-	      theShape->order = order;
-	      order = o;
-	      return;
-	    }
-	}
-	node = node->GetNext ();
+        {
+          ComponentShape * theShape = (ComponentShape *)eachShape;
+          if ( theShape->GetOrder() == o )
+            {
+              theShape->order = order;
+              order = o;
+              return;
+            }
+        }
+        node = node->GetNext ();
     }
   order = o;
 }
@@ -1087,8 +1089,7 @@ ComponentShape::ExportCliper(wxTextOutputStream & stream, const wxString & prefi
 wxString
 ComponentShape::mkName(wxString name, bool lowercase)
 {
-  if (lowercase)
-    name.LowerCase();
+  if (lowercase)  name.LowerCase();
 
   for(size_t i = 0, n = name.Length(); i < n ; i++)
   {
@@ -1099,13 +1100,18 @@ ComponentShape::mkName(wxString name, bool lowercase)
   return wxT("fcs/") + name;
 }
 
-wxArrayString
-ComponentShape::GetInputNames() const
+/*
+ * =============================================================================
+ */
+
+wxArrayString ComponentShape::GetInputNames() const
 {
   wxArrayString rslt;
-  rslt.Add(wxT("NULL"), input_sign_list.GetCount());
+
+  rslt.Add(wxT("NULL"), GetNumberOfAttachments()-1);
 
   wxNode * node = GetLines().GetFirst();
+
   while (node)
   {
     wxLineShape * data = (wxLineShape *)node->GetData();
@@ -1115,32 +1121,30 @@ ComponentShape::GetInputNames() const
       while (shape && shape->IsKindOf(CLASSINFO(SIMOShape))) //if input shape is a SIMO Shape, find the input shape of the SIMO Shape
       {
         wxNode * nd = shape->GetLines().GetFirst();
-	bool flag = false;
-	while (nd)
-	{
-	  wxLineShape * value = (wxLineShape *)nd->GetData();
-	  if (value->GetTo() == shape)
-	  {
-	    shape = value->GetFrom();  // get it!
-	    flag = true;
-	    break;
-	  }
+        bool flag = false;
+        while (nd)
+        {
+          wxLineShape * value = (wxLineShape *)nd->GetData();
+          if (value->GetTo() == shape)
+          {
+            shape = value->GetFrom();  // get it!
+            flag = true;
+            break;
+          }
           nd = nd->GetNext();
-	}
-	if (!flag)
-	{
-	  shape = 0; // no find
-	}
+        }
+        if (!flag) shape = 0; // no find
       }
       //output
       if (shape && shape->IsKindOf(CLASSINFO(MISOShape)))
       {
-	 int a = data->GetAttachmentTo() - 1;
+         int a = data->GetAttachmentTo() - 1;
          MISOShape * misoshape = (MISOShape *)shape;
-	 if (misoshape->IsKindOf(CLASSINFO(ComponentShape)))
-	   rslt[a] =  mkName( misoshape->GetName(), true );
-	 else
-	   rslt[a] = misoshape->GetName();
+         if (misoshape->IsKindOf(CLASSINFO(ComponentShape))) {
+           rslt[a] =  mkName( misoshape->GetName(), true );
+         } else {
+           rslt[a] = misoshape->GetName();
+         }
       }
     }
     node = node->GetNext();
@@ -1161,36 +1165,36 @@ ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefi
       while (shape && shape->IsKindOf(CLASSINFO(SIMOShape))) //if input shape is a SIMO Shape, find the input shape of the SIMO Shape
       {
         wxNode * nd = shape->GetLines().GetFirst();
-	bool flag = false;
-	while (nd)
-	{
-	  wxLineShape * value = (wxLineShape *)nd->GetData();
-	  if (value->GetTo() == shape)
-	  {
-	    shape = value->GetFrom();  // get it!
-	    flag = true;
-	    break;
-	  }
+        bool flag = false;
+        while (nd)
+        {
+          wxLineShape * value = (wxLineShape *)nd->GetData();
+          if (value->GetTo() == shape)
+          {
+            shape = value->GetFrom();  // get it!
+            flag = true;
+            break;
+          }
           nd = nd->GetNext();
-	}
-	if (!flag)
-	{
-	  shape = 0; // no find
-	}
+        }
+        if (!flag)
+        {
+          shape = 0; // no find
+        }
       }
       //output
       if (shape && shape->IsKindOf(CLASSINFO(MISOShape)))
       {
-	 int a = data->GetAttachmentTo();
-	 bool b = *(input_sign_list.Item(a-1)->GetData());
-	 wxString c=wxEmptyString;
-	 if (b)
-	   c = wxT("-");
+         int a = data->GetAttachmentTo();
+         bool b = *(input_sign_list.Item(a-1)->GetData());
+         wxString c=wxEmptyString;
+         if (b)
+           c = wxT("-");
          MISOShape * misoshape = (MISOShape *)shape;
-	 if (misoshape->IsKindOf(CLASSINFO(ComponentShape)))
-	   stream << prefix << wxT("<input>")<< c << mkName( misoshape->GetName(), true ) << wxT("</input>") << endl;
-	 else
-	   stream << prefix << wxT("<input>")<< c << misoshape->GetName() << wxT("</input>") << endl;
+         if (misoshape->IsKindOf(CLASSINFO(ComponentShape)))
+           stream << prefix << wxT("<input>")<< c << mkName( misoshape->GetName(), true ) << wxT("</input>") << endl;
+         else
+           stream << prefix << wxT("<input>")<< c << misoshape->GetName() << wxT("</input>") << endl;
       }
     }
     node = node->GetNext();
@@ -1209,12 +1213,12 @@ ComponentShape::GetOutputNode(SIMOShape * shape)
       wxShape * other = data->GetTo();
       if (other->IsKindOf(CLASSINFO(SIMOShape)))
       {
-	DestinationShape * result;
-	if ( result = GetOutputNode((SIMOShape *)other) )
-	  return result;
+        DestinationShape * result;
+        if ( result = GetOutputNode((SIMOShape *)other) )
+          return result;
       }
       else if (other->IsKindOf(CLASSINFO(DestinationShape)))
-	return (DestinationShape *)other;
+        return (DestinationShape *)other;
     }
     node = node->GetNext();
   }
@@ -1234,16 +1238,16 @@ ComponentShape::ExportOutput(wxTextOutputStream & stream, const wxString & prefi
       DestinationShape * result = NULL;
       if (shape->IsKindOf(CLASSINFO(SIMOShape)))
       {
-	result = GetOutputNode((SIMOShape *)shape);
+        result = GetOutputNode((SIMOShape *)shape);
       }
       else if (shape->IsKindOf(CLASSINFO(DestinationShape)))
       {
-	result = (DestinationShape *)shape;
+        result = (DestinationShape *)shape;
       }
       //output
       if (result)
       {
-	stream << prefix << wxT("<output>")<< result->GetName() << wxT("</output>") << endl;
+        stream << prefix << wxT("<output>")<< result->GetName() << wxT("</output>") << endl;
       }
       break; //only one output
     }
@@ -1265,16 +1269,16 @@ ComponentShape::GetOutputName() const
       DestinationShape * result = NULL;
       if (shape->IsKindOf(CLASSINFO(SIMOShape)))
       {
-	result = GetOutputNode((SIMOShape *)shape);
+        result = GetOutputNode((SIMOShape *)shape);
       }
       else if (shape->IsKindOf(CLASSINFO(DestinationShape)))
       {
-	result = (DestinationShape *)shape;
+        result = (DestinationShape *)shape;
       }
       //output
       if (result)
       {
-	rslt = result->GetName();
+        rslt = result->GetName();
       }
       break; //only one output
     }
@@ -1355,4 +1359,3 @@ ComponentShape::ImportXML(JSBSim::Element * el)
 
   return array;
 }
-

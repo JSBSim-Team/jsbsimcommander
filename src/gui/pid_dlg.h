@@ -68,6 +68,9 @@ protected:
     wxStaticText* label_output_property;
     wxTextCtrl* text_ctrl_output_prop;
     wxPanel* panel_toplevel;
+    wxPanel* notebook_1_pane_1;
+    wxTextCtrl* text_ctrl_1;
+    wxNotebook* notebook_1;
     wxButton* button_OK;
     wxButton* button_Cancel;
     wxButton* button_Help;
@@ -88,6 +91,7 @@ public:
 
 private:
   wxString name;
+  wxString description;
   wxString order;
   bool clipable;
   wxString clip_max;

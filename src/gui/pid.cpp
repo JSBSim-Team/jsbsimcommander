@@ -173,6 +173,7 @@ void PID::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   if (Kp != 0.0) stream << Pre << wxT("<kp> ") << Kp << wxT(" </kp>") << endl;
   if (Ki != 0.0) stream << Pre << wxT("<ki> ") << Ki << wxT(" </ki>") << endl;
   if (Kd != 0.0) stream << Pre << wxT("<kd> ") << Kd << wxT(" </kd>") << endl;
+  if (!Trigger.IsEmpty())  stream << Pre << wxT("<trigger> ") << Trigger << wxT(" </trigger>") << endl;
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);

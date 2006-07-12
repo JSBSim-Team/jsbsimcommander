@@ -29,7 +29,7 @@
  * All shape event behaviour is routed through this handler, so we don't
  * have to derive from each shape class. We plug this in to each shape.
  */
- 
+
 class MyEvtHandler: public wxShapeEvtHandler
 {
  public:
@@ -71,7 +71,7 @@ public:
  */
 class MISOShape:public wxRectangleShape
 {
-  DECLARE_DYNAMIC_CLASS (MISOShape) 
+  DECLARE_DYNAMIC_CLASS (MISOShape)
 protected:
   bool is_draw_reverse;
   unsigned int arr_size;
@@ -113,6 +113,7 @@ public:
     {
       return name;
     }
+
   inline void SetName(const wxString & s)
     {
       name = s;
@@ -190,16 +191,17 @@ protected:
   bool clipable;
   wxString clipmax;
   wxString clipmin;
-  
+  wxString description;
+
   //the num of input ports and the sign of them( + -- false; - -- true)
   MyBoolList input_sign_list;
-  
+
 public:
   static wxString mkName(wxString name, bool lowercase);
 
   ComponentShape (double w = 0.0, double h = 0.0, const wxString & Type = wxT("componment"), const wxString & Name = wxT("noname"));
   virtual ~ComponentShape();
-  
+
   void OnDraw (wxDC & dc);
 #if wxUSE_PROLOGIO
   void WriteAttributes (wxExpr * clause);
@@ -209,15 +211,15 @@ public:
   void ExportInputs(wxTextOutputStream & stream, const wxString & prefix);
   void ExportOutput(wxTextOutputStream & stream, const wxString & prefix);
   void ExportCliper(wxTextOutputStream & stream, const wxString & prefix);
-   
+
   inline void ExportHead(wxTextOutputStream & stream, const wxString & prefix)
   {
     stream << endl << prefix << wxT("<") << type << wxT(" name=\"") << name << wxT("\">") << endl;
   }
-    
+
   inline void ExportTail(wxTextOutputStream & stream, const wxString & prefix)
   {
-    stream<< prefix << wxT("</") << type << wxT(">") << endl;  
+    stream<< prefix << wxT("</") << type << wxT(">") << endl;
   }
 
   virtual wxArrayString ImportXML(JSBSim::Element * el);
@@ -278,6 +280,17 @@ public:
     {
       return order;
     }
+
+  inline wxString GetDescription() const
+  {
+    return description;
+  }
+
+  inline void SetDescription(const wxString & d)
+  {
+    description = d;
+  }
+
   //check and set
   void SetOrder();
   void SetOrder(long int & o);
