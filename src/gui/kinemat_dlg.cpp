@@ -48,7 +48,7 @@ KinematPropertyDialog::KinematPropertyDialog(Kinemat * componment, wxWindow* par
     label_Type = new wxStaticText(notebook_Main_pane_basic, -1, _("Type:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     label_order = new wxStaticText(notebook_Main_pane_basic, -1, _("Order:"));
     text_ctrl_name = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &name) );
-    label_type = new wxStaticText(notebook_Main_pane_basic, -1, wxT("KINEMAT"));
+    label_type = new wxStaticText(notebook_Main_pane_basic, -1, wxT("kinematic"));
     text_ctrl_order = new wxTextCtrl(notebook_Main_pane_basic, -1, wxT(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &order));
     checkbox_clipable = new wxCheckBox(notebook_Main_pane_basic, ID_CLIPABLE, _("clipable"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&clipable));
     label_max = new wxStaticText(notebook_Main_pane_basic, -1, _("Max:"));
@@ -198,7 +198,7 @@ KinematPropertyDialog::GetDataIn(Kinemat * k)
   clipmax    = k->GetClipMax();
   clipmin    = k->GetClipMin();
 
-  input1     = *(k->GetInputSignList().GetFirst()->GetData())?1:0;
+  input1     = k->GetInputIsInverted()?1:0;
 
   isscale   = k->IsScale();
 
@@ -239,7 +239,7 @@ KinematPropertyDialog::SetDataOut(Kinemat * k)
   double tmpd;
   k->SetClipMax(clipmax);
   k->SetClipMin(clipmin);
-  *(k->GetInputSignList().GetFirst()->GetData()) = input1==0?false:true;
+  k->SetInputIsInverted(input1==0?false:true);
 
   k->SetScale(isscale);
   

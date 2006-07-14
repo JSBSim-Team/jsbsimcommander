@@ -54,8 +54,6 @@ Filter::Filter (double w, double h, const wxString & Type, const wxString & Name
   ClearAttachments ();
   GetAttachments ().Append (new wxAttachmentPoint (0, w * 0.5, 0.0));
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
-
-  input_sign_list.Append(new bool(false));
 }
 
 Filter::~Filter()

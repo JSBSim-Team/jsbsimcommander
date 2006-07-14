@@ -28,10 +28,6 @@
 #include "MyApp.h"
 
 
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(MyBoolList);
-
-
 /*
  * MyEvtHandler: an event handler class for all shapes
  */
@@ -498,7 +494,7 @@ MISOShape::Copy (wxShape & copy)
 inline int
 MISOShape::GetNumberOfAttachments () const
 {
-  return wxRectangleShape::GetNumberOfAttachments ();
+    return m_attachmentPoints.GetCount();
 }
 
 
@@ -793,6 +789,7 @@ DestinationShape::DestinationShape (double w, double h, const wxString & Name):
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);
 
   ClearAttachments ();
+  GetAttachments ().Append (new wxAttachmentPoint (0, w * 0.5, 0.0));
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
   SetCornerRadius (10);
 }
@@ -848,12 +845,10 @@ ComponentShape::ComponentShape (double w, double h, const wxString & Type, const
   clipmin(wxEmptyString),
   description(wxEmptyString)
 {
-  input_sign_list.DeleteContents(true);
 }
 
 ComponentShape::~ComponentShape()
 {
-  //input_sign_list.Clear();
 }
 
 void
@@ -868,13 +863,12 @@ ComponentShape::OnDraw (wxDC & dc)
   wxPoint tmp[2];
   wxNode *node = GetAttachments ().GetFirst ();
   wxAttachmentPoint * p;
-  wxMyBoolListNode *snode = input_sign_list.GetFirst();
   while (node)
     {
       p = (wxAttachmentPoint *) node->GetData ();
-      if (p->m_id > 0 && snode)
+      if (p->m_id > 0)
         {
-          if (*(snode->GetData()))
+          if (attachment_sign_inverted_map[p->m_id])
           {
             if (is_draw_reverse)
             {
@@ -892,7 +886,6 @@ ComponentShape::OnDraw (wxDC & dc)
             }
             dc.DrawLines (2, tmp, WXROUND (m_xpos), WXROUND (m_ypos));
           }
-          snode = snode->GetNext();
         }
       node = node->GetNext ();
     }
@@ -927,19 +920,18 @@ ComponentShape::WriteAttributes (wxExpr * clause)
   clause->AddAttributeValueString (wxT ("clipmax"), clipmax);
   clause->AddAttributeValueString (wxT ("clipmin"), clipmin);
 
-
   wxExpr *list = new wxExpr(wxExprList);
-  wxMyBoolListNode * node = input_sign_list.GetFirst();
-  while (node)
+  for (SignInvertedMapCIter iter = attachment_sign_inverted_map.begin();
+		  iter != attachment_sign_inverted_map.end();
+		  ++iter)
     {
-      bool * b = node->GetData();
-      if (*b)
+      list->Append(new wxExpr((long)iter->first));
+      if (iter->second)
         list->Append(new wxExpr(1L));
       else
         list->Append(new wxExpr(0L));
-      node = node->GetNext();
     }
-  clause->AddAttributeValue(wxT("InputS"), list);
+  clause->AddAttributeValue(wxT("AttachmentSignInverted"), list);
 }
 
 void
@@ -971,17 +963,19 @@ ComponentShape::ReadAttributes (wxExpr * clause)
     clipmin = wxString::Format(wxT("%g"), d);
   }
 
-  input_sign_list.Clear();
-  wxExpr *list = clause->AttributeValue(wxT("InputS"));
+  attachment_sign_inverted_map.clear();
+  wxExpr *list = clause->AttributeValue(wxT("AttachmentSignInverted"));
   if (list)
   {
     wxExpr *pointExpr = list->GetFirst();
     while (pointExpr)
     {
+      int attach = pointExpr->IntegerValue();
+      pointExpr = pointExpr->GetNext();
       if (pointExpr->IntegerValue() )
-        input_sign_list.Append(new bool(true));
+        attachment_sign_inverted_map[attach] = true;
       else
-        input_sign_list.Append(new bool(false));
+        attachment_sign_inverted_map[attach] = false;
       pointExpr = pointExpr->GetNext();
     }
   }
@@ -1001,15 +995,7 @@ ComponentShape::Copy (wxShape & copy)
   ComponmentCopy.clipmax = clipmax;
   ComponmentCopy.clipmin = clipmin;
   ComponmentCopy.description = description;
-
-  ComponmentCopy.input_sign_list.Clear();
-  wxMyBoolListNode * node = input_sign_list.GetFirst();
-  while (node)
-    {
-      bool * b = node->GetData();
-      ComponmentCopy.input_sign_list.Append(new bool(*b));
-      node = node->GetNext();
-    }
+  ComponmentCopy.attachment_sign_inverted_map = attachment_sign_inverted_map;
 }
 
 
@@ -1186,7 +1172,7 @@ ComponentShape::ExportInputs(wxTextOutputStream & stream, const wxString & prefi
       if (shape && shape->IsKindOf(CLASSINFO(MISOShape)))
       {
          int a = data->GetAttachmentTo();
-         bool b = *(input_sign_list.Item(a-1)->GetData());
+         bool b = attachment_sign_inverted_map[a];
          wxString c=wxEmptyString;
          if (b)
            c = wxT("-");
@@ -1308,7 +1294,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
   wxArrayString array;
   double w = GetWidth();
   double h = GetHeight();
-  input_sign_list.Clear();
+  attachment_sign_inverted_map.clear();
   ClearAttachments ();
   GetAttachments ().Append (new wxAttachmentPoint (0,  w * 0.5, 0.0));
 
@@ -1346,7 +1332,7 @@ ComponentShape::ImportXML(JSBSim::Element * el)
 
     if (!input_name.IsEmpty())
     {
-      input_sign_list.Append(new bool(sign_flag));
+      attachment_sign_inverted_map[input_port_num] = sign_flag;
       GetAttachments ().Append (new wxAttachmentPoint (input_port_num++, -w * 0.5, 0.0));
       if (input_name[0] == '-') input_name.Remove(0,1); // remove "-" sign from text string
       array.Add(input_name);

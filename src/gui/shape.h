@@ -25,6 +25,9 @@
 
 #include "FGXMLElement.h"
 
+#include <map>
+using std::map;
+
 /*
  * All shape event behaviour is routed through this handler, so we don't
  * have to derive from each shape class. We plug this in to each shape.
@@ -169,10 +172,12 @@ public:
 
 
 /*
- * for input sign list
+ * for input sign map
  */
 
-WX_DECLARE_LIST(bool,MyBoolList);
+typedef map<int, bool> SignInvertedMap;
+typedef SignInvertedMap::iterator SignInvertedMapIter;
+typedef SignInvertedMap::const_iterator SignInvertedMapCIter;
 
 
 /*
@@ -194,7 +199,7 @@ protected:
   wxString description;
 
   //the num of input ports and the sign of them( + -- false; - -- true)
-  MyBoolList input_sign_list;
+  SignInvertedMap attachment_sign_inverted_map;
 
 public:
   static wxString mkName(wxString name, bool lowercase);
@@ -266,16 +271,6 @@ public:
       clipmin = d;
     }
 
-  inline MyBoolList& GetInputSignList()
-    {
-      return input_sign_list;
-    }
-
-  inline const MyBoolList& GetInputSignList() const
-    {
-      return input_sign_list;
-    }
-
   inline long int GetOrder() const
     {
       return order;
@@ -289,6 +284,24 @@ public:
   inline void SetDescription(const wxString & d)
   {
     description = d;
+  }
+
+  inline void SetInputIsInverted(bool b, int attachment=1)
+  {
+    attachment_sign_inverted_map[attachment] = b;
+  }
+
+  inline bool GetInputIsInverted(int attachment=1) const
+  {
+    SignInvertedMapCIter iter;
+    if ( (iter = attachment_sign_inverted_map.find(attachment)) != attachment_sign_inverted_map.end() )
+    {
+      return iter->second;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   //check and set

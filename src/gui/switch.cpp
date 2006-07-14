@@ -235,9 +235,6 @@ Switch::Switch (double w, double h, const wxString & Name )
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 15.0));
   GetAttachments ().Append (new wxAttachmentPoint (2, -w * 0.5, -15.0));
 
-  input_sign_list.Append(new bool(false));
-  input_sign_list.Append(new bool(false));
-
   testlist.DeleteContents(true);
   Test * t = new Test;
   t->Logic = Test::eDefault;
@@ -372,13 +369,8 @@ wxArrayString
 Switch::GetInputs()
 {
   wxArrayString tmp;
-  {
-    int n = input_sign_list.GetCount();
-    for (int i=0; i<n; ++i)
-    {
-      tmp.Add(wxT("(noname)")); //default name. it should be replaced.
-    }
-  }
+  //default name. it should be replaced.
+  tmp.Add(wxT("(noname)"), GetNumberOfAttachments()-1);
   wxNode * node = GetLines().GetFirst();
   while (node)
   {
@@ -410,7 +402,7 @@ Switch::GetInputs()
       if (shape && shape->IsKindOf(CLASSINFO(MISOShape)))
       {
 	 int a = data->GetAttachmentTo();
-	 bool b = *(input_sign_list.Item(a-1)->GetData());
+	 bool b = attachment_sign_inverted_map[a];
 	 wxString c;
 	 if (b)
 	   c = wxT("-");
@@ -447,7 +439,17 @@ Switch::ImportXML(JSBSim::Element * el)
   double h = GetHeight();
   for (size_t i = 1; i<strings.Count(); ++i)
   {
-      input_sign_list.Append(new bool(false));
+      strings[i].Trim(true);
+      strings[i].Trim(false);
+      if (strings[i][0] == wxT('-') && strings[i][1]!= wxT('\0'))
+      {
+        strings[i].Remove(0u,1u);
+        SetInputIsInverted(true, i);
+      }
+      else
+      {
+        SetInputIsInverted(false, i);      
+      }
       GetAttachments ().Append (new wxAttachmentPoint (i, -w * 0.5, 0.0));
   }
   SetAttachmentSize(w,h);

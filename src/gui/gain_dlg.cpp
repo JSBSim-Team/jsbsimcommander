@@ -265,7 +265,7 @@ GainPropertyDialog::GetDataIn(Gain * g)
   clipmax    = g->GetClipMax();
   clipmin    = g->GetClipMin();
 
-  input1     = *(g->GetInputSignList().GetFirst()->GetData())?1:0;
+  input1     = g->GetInputIsInverted()?1:0;
 
   gain       = wxString::Format(wxT("%g"), g->GetGain());
 
@@ -334,7 +334,7 @@ GainPropertyDialog::SetDataOut(Gain * g)
   double tmpd;
   g->SetClipMax(clipmax);
   g->SetClipMin(clipmin);
-  *(g->GetInputSignList().GetFirst()->GetData()) = input1==0?false:true;
+  g->SetInputIsInverted(input1==0?false:true);
 
   double tmp;
   gain.ToDouble(&tmp);

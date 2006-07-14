@@ -327,10 +327,24 @@ bool DiagramDocument::ImportXML(const wxString & filename)
   }
 
   if (autopilot)
+  try
+  {
     Import(autopilot);
+  }
+  catch (...)
+  {
+    return false;
+  }
 
   if (flight_control)
+  try
+  {
     Import(flight_control);
+  }
+  catch (...)
+  {
+    return false;
+  }
 
   return true;
 }

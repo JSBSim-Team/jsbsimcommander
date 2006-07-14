@@ -302,12 +302,11 @@ SwitchPropertyDialog::GetDataIn(Switch * s)
   
   {
     list_box_input->Clear();
-    wxMyBoolListNode * node = s->GetInputSignList().GetFirst();
     int i = 1;
-    while (node)
+    int n = s->GetNumberOfAttachments();
+    for (; i < n; ++i)
     {
-      bool * value = node->GetData();
-      if (*value)
+      if (s->GetInputIsInverted(i))
 	{
 	  list_box_input->Append(wxT("negative"));
 	}
@@ -319,8 +318,6 @@ SwitchPropertyDialog::GetDataIn(Switch * s)
       combo_box_output->Append(tmp);
       combo_box_para1->Append(tmp);
       combo_box_para2->Append(tmp);
-      ++i;
-      node = node->GetNext();
     }
   }
 
@@ -472,9 +469,6 @@ SwitchPropertyDialog::SetDataOut(Switch * s)
   s->SetClipMax(clipmax);
   s->SetClipMin(clipmin);
 
-  MyBoolList & list = s->GetInputSignList();
-  list.Clear();
-
   double w = s->GetWidth();
   double h = s->GetHeight();
   s->ClearAttachments ();
@@ -485,9 +479,9 @@ SwitchPropertyDialog::SetDataOut(Switch * s)
     {
       wxString str = list_box_input->GetString(i);
       if ( str == wxT("positive") )
-	list.Append(new bool(false));
+	s->SetInputIsInverted(false, i+1);
       else
-	list.Append(new bool(true));
+	s->SetInputIsInverted(true, i+1);
       s->GetAttachments ().Append (new wxAttachmentPoint (i+1, -w * 0.5, 0.0));
     }
 

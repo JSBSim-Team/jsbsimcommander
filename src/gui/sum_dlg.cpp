@@ -158,13 +158,10 @@ void SummerPropertyDialog::GetDataIn(const Summer * g)
   bias       = wxString::Format(wxT("%g"),g->GetBias());
 
   list_box_input->Clear();
-  const wxMyBoolListNode * node = g->GetInputSignList().GetFirst();
   wxArrayString inputs = g->GetInputNames();
-  size_t i = 0;
-  while (node)
+  for (size_t i = 0; i < inputs.GetCount(); ++i)
     {
-      bool * value = node->GetData();
-      if (*value)
+      if (g->GetInputIsInverted(i+1))
 	{
 	  list_box_input->Append(wxT("-") + inputs[i]);
 	}
@@ -172,8 +169,6 @@ void SummerPropertyDialog::GetDataIn(const Summer * g)
 	{
 	  list_box_input->Append(inputs[i]);
 	}
-      node = node->GetNext();
-      ++i;
     }
 
   if (clipable)
@@ -211,12 +206,11 @@ void SummerPropertyDialog::SetDataOut(Summer * g) const
   bias.ToDouble(&tmpd);
   g->SetBias(tmpd);
 
-  MyBoolList & list = g->GetInputSignList();
-  list.Clear();
-
   double w = g->GetWidth();
   double h = g->GetHeight();
   g->ClearAttachments ();
+  int n = g->GetNumberOfAttachments();
+  n++;
   g->GetAttachments ().Append (new wxAttachmentPoint (0,  w * 0.5, 0.0));
 
   int s = list_box_input->GetCount();
@@ -224,9 +218,9 @@ void SummerPropertyDialog::SetDataOut(Summer * g) const
     {
       wxString str = list_box_input->GetString(i);
       if ( str[0] == wxT('-') )
-	list.Append(new bool(true));
+	g->SetInputIsInverted(true, i+1);
       else
-	list.Append(new bool(false));
+	g->SetInputIsInverted(false, i+1);
       g->GetAttachments ().Append (new wxAttachmentPoint (i+1, -w * 0.5, 0.0));
     }
 

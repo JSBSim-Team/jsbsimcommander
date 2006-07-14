@@ -329,14 +329,8 @@ FCSFunctionDialog::GetDataIn(FCSFunction * s)
   clipmax    = s->GetClipMax();
   clipmin    = s->GetClipMin();
   
-  {
     list_box_input->Clear();
-    wxMyBoolListNode * node = s->GetInputSignList().GetFirst();
-    int i = 1;
-    while (node)
-    {
-      bool * value = node->GetData();
-      if (*value)
+      if (s->GetInputIsInverted())
 	{
 	  list_box_input->Append(wxT("negative"));
 	}
@@ -344,10 +338,6 @@ FCSFunctionDialog::GetDataIn(FCSFunction * s)
 	{
 	  list_box_input->Append(wxT("positive"));
 	}
-      ++i;
-      node = node->GetNext();
-    }
-  }
 
   if (clipable)
     {
@@ -416,9 +406,6 @@ FCSFunctionDialog::SetDataOut(FCSFunction * s)
   s->SetClipMax(clipmax);
   s->SetClipMin(clipmin);
 
-  MyBoolList & list = s->GetInputSignList();
-  list.Clear();
-
   double w = s->GetWidth();
   double h = s->GetHeight();
   s->ClearAttachments ();
@@ -429,9 +416,9 @@ FCSFunctionDialog::SetDataOut(FCSFunction * s)
     {
       wxString str = list_box_input->GetString(i);
       if ( str == wxT("positive") )
-	list.Append(new bool(false));
+	s->SetInputIsInverted(false, i+1);
       else
-	list.Append(new bool(true));
+	s->SetInputIsInverted(true, i+1);
       s->GetAttachments ().Append (new wxAttachmentPoint (i+1, -w * 0.5, 0.0));
     }
 

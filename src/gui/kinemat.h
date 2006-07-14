@@ -37,7 +37,7 @@ protected:
   MySettingPairList pairlist;
 
 public:
-  Kinemat (double w = 0.0, double h = 0.0, const wxString & Name = wxT("kinemat"));
+  Kinemat (double w = 0.0, double h = 0.0, const wxString & Name = wxT("kinematic"));
   virtual ~Kinemat();
   void OnDraw (wxDC & dc);
   

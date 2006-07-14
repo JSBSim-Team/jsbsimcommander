@@ -52,8 +52,8 @@ public:
   inline void SetKd(const double & d) {Kd = d;}
   inline wxString GetTrigger(void) const {return Trigger;}
   inline void SetTrigger(wxString str) {Trigger = str;}
-  inline bool GetInputIsInverted(void) {return InputIsInverted;}
-  inline void SetInputIsInverted(bool s) {InputIsInverted = s;}
+  //inline bool GetInputIsInverted(void) {return InputIsInverted;}
+  //inline void SetInputIsInverted(bool s) {InputIsInverted = s;}
 };
 
 #endif // _FCSBUILDER_PID_H_

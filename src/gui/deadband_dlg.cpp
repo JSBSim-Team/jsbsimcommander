@@ -202,7 +202,7 @@ DeadBandPropertyDialog::GetDataIn(DeadBand * shape)
   clipmax    = shape->GetClipMax();
   clipmin    = shape->GetClipMin();
 
-  input1     = *(shape->GetInputSignList().GetFirst()->GetData())?1:0;
+  input1     = shape->GetInputIsInverted()?1:0;
 
   width      = wxString::Format(wxT("%g"), shape->GetDeadBandWidth());
   gain       = wxString::Format(wxT("%g"), shape->GetGain());
@@ -231,7 +231,7 @@ DeadBandPropertyDialog::SetDataOut(DeadBand * shape)
   double tmpd;
   shape->SetClipMax(clipmax);
   shape->SetClipMin(clipmin);
-  *(shape->GetInputSignList().GetFirst()->GetData()) = input1==0?false:true;
+  shape->SetInputIsInverted(input1==0?false:true);
 
   width.ToDouble(&tmpd);
   shape->SetDeadBandWidth(tmpd);

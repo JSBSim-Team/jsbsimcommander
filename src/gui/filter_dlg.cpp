@@ -316,7 +316,7 @@ FilterPropertyDialog::GetDataIn(Filter * shape)
   clipmax    = shape->GetClipMax();
   clipmin    = shape->GetClipMin();
 
-  input1     = *(shape->GetInputSignList().GetFirst()->GetData())?1:0;
+  input1     = shape->GetInputIsInverted()?1:0;
 
   c1         = shape->GetC1();
   c2         = shape->GetC2();
@@ -353,7 +353,7 @@ FilterPropertyDialog::SetDataOut(Filter * shape)
   shape->SetClipable(clipable);
   shape->SetClipMax(clipmax);
   shape->SetClipMin(clipmin);
-  *(shape->GetInputSignList().GetFirst()->GetData()) = input1==0?false:true;
+  shape->SetInputIsInverted(input1==0?false:true);
 
   shape->SetC1(c1);
   shape->SetC2(c2);

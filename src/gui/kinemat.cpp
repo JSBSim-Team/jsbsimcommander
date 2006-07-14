@@ -42,7 +42,7 @@ WX_DEFINE_LIST(MySettingPairList);
 IMPLEMENT_DYNAMIC_CLASS (Kinemat, ComponentShape)
 
 Kinemat::Kinemat (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("kinemat"), Name),
+  :ComponentShape(w, h, wxT("kinematic"), Name),
    isscale(true)
 {
   pairlist.DeleteContents(true);
@@ -52,9 +52,6 @@ Kinemat::Kinemat (double w, double h, const wxString & Name )
   ClearAttachments ();
   GetAttachments ().Append (new wxAttachmentPoint (0, w * 0.5, 0.0));
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
-
-  input_sign_list.Append(new bool(false));
-
 }
 
 Kinemat::~Kinemat()
