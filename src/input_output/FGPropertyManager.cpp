@@ -8,20 +8,20 @@
  ------------- Copyright (C) 2002 -------------
 
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
+ the terms of the GNU Lesser General Public License as published by the Free Software
  Foundation; either version 2 of the License, or (at your option) any later
  version.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  details.
 
- You should have received a copy of the GNU General Public License along with
+ You should have received a copy of the GNU Lesser General Public License along with
  this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  Place - Suite 330, Boston, MA  02111-1307, USA.
 
- Further information about the GNU General Public License can also be found on
+ Further information about the GNU Lesser General Public License can also be found on
  the world wide web at http://www.gnu.org.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,10 +76,9 @@ FGPropertyManager*
 FGPropertyManager::GetNode (const string &path, bool create)
 {
   SGPropertyNode* node=this->getNode(path.c_str(), create);
-  //Matt's change here
-  //if (node == 0 && !suppress_warning)
-  //  cerr << "FGPropertyManager::GetNode() No node found for "
-  //       << path << endl;
+  if (node == 0 && !suppress_warning)
+    cout << "FGPropertyManager::GetNode() No node found for "
+         << path << endl;
   return (FGPropertyManager*)node;
 }
 
@@ -97,10 +96,9 @@ FGPropertyManager::GetNode (const string &relpath, int index, bool create)
 bool FGPropertyManager::HasNode (const string &path)
 {
   // Checking if a node exists shouldn't write a warning if it doesn't exist
-  // Matt's change here
-  //suppress_warning = true;
+  suppress_warning = true;
   bool has_node = (GetNode(path, false) != 0);
-  //suppress_warning = false;
+  suppress_warning = false;
   return has_node;
 }
 

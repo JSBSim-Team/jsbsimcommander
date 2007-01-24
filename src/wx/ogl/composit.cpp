@@ -9,10 +9,6 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-#pragma implementation "composit.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -21,7 +17,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+#include "wx/wx.h"
 #endif
 
 #if wxUSE_PROLOGIO

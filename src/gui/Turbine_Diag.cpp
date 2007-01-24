@@ -27,6 +27,7 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/filename.h>
+#include <wx/imaglist.h>
 
 #include "Turbine_Diag.h"
 #include "TreeItem.h"

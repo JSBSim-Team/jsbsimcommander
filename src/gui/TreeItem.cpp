@@ -1399,9 +1399,12 @@ void TreeItemData_Table::Load(JSBSim::Element * el)
     break;
   }
 
-  tree->SetItemText(GetId(), GetExpression());
-  tree->SetItemImage(GetId(), 26);
-  tree->SetItemImage(GetId(), 26, wxTreeItemIcon_Selected);
+  if (tree)
+  {
+    tree->SetItemText(GetId(), GetExpression());
+    tree->SetItemImage(GetId(), 26);
+    tree->SetItemImage(GetId(), 26, wxTreeItemIcon_Selected);
+  }
 }
 
 void T1D_in(Table2D & table, std::stringstream& buf)

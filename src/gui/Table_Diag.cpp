@@ -7,8 +7,8 @@
 // Licence:     GPL licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-// #pragma implementation
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+ #pragma implementation
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -27,135 +27,15 @@
 #include <wx/mstream.h>
 #include <wx/txtstrm.h>
 #include <wx/clipbrd.h>
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
 
+#include "input_output/FGXMLParse.h"
 #include "Table_Diag.h"
 #include "TreeItem.h"
 #include "Property_Diag.h"
 #include "MyApp.h"
-
-class MyPlotCurve: public wxPlotCurve
-{
-public:
-    MyPlotCurve(TableDialog * table)
-     : wxPlotCurve( 0, -5.0, 5.0 ), Table(table), UPV(0.001), point(0) 
-    {}
-
-    virtual wxInt32 GetStartX()
-        { return wxInt32(0); }
-    virtual wxInt32 GetEndX()
-        { return wxInt32((xvalue(size()-1)-xvalue(0))/UPV); }
-    
-    virtual double GetY( wxInt32 x );
-
-    virtual int size()=0;
-    virtual double yvalue(int)=0;
-    virtual double xvalue(int)=0;
-
-    double GetUPV() const
-    {return UPV;}
-
-protected:
-    TableDialog * Table;
-    double UPV;
-    double StartX;
-    double EndX;
-    int point;
-};
-
-double MyPlotCurve::GetY( wxInt32 x )
-{
-  double dx = x * UPV + xvalue(0);
-
-  while (point > 0 && xvalue(point)>=dx )
-    --point;
-  while (point+1 < size()-1 && xvalue(point+1)<dx )
-    ++point;
-
-  double scale = (dx-xvalue(point)) / (xvalue(point+1)-xvalue(point));
-  if (scale < 0) scale = 0;
-  if (scale > 1) scale = 1;
-
-  return (yvalue(point+1)-yvalue(point))*scale + yvalue(point);
-}
-
-class MyPlotCurve4D: public MyPlotCurve
-{
-  public:
-    MyPlotCurve4D(TableDialog * table, Table2D * tab, double width, int row, int col);
-    
-    int size()
-    {
-      switch (channel)
-      {
-        case 0:
-          return cur_table->GetNumRows();
-        case 1:
-          return cur_table->GetNumCols();
-        default :
-          return 0;
-      }
-    }
-    double yvalue(int i)
-    {
-      switch (channel)
-      {
-        case 0:
-          return cur_table->GetValue(i+1, Col);
-        case 1:
-          return cur_table->GetValue(Row, i+1);
-        default :
-          return 0;
-      }
-    }
-    double xvalue(int i)
-    {
-      switch (channel)
-      {
-        case 0:
-          return cur_table->GetValue(i+1, 0u);
-        case 1:
-          return cur_table->GetValue(0u, i+1);
-      }
-    }
-  protected:
-    int Row, Col;
-    int channel;
-    Table2D * cur_table;
-};
-
-MyPlotCurve4D::MyPlotCurve4D(TableDialog * table, Table2D * tab, double width, int row, int col)
-  : MyPlotCurve(table), Row(row), Col(col), cur_table(tab)
-{
-  if (Row > cur_table->GetNumRows() || Row < 1)
-  {
-    channel = 0;
-    SetXLabel(Table->text_ctrl_property_row->GetValue());
-    SetYLabel(wxString::Format(wxT("col=%g"), tab->GetValue(0u, col)));
-  }
-  else if (Col > cur_table->GetNumCols() || Col < 1)
-  {
-    channel = 1;
-    SetXLabel(Table->text_ctrl_property_column->GetValue());
-    SetYLabel(wxString::Format(wxT("row=%g"), tab->GetValue(row, 0u)));
-  }
-  double max, min;
-  max = min = yvalue(0);
-  for (int i=1; i < size(); ++i)
-  {
-    double tmp = yvalue(i);
-    if (tmp>max)
-      max = tmp;
-    if (tmp<min)
-      min = tmp;
-  }
-  double tmp = (max - min)*0.05;
-  if (tmp == 0)
-    tmp = 0.0001;
-  UPV = (xvalue(size()-1)-xvalue(0)) / width;
-  SetStartY(min - tmp);
-  SetEndY(max + tmp);
-  SetStartXVal(xvalue(0));
-}
+#include "MyFrame.h"
 
 BEGIN_EVENT_TABLE(TableDialog, wxDialog)
   EVT_BUTTON(DETAIL_ROW, TableDialog::OnDetailRow)
@@ -174,10 +54,8 @@ BEGIN_EVENT_TABLE(TableDialog, wxDialog)
   EVT_BUTTON(FILL_TABLE, TableDialog::OnReadInTablefromClipboard)
   EVT_BUTTON(REBUILD_TABLE, TableDialog::OnRebuildTable)
   EVT_BUTTON(REBUILD_FRAME, TableDialog::OnRebuildFrame)
-  EVT_BUTTON(DRAW_CURVE, TableDialog::OnDrawCurve)
-  EVT_BUTTON(ADD_CURVE, TableDialog::OnAddCurve)
-  EVT_BUTTON(CLS_CURVE, TableDialog::OnClsCurve)
   EVT_NOTEBOOK_PAGE_CHANGED(ID_NOTEBOOK, TableDialog::OnChangedPage)
+  EVT_NOTEBOOK_PAGE_CHANGING(ID_NOTEBOOK, TableDialog::OnChangingPage)
 END_EVENT_TABLE()
 
 
@@ -252,12 +130,26 @@ std::vector<double> readNumsfromString(const wxString & str)
 TableDialog::TableDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, style)
 {
+  //TODO
+  prop_dlg = GetPropertyDialog();
+  /***************
+  TreeItemEvtHandler * local = (TreeItemEvtHandler *)(parent->GetClientData());
+  if (local)
+  {
+    prop_dlg = local->GetPropertyDialog();
+  }
+  else
+  {
+    prop_dlg = GetPropertyDialog();
+  }
+  ***************/
+      
     // begin wxGlade: TableDialog::TableDialog
     notebook_main = new wxNotebook(this, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, 0);
+    notebook_main_pane_4 = new wxPanel(notebook_main, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     notebook_main_pane_3 = new wxPanel(notebook_main, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     notebook_main_pane_2 = new wxPanel(notebook_main, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     sizer_9_staticbox = new wxStaticBox(notebook_main_pane_2, -1, _("choice"));
-    sizer_12_staticbox = new wxStaticBox(notebook_main_pane_3, -1, _("setting"));
     label_name = new wxStaticText(notebook_main_pane_2, -1, _("Name:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
     text_ctrl_name = new wxTextCtrl(notebook_main_pane_2, -1, wxT(""), wxDefaultPosition, wxDefaultSize);
     label_property_row = new wxStaticText(notebook_main_pane_2, -1, _("row property:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
@@ -291,32 +183,27 @@ TableDialog::TableDialog(wxWindow* parent, int id, const wxString& title, const 
     button_fill_table = new wxButton(notebook_main_pane_2, FILL_TABLE, _("fill table"));
     button_recreate_table = new wxButton(notebook_main_pane_2, REBUILD_TABLE, _("rebuild table"));
     button_recreate_frame = new wxButton(notebook_main_pane_2, REBUILD_FRAME, _("rebuild frame"));
-    label_info2 = new wxStaticText(notebook_main_pane_3, -1, wxT(""));
-    label_row = new wxStaticText(notebook_main_pane_3, -1, _("row="));
-    const wxString combo_box_row_choices[] = {
-        
-    };
-    combo_box_row = new wxComboBox(notebook_main_pane_3, LINE_ROW, wxT(""), wxDefaultPosition, wxDefaultSize, 0, combo_box_row_choices, wxCB_DROPDOWN|wxCB_READONLY);
-    label_column = new wxStaticText(notebook_main_pane_3, -1, _("column="));
-    const wxString combo_box_column_choices[] = {
-        
-    };
-    combo_box_column = new wxComboBox(notebook_main_pane_3, LINE_COL, wxT(""), wxDefaultPosition, wxDefaultSize, 0, combo_box_column_choices, wxCB_DROPDOWN|wxCB_READONLY);
-    button_draw = new wxButton(notebook_main_pane_3, DRAW_CURVE, _("Redraw"));
-    button_add_draw = new wxButton(notebook_main_pane_3, ADD_CURVE, _("Add"));
-    button_cls_draw = new wxButton(notebook_main_pane_3, CLS_CURVE, _("Clear"));
-    window_draw = new wxPlotWindow(notebook_main_pane_3, -1, wxDefaultPosition, wxSize(600,400), wxPLOT_Y_AXIS|wxPLOT_X_AXIS);
-    window_draw->SameRange(true);
+
+  label_info2 = new wxStaticText(notebook_main_pane_3, -1, wxEmptyString);
+  //push event handler
+  handler = new PlotHandler (this);
+  PushEventHandler (handler);
+  handler->SetTitlePos(PlotHandler::TITLE_NONE);
+  handler->GetWindow(0u)->GetCurrentCurve()->SetTextPos(Curve::CURVE_NO_TEXT);
+
+  canvas = new PlotCanvas(notebook_main_pane_3, wxID_ANY, handler);
+
+    text_ctrl_content = new wxTextCtrl(notebook_main_pane_4, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_RICH|wxTE_MULTILINE);
     button_ok = new wxButton(this, wxID_OK, _("OK"));
     button_cancel = new wxButton(this, wxID_CANCEL, _("Cancel"));
-
-    set_properties();
-    do_layout();
-    // end wxGlade
 
     cur_col_no = 0;
     cur_row_no = 0;
     cur_table  = NULL;
+
+    set_properties();
+    do_layout();
+    // end wxGlade
 }
 
 
@@ -335,12 +222,9 @@ void TableDialog::set_properties()
     //grid_value->CreateGrid(10, 1);
     //grid_value->SetRowLabelSize(30);
     //grid_value->SetColLabelSize(30);
-    combo_box_row->SetMinSize(wxSize(70, 29));
-    combo_box_row->SetSelection(-1);
-    combo_box_column->SetMinSize(wxSize(70, 29));
-    combo_box_column->SetSelection(-1);
     notebook_main->SetMinSize(wxSize(600, 580));
     // end wxGlade
+    text_ctrl_content->SetValue(wxEmptyString);
 }
 
 
@@ -350,7 +234,6 @@ void TableDialog::do_layout()
     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* sizer_11 = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* sizer_12 = new wxStaticBoxSizer(sizer_12_staticbox, wxHORIZONTAL);
     wxBoxSizer* sizer_7 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* sizer_10 = new wxBoxSizer(wxVERTICAL);
@@ -400,21 +283,20 @@ void TableDialog::do_layout()
     sizer_7->Fit(notebook_main_pane_2);
     sizer_7->SetSizeHints(notebook_main_pane_2);
     sizer_11->Add(label_info2, 0, wxALL|wxEXPAND, 5);
-    sizer_12->Add(label_row, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_12->Add(combo_box_row, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_12->Add(label_column, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_12->Add(combo_box_column, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_12->Add(button_add_draw, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_12->Add(button_cls_draw, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_12->Add(button_draw, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    sizer_11->Add(sizer_12, 0, wxALL|wxEXPAND, 3);
-    sizer_11->Add(window_draw, 1, wxALL|wxEXPAND, 5);
+    sizer_11->Add(canvas, 1, wxALL|wxEXPAND, 5);
     notebook_main_pane_3->SetAutoLayout(true);
     notebook_main_pane_3->SetSizer(sizer_11);
     sizer_11->Fit(notebook_main_pane_3);
     sizer_11->SetSizeHints(notebook_main_pane_3);
     notebook_main->AddPage(notebook_main_pane_2, _("value"));
-    notebook_main->AddPage(notebook_main_pane_3, _("line"));
+    notebook_main->AddPage(notebook_main_pane_3, _("curve"));
+    wxBoxSizer* sizer_14 = new wxBoxSizer(wxVERTICAL);
+    sizer_14->Add(text_ctrl_content, 1, wxALL|wxEXPAND, 5);
+    notebook_main_pane_4->SetAutoLayout(true);
+    notebook_main_pane_4->SetSizer(sizer_14);
+    sizer_14->Fit(notebook_main_pane_4);
+    sizer_14->SetSizeHints(notebook_main_pane_4);
+    notebook_main->AddPage(notebook_main_pane_4, _("content"));
     sizer_1->Add(notebook_main, 1, wxALL|wxEXPAND, 3);
     sizer_6->Add(button_ok, 1, wxALL, 10);
     sizer_6->Add(button_cancel, 1, wxALL, 10);
@@ -424,13 +306,12 @@ void TableDialog::do_layout()
     sizer_1->Fit(this);
     sizer_1->SetSizeHints(this);
     Layout();
-    window_draw->Layout();
     // end wxGlade
 }
 
 void TableDialog::Load(TreeItemData_Table * data)
 {
-  GetPropertyDialog()->Update();
+  prop_dlg->Update();
 
   Type = data->Type;
   switch (Type)
@@ -445,6 +326,8 @@ void TableDialog::Load(TreeItemData_Table * data)
     case TreeItemData_Table::tt4D :
       value_4d = data->value_4d;
       break;
+    default :
+      break;
   }
 
   text_ctrl_name->SetValue(data->name);
@@ -456,10 +339,26 @@ void TableDialog::Load(TreeItemData_Table * data)
 
   reinit();
 
-  clearCurves();
   notebook_main_pane_2->Layout();
   notebook_main_pane_2->Refresh();
   notebook_main_pane_2->Update();
+
+  if (text_ctrl_content->GetValue().IsEmpty())
+  {
+    wxStringOutputStream sos;
+#if wxUSE_UNICODE
+    wxTextOutputStream tos(sos, wxEOL_UNIX, wxConvLibc);
+#else
+    wxTextOutputStream tos(sos, wxEOL_UNIX);
+#endif
+#ifdef __WXMSW__
+    tos << wxT("<?xml version=\"1.0\" encoding=\"GB2312\"?>\n");
+#else
+    tos << wxT("<?xml version=\"1.0\"?>\n");
+#endif
+    data->Save(tos, wxEmptyString);
+    text_ctrl_content->SetValue(sos.GetString());
+  }
 }
 
 void TableDialog::reinit()
@@ -487,14 +386,6 @@ void TableDialog::reinit()
         combo_box_frame_value->Show(false);
         button_recreate_table->Show(false);
         button_recreate_frame->Show(false);
-        sizer_12_staticbox->Show(false);
-        label_row->Show(false);
-        combo_box_row->Show(false);
-        label_column->Show(false);
-        combo_box_column->Show(false);
-        button_add_draw->Show(false);
-        button_cls_draw->Show(false);
-        button_draw->Show(false);
         cur_table = &value_2d;
         updateGrid1D();
       }
@@ -625,8 +516,13 @@ void TableDialog::Save(TreeItemData_Table * data)
     case TreeItemData_Table::tt4D :
       data->value_4d = value_4d;
       break;
+    default :
+      break;
   }
-  data->tree->SetItemText(data->GetId(), data->GetExpression());
+  if (data->tree)
+  {
+    data->tree->SetItemText(data->GetId(), data->GetExpression());
+  }
 }
 
 void TableDialog::updateGrid1D()
@@ -858,7 +754,7 @@ void TableDialog::OnRebuildTable(wxCommandEvent & event)
 
   unsigned int nCols = (unsigned int)list[0];
   unsigned int nRows = (unsigned int)list[1];
-  if (list.size() == 2+nCols+nRows+nCols*nRows && nCols > 1 && nRows > 1)
+  if (list.size() == 2+nCols+nRows+nCols*nRows && nCols >= 1 && nRows >= 1)
   {
     if (::wxMessageBox(_("Do you want to rebuild the current 2D table ") + wxString::Format(wxT("in %d cols and %d rows using %d"), nCols, nRows, list.size()) + _(" numbers from clipboard"), _("Confirm"), wxYES_NO|wxICON_INFORMATION, this) == wxYES)
     {
@@ -883,12 +779,37 @@ void TableDialog::OnRebuildTable(wxCommandEvent & event)
       {
       case TreeItemData_Table::tt1D :
         updateGrid1D();
-        break;
+        break; 
       default :
         updateGrid2D();
         break;
       }
     }
+  }
+  else if (list.size() >=4 )
+  {
+      nCols = 1u;
+      nRows = list.size()/2;
+      int i = 0;
+      cur_table->SetTable(nRows, nCols);
+      cur_table->SetValue(0u, 1u, 0);
+      for (unsigned int j = 1u; j <= nRows; ++j)
+      {
+        cur_table->SetValue(j, 0u, list[i++]);
+      }
+      for (unsigned int j = 1u; j <= nRows; ++j)
+      {
+        cur_table->SetValue(j, 1u, list[i++]);
+      }
+      switch (Type)
+      {
+      case TreeItemData_Table::tt1D :
+        updateGrid1D();
+        break;
+      default :
+        updateGrid2D();
+        break;
+      }
   }
   else
   {
@@ -962,22 +883,6 @@ void TableDialog::OnRebuildFrame(wxCommandEvent & event)
   }
 }
 
-void TableDialog::clearCurves()
-{
-  for ( std::vector< MyPlotCurve4D * >::iterator iter = curves.begin();
-      iter != curves.end();
-      ++iter)
-  {
-    window_draw->Delete(*iter);
-  }
-  curves.clear();
-}
-
-void TableDialog::updateCurves()
-{
-  window_draw->RedrawEverything();
-}
-
 void TableDialog::appendCurve()
 {
   if (!cur_table)
@@ -986,50 +891,7 @@ void TableDialog::appendCurve()
   }
   unsigned int nRows = cur_table->GetNumRows();
   unsigned int nCols = cur_table->GetNumCols();
-  int w, h;
-  window_draw->GetClientSize(&w, &h);
-  MyPlotCurve4D * curve = NULL;
-  switch (Type)
-  {
-    case TreeItemData_Table::tt1D :
-      {
-        curve = new MyPlotCurve4D(this, cur_table, w - 114, 0, 1);
-      }
-      break;
-    default :
-      {
-        int r = combo_box_row->GetSelection();
-        int c = combo_box_column->GetSelection();
-        if (r>=1 && r<=nRows && (c<1 || c>nCols) || (r<1 || r>nRows) && c>=1 && c<=nCols)
-        {
-          curve = new MyPlotCurve4D(this, cur_table, w - 114, r, c);
-        }
-      }
-      break;
-  }
-  if (curve)
-  {
-    curves.push_back(curve);
-    window_draw->SetUnitsPerValue( curve->GetUPV() );
-    window_draw->Add(curve);
-    window_draw->Layout();
-    window_draw->RedrawEverything();
-  }
-}
 
-void TableDialog::OnDrawCurve(wxCommandEvent & event)
-{
-  updateCurves();
-}
-
-void TableDialog::OnAddCurve(wxCommandEvent & event)
-{
-  appendCurve();
-}
-
-void TableDialog::OnClsCurve(wxCommandEvent & event)
-{
-  clearCurves();
 }
 
 void TableDialog::OnDetailRow(wxCommandEvent & event)
@@ -1229,92 +1091,237 @@ void TableDialog::OnDetailFrm(wxCommandEvent & event)
 void TableDialog::OnChsRow(wxCommandEvent & event)
 {
   wxString tmp = text_ctrl_property_row->GetValue();
-  GetPropertyDialog()->Select(tmp);
-  if (GetPropertyDialog()->ShowModal() == wxID_OK)
+  prop_dlg->Select(tmp);
+  if (prop_dlg->ShowModal() == wxID_OK)
   {
-    text_ctrl_property_row->SetValue(GetPropertyDialog()->GetResult());
+    text_ctrl_property_row->SetValue(prop_dlg->GetResult());
   }
 }
 
 void TableDialog::OnChsCol(wxCommandEvent & event)
 {
   wxString tmp = text_ctrl_property_column->GetValue();
-  GetPropertyDialog()->Select(tmp);
-  if (GetPropertyDialog()->ShowModal() == wxID_OK)
+  prop_dlg->Select(tmp);
+  if (prop_dlg->ShowModal() == wxID_OK)
   {
-    text_ctrl_property_column->SetValue(GetPropertyDialog()->GetResult());
+    text_ctrl_property_column->SetValue(prop_dlg->GetResult());
   }
 }
 
 void TableDialog::OnChsTab(wxCommandEvent & event)
 {
   wxString tmp = text_ctrl_property_table->GetValue();
-  GetPropertyDialog()->Select(tmp);
-  if (GetPropertyDialog()->ShowModal() == wxID_OK)
+  prop_dlg->Select(tmp);
+  if (prop_dlg->ShowModal() == wxID_OK)
   {
-    text_ctrl_property_table->SetValue(GetPropertyDialog()->GetResult());
+    text_ctrl_property_table->SetValue(prop_dlg->GetResult());
   }
 }
 
 void TableDialog::OnChsFrm(wxCommandEvent & event)
 {
   wxString tmp = text_ctrl_property_frame->GetValue();
-  GetPropertyDialog()->Select(tmp);
-  if (GetPropertyDialog()->ShowModal() == wxID_OK)
+  prop_dlg->Select(tmp);
+  if (prop_dlg->ShowModal() == wxID_OK)
   {
-    text_ctrl_property_frame->SetValue(GetPropertyDialog()->GetResult());
+    text_ctrl_property_frame->SetValue(prop_dlg->GetResult());
+  }
+}
+
+void TableDialog::OnChangingPage(wxNotebookEvent & event)
+{
+  if (event.GetOldSelection() == 2)
+  {
+    if (!text_ctrl_content->IsModified())
+      return;
+    if (!text_ctrl_content->SaveFile(wxT("tmptable.xml")))
+    {
+      event.Veto();
+      ::wxMessageBox(_("Fail to save file tmptable.xml"), _("Info"), wxOK|wxICON_INFORMATION, this);
+      return;
+    }
+    bool flag = true;
+    JSBSim::FGXMLParse controls_file_parser;
+    try
+    {
+      readXML ("tmptable.xml", controls_file_parser);
+    }
+    catch (...)
+    {
+      flag = false;
+    }
+    if (!flag)
+    {
+      event.Veto();
+      ::wxMessageBox(_("Fail to parse file tmptable.xml"), _("Info"), wxOK|wxICON_INFORMATION, this);
+      return;
+    }
+
+    JSBSim::Element * document = controls_file_parser.GetDocument();
+    if (document->GetName() != "table")
+    {
+      event.Veto();
+      ::wxMessageBox(_("Fail to find <table> tag in tmptable.xml"), _("Info"), wxOK|wxICON_INFORMATION, this);
+      return;
+    }
+    TreeItemData_Table * tmp = new TreeItemData_Table;
+    tmp->Load(document);
+    Load(tmp);
+    //::wxMessageBox(_("Success update table"), _("Info"), wxOK|wxICON_INFORMATION, this);
+    delete tmp;
   }
 }
 
 void TableDialog::OnChangedPage(wxNotebookEvent & event)
 {
-  if (event.GetSelection() == 0)
+  if (event.GetSelection() == 2)
   {
-    clearCurves();
-    return;
+    TreeItemData_Table * tmp = new TreeItemData_Table;
+    Save(tmp);
+    wxStringOutputStream sos;
+#if wxUSE_UNICODE
+    wxTextOutputStream tos(sos, wxEOL_UNIX, wxConvLibc);
+#else
+    wxTextOutputStream tos(sos, wxEOL_UNIX);
+#endif
+#ifdef __WXMSW__
+    tos << wxT("<?xml version=\"1.0\" encoding=\"GB2312\"?>\n");
+#else
+    tos << wxT("<?xml version=\"1.0\"?>\n");
+#endif
+    tmp->Save(tos, wxEmptyString);
+    text_ctrl_content->SetValue(sos.GetString());
+    delete tmp;
   }
 
-  wxString tmp;
-  switch (Type)
+  if (event.GetSelection() == 1)
   {
+   wxString tmp;
+   switch (Type)
+   {
     case TreeItemData_Table::tt4D :
       tmp += wxString(_("Frame : ")) + text_ctrl_property_frame->GetValue() + wxT(" = ") + combo_box_frame_value->GetValue() + wxT(";\n");
     case TreeItemData_Table::tt3D :
-      tmp += wxString(_("Table : ")) + text_ctrl_property_table->GetValue() + wxT(" = ") + combo_box_table_value->GetValue() + wxT(";\n");
-    case TreeItemData_Table::tt2D :
-      tmp += wxString(_("Column : ")) + text_ctrl_property_column->GetValue() + wxT(";\n");
-    case TreeItemData_Table::tt1D :
-      tmp += wxString(_("Row : ")) + text_ctrl_property_row->GetValue() + wxT(";");
-  }
-  label_info2->SetLabel(tmp);
-  notebook_main_pane_3->Layout();
-  combo_box_row->Clear();
-  combo_box_column->Clear();
-  switch (Type)
-  {
-  case TreeItemData_Table::tt1D :
-    {
-      appendCurve();
-    }
-    break;
-  default :
-    if (cur_table)
-    {
-      unsigned int nRows = cur_table->GetNumRows();
-      unsigned int nCols = cur_table->GetNumCols();
-      combo_box_row->Append(wxEmptyString);
-      for (unsigned int i = 1; i <= nRows; ++i)
+      if (cur_table->GetNumRows() > 1)
       {
-         combo_box_row->Append(wxString::Format(wxT("%g"), 
-               cur_table->GetValue(i, 0u)));
+        tmp += wxString(_("Table : ")) + text_ctrl_property_table->GetValue() + wxT(" = ") + combo_box_table_value->GetValue() + wxT(";\n");
       }
-      combo_box_column->Append(wxEmptyString);
-      for (unsigned int i = 1; i <= nCols; ++i)
+   }
+   label_info2->SetLabel(tmp);
+   Curve::CURVE_TYPE ctype;
+   //TODO
+   ctype = Curve::CURVE_BSPLINE;
+   /************************************************
+   if (GetMainFrame()->isLinearInterpretation())
+   {
+     ctype = Curve::CURVE_POLYLINE;
+   }
+   else
+   {
+     ctype = Curve::CURVE_BSPLINE;
+   }
+   ***************************************************/
+   if (cur_table->GetNumCols() > 1 
+		   || Type == TreeItemData_Table::tt1D 
+		   || Type == TreeItemData_Table::tt2D)
+   {
+      handler->GetWindow(0u)->clear();
+      unsigned nCols = cur_table->GetNumCols();
+      unsigned nRows = cur_table->GetNumRows();
+	if (nCols == 1)
+          handler->GetWindow(0u)->ShowLegend(false);
+	else
+          handler->GetWindow(0u)->ShowLegend();
+      vector<double> x;
+      for (unsigned i=1; i <= nRows; ++i)
       {
-         combo_box_column->Append(wxString::Format(wxT("%g"), 
-               cur_table->GetValue(0u, i)));
+        x.push_back(cur_table->GetValue(i, 0u));
       }
-    }
+      for (unsigned i=1; i <= nCols; ++i)
+      {
+        vector<double> y;
+        for (unsigned j=1; j <= nRows; ++j)
+        {
+          y.push_back(cur_table->GetValue(j, i));
+        }
+        Curve * tmp = new Curve(x, y);
+	tmp->SetText(wxString::Format(wxT("%g"), cur_table->GetValue(0u, i)));
+        tmp->SetTextValue(0.8);
+        tmp->IsHide(false);
+        tmp->SetType(ctype);
+	tmp->SetSymbol(Curve::CURVE_REC);
+        tmp->SetTextPos(Curve::CURVE_NO_TEXT);
+        handler->GetWindow(0u)->push_back(tmp);
+      }
+      handler->GetWindow(0u)->SetXLabel(text_ctrl_property_row->GetValue());
+      handler->GetWindow(0u)->SetYLabel(text_ctrl_name->GetValue());
+      canvas->Refresh();
+      canvas->Update();
+   }
+   else
+   {
+      handler->GetWindow(0u)->clear();
+      handler->GetWindow(0u)->ShowLegend();
+      Table3D * cur = NULL;
+      switch (Type)
+      {
+      case TreeItemData_Table::tt3D :
+        cur = &value_3d;
+        break;
+      case TreeItemData_Table::tt4D :
+	{
+	  double tmp;
+          if ( combo_box_frame_value->GetValue().ToDouble(&tmp) )
+            cur = value_4d.GetTable(tmp);
+	}
+        break;
+      default :
+	break;
+      }
+      if (!cur)
+      {
+        return;
+      }
+
+      bool first = true;
+      std::vector<double> list = cur->GetKeyList();
+      for (std::vector<double>::iterator i=list.begin();
+		      i != list.end(); ++i)
+      {
+        Table2D * cur2 = cur->GetTable(*i);
+	unsigned nRows = cur2->GetNumRows();
+        vector<double> x;
+        for (unsigned j=1; j <= nRows; ++j)
+        {
+          x.push_back(cur2->GetValue(j, 0));
+        }
+        vector<double> y;
+        for (unsigned j=1; j <= nRows; ++j)
+        {
+          y.push_back(cur2->GetValue(j, 1));
+        }
+        Curve * tmp = new Curve(x, y);
+	if (first)
+	{
+	  tmp->SetText(text_ctrl_property_table->GetValue() + wxString::Format(wxT("  %g"), *i));
+	  first = false;
+	}
+	else
+	{
+	  tmp->SetText(wxString::Format(wxT("%g"), *i));
+	}
+        tmp->SetTextValue(0.8);
+        tmp->SetType(ctype);
+	tmp->SetSymbol(Curve::CURVE_REC);
+        tmp->SetTextPos(Curve::CURVE_NO_TEXT);
+        tmp->IsHide(false);
+        handler->GetWindow(0u)->push_back(tmp);
+      }
+      handler->GetWindow(0u)->SetXLabel(text_ctrl_property_row->GetValue());
+      handler->GetWindow(0u)->SetYLabel(text_ctrl_name->GetValue());
+      canvas->Refresh();
+      canvas->Update();
+   }
   }
 }
 

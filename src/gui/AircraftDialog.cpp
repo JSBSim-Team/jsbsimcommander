@@ -29,6 +29,7 @@
 #include <wx/datetime.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
+#include <wx/imaglist.h>
 
 #ifndef __WXMSW__
 #include "aero_icon.xpm"
@@ -2160,10 +2161,13 @@ bool AircraftDialog::Save(const wxString &fn)
   wxTextOutputStream out(os,wxEOL_UNIX);
 
   out << wxT("<?xml version=\"1.0\"?>\n");
-  out << wxT("<?xml-stylesheet href=\"JSBSim.xsl\" type=\"application/xml\"?>\n");
-  out << wxT("<fdm_config name=\"") << text_ctrl_info_name->GetValue() << wxT("\" version=\"") << text_ctrl_info_cfgver->GetValue() << wxT("\" release=\"") << combo_box_info_level->GetValue() << wxT("\">\n");
+  out << wxT("<?xml-stylesheet type=\"text/xsl\" href=\"http://jsbsim.sourceforge.net/JSBSim.xsl\"?>\n");
+  out << wxT("<fdm_config name=\"") << text_ctrl_info_name->GetValue() << wxT("\" version=\"") << text_ctrl_info_cfgver->GetValue() << wxT("\" release=\"") << combo_box_info_level->GetValue() << wxT("\"\n");
 
   wxString prefix = wxT("    ");
+
+  out << prefix << wxT("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
+  out << prefix << wxT("xsi:noNamespaceSchemaLocation=\"http://jsbsim.sourceforge.net/JSBSim.xsd\">\n");
 
   SaveFileHeader(out, prefix);
   SaveMetrics(out, prefix);
@@ -2232,10 +2236,10 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
-      while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
-      size_t e = s;
-      while (str[e] != ' ' && str[e] != '\t' && e < l) ++e;
-      str = str.Mid(s,e);
+      while ((str[s] == ' ' || str[s] == '\t') && s < l-1) ++s;
+      size_t e = l-1;
+      while ((str[e] == ' ' || str[e] == '\t') && e > 1) --e;
+      str = str.Mid(s,e-s+1);
       if (str.IsEmpty())
 	       continue;
       *text_ctrl_info_desc << str;
@@ -2254,10 +2258,10 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
-      while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
-      size_t e = s;
-      while (str[e] != ' ' && str[e] != '\t' && e < l) ++e;
-      str = str.Mid(s,e);
+      while ((str[s] == ' ' || str[s] == '\t') && s < l-1) ++s;
+      size_t e = l-1;
+      while ((str[e] == ' ' || str[e] == '\t') && e > 1) --e;
+      str = str.Mid(s,e-s+1);
       if (str.IsEmpty())
 	       continue;
       *text_ctrl_info_org << str;
@@ -2276,10 +2280,10 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
-      while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
-      size_t e = s;
-      while (str[e] != ' ' && str[e] != '\t' && e < l) ++e;
-      str = str.Mid(s,e);
+      while ((str[s] == ' ' || str[s] == '\t') && s < l-1) ++s;
+      size_t e = l-1;
+      while ((str[e] == ' ' || str[e] == '\t') && e > 1) --e;
+      str = str.Mid(s,e-s+1);
       if (str.IsEmpty())
 	       continue;
       *text_ctrl_info_limit << str;
@@ -2298,10 +2302,10 @@ void AircraftDialog::LoadFileHeader(JSBSim::Element * el)
       wxString str = std2wxstr(tmp->GetDataLine(i));
       size_t l = str.Length();
       size_t s=0;
-      while ((str[s] == ' ' || str[s]=='\t') && s < l) ++s;
-      size_t e = s;
-      while (str[e] != ' ' && str[e] != '\t' && e < l) ++e;
-      str = str.Mid(s,e);
+      while ((str[s] == ' ' || str[s] == '\t') && s < l-1) ++s;
+      size_t e = l-1;
+      while ((str[e] == ' ' || str[e] == '\t') && e > 1) --e;
+      str = str.Mid(s,e-s+1);
       if (str.IsEmpty())
 	       continue;
       *text_ctrl_info_notes << str;
@@ -2350,9 +2354,22 @@ void AircraftDialog::SaveFileHeader(wxTextOutputStream &out, const wxString & pr
 
   if (! text_ctrl_info_org->GetValue().IsEmpty())
   {
-    out << prefix << pre << wxT("<orgnization>\n");
-    out << text_ctrl_info_org->GetValue();
-    out << prefix << pre << wxT("</orgnization>\n");
+      int n = text_ctrl_info_org->GetNumberOfLines();
+      if (1 == n)
+      {
+        out << prefix << pre << wxT("<orgnization> ")
+            << text_ctrl_info_org->GetValue()
+            << wxT(" </orgnization>\n");      
+      }
+      else
+      {
+        out << prefix << pre << wxT("<orgnization>\n");
+        for (int i=0; i < n; ++i)
+        {
+          out << prefix << pre << pre << text_ctrl_info_org->GetLineText(i) << wxT('\n');
+        }
+        out << prefix << pre << wxT("</orgnization>\n");
+      }
   }
 
   if (! text_ctrl_info_date->GetValue().IsEmpty())
@@ -2360,9 +2377,22 @@ void AircraftDialog::SaveFileHeader(wxTextOutputStream &out, const wxString & pr
 
   if (! text_ctrl_info_desc->GetValue().IsEmpty())
   {
-    out << prefix << pre << wxT("<description>\n");
-    out << text_ctrl_info_desc->GetValue();
-    out << prefix << pre << wxT("</description>\n");
+      int n = text_ctrl_info_desc->GetNumberOfLines();
+      if (1 == n)
+      {
+        out << prefix << pre << wxT("<description> ")
+            << text_ctrl_info_desc->GetValue()
+            << wxT(" </description>\n");      
+      }
+      else
+      {
+        out << prefix << pre << wxT("<description>\n");
+        for (int i=0; i < n; ++i)
+        {
+          out << prefix << pre << pre << text_ctrl_info_desc->GetLineText(i) << wxT('\n');
+        }
+        out << prefix << pre << wxT("</description>\n");
+      }
   }
 
   if (! text_ctrl_info_ver->GetValue().IsEmpty())
@@ -2383,16 +2413,42 @@ void AircraftDialog::SaveFileHeader(wxTextOutputStream &out, const wxString & pr
 
   if (! text_ctrl_info_limit->GetValue().IsEmpty())
   {
-    out << prefix << pre << wxT("<limitations>\n");
-    out << text_ctrl_info_limit->GetValue();
-    out << prefix << pre << wxT("</limitations>\n");
+      int n = text_ctrl_info_limit->GetNumberOfLines();
+      if (1 == n)
+      {
+        out << prefix << pre << wxT("<limitations> ")
+            << text_ctrl_info_limit->GetValue()
+            << wxT(" </limitations>\n");      
+      }
+      else
+      {
+        out << prefix << pre << wxT("<limitations>\n");
+        for (int i=0; i < n; ++i)
+        {
+          out << prefix << pre << pre << text_ctrl_info_limit->GetLineText(i) << wxT('\n');
+        }
+        out << prefix << pre << wxT("</limitations>\n");
+      }
   }
 
   if (! text_ctrl_info_notes->GetValue().IsEmpty())
   {
-    out << prefix << pre << wxT("<notes>\n");
-    out << text_ctrl_info_notes->GetValue();
-    out << prefix << pre << wxT("</notes>\n");
+      int n = text_ctrl_info_notes->GetNumberOfLines();
+      if (1 == n)
+      {
+        out << prefix << pre << wxT("<notes> ")
+            << text_ctrl_info_notes->GetValue()
+            << wxT(" </notes>\n");      
+      }
+      else
+      {
+        out << prefix << pre << wxT("<notes>\n");
+        for (int i=0; i < n; ++i)
+        {
+          out << prefix << pre << pre << text_ctrl_info_notes->GetLineText(i) << wxT('\n');
+        }
+        out << prefix << pre << wxT("</notes>\n");
+      }
   }
 
   out << prefix << wxT("</fileheader>\n");

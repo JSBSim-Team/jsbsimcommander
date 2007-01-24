@@ -102,24 +102,6 @@ public:
   MyFrame * frame;
   AircraftDialog * dlg;
 
-  wxArrayString source_property;
-  wxArrayString source_desc;
-  wxArrayString source_unit;
-  wxArrayString source_access;
-  wxArrayString source_comment;
-  
-  wxArrayString destination_property;
-  wxArrayString destination_desc;
-  wxArrayString destination_unit;
-  wxArrayString destination_access;
-  wxArrayString destination_comment;
-
-  wxArrayString all_property;
-  wxArrayString all_desc;
-  wxArrayString all_unit;
-  wxArrayString all_access;
-  wxArrayString all_comment;
-
   PropertyDialog * property_dialog;
 
   wxString CurrentWorkDirectory;
@@ -128,6 +110,7 @@ public:
   wxString engine_dir;
   wxString script_dir;
   wxString result_dir;
+  wxString prop_file;
 
   wxString Delimited;
 

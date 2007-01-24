@@ -9,6 +9,7 @@
         <object class="wxPanel" name="main_panel"/>
         <option>1</option>
         <flag>wxEXPAND</flag>
+        <minsize>800,600</minsize>
       </object>
     </object>
     <style>wxDEFAULT_FRAME_STYLE|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxMINIMIZE_BOX</style>

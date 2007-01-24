@@ -29,6 +29,7 @@
 #include <wx/txtstrm.h>
 #include <wx/sstream.h>
 #include <wx/datetime.h>
+#include <wx/imaglist.h>
 
 #include "TreeItem.h"
 #include "FGXMLParse.h"

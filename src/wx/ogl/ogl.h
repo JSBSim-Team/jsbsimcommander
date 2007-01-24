@@ -12,9 +12,13 @@
 #ifndef _OGL_OGL_H_
 #define _OGL_OGL_H_
 
-
+#ifdef WXMAKINGDLL_OGL
+    #define WXDLLIMPEXP_OGL WXEXPORT
+#elif defined(WXUSINGDLL)
+    #define WXDLLIMPEXP_OGL WXIMPORT
+#else // not making nor using DLL
     #define WXDLLIMPEXP_OGL
-
+#endif
 
 
 #include "wx/ogl/basic.h"      // Basic shapes

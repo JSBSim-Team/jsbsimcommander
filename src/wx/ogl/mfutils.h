@@ -13,12 +13,8 @@
 #ifndef _MFUTILS_H_
 #define _MFUTILS_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "mfutils.h"
-#endif
 
-
-#include <wx/metafile.h>
+#include "wx/metafile.h"
 
 #ifndef GetRValue
 #define GetRValue(rgb) ((unsigned char)(rgb))

@@ -371,7 +371,10 @@ MyCanvas::DrawPic (wxDC * dc, const int & maxX, const int & maxY)
 {
   // This part was added to preform the print preview and printing functions
 
+#if wxCHECK_VERSION(2, 7, 0)
+#else // replacement code for old version
   dc->BeginDrawing ();                // Allows optimization of drawing code under MS Windows.
+#endif
   wxDiagram *diagram_p = GetDiagram ();        // Get the current diagram
   if (diagram_p->GetShapeList ())
     {
@@ -389,7 +392,10 @@ MyCanvas::DrawPic (wxDC * dc, const int & maxX, const int & maxY)
           current = current->GetNext ();        // Procede to the next shape in the list
         }
     }
+#if wxCHECK_VERSION(2, 7, 0)
+#else // replacement code for old version
   dc->EndDrawing ();                // Allows optimization of drawing code under MS Windows.
+#endif
 }
 
 int

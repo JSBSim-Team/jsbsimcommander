@@ -65,7 +65,10 @@ void DiagramDocument::Import(JSBSim::Element * el)
     GetPropertyDialog()->ClearVar();
     for (int i=0; i<prop_addition.GetCount(); ++i)
     {
-      GetPropertyDialog()->AddItem(prop_addition[i], wxT("user defined in FCS"), wxEmptyString, wxEmptyString, wxEmptyString);
+      wxArrayString list;
+      list.Add(prop_addition[i]);
+      list.Add(wxT("user defined in FCS"));
+      GetPropertyDialog()->AddItem(list);
     }
   }
 
@@ -113,7 +116,7 @@ void DiagramDocument::Import(JSBSim::Element * el)
         shape = new Switch;
       } else if (type == "kinematic") {
         shape = new Kinemat;
-      } else if (type == "function") {
+      } else if (type == "fcs_function") {
         shape = new FCSFunction;
       } else {
         wxString str = std2wxstr(type);

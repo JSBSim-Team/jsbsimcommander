@@ -29,6 +29,8 @@
 #include <wx/filename.h>
 #include <wx/xrc/xmlres.h>          // XRC XML resouces
 #include <wx/image.h>               // wxImage
+#include <wx/wfstream.h>            // wxFileOutputStream
+#include <wx/txtstrm.h>            // wxTextOutputStream
 
 #include "MyApp.h"
 #include "MyFrame.h"
@@ -59,25 +61,24 @@ MyApp::MyApp (void)
 
 bool MyApp::OnInit (void)
 {
+  m_locale.AddCatalogLookupPathPrefix(wxString(argv[0]).BeforeLast(wxFileName::GetPathSeparator()));
+  m_locale.Init(wxLANGUAGE_DEFAULT);
+  // Initialize the catalogs we'll be using
+  m_locale.AddCatalog(wxT("JSBSimCommander"));
+
   Delimited = wxFileName::GetPathSeparator();
 
   if (!wxApp::OnInit ())
      return false;
 
   wxBitmap about;
-  if ( about.LoadFile(about_img_file, wxBITMAP_TYPE_BMP))
+  if ( wxFileExists(about_img_file) && about.LoadFile(about_img_file, wxBITMAP_TYPE_BMP))
   {
     wxSplashScreen* splash = new wxSplashScreen(about,
           wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
           3000, NULL, -1, wxDefaultPosition, wxDefaultSize,
           wxSIMPLE_BORDER|wxSTAY_ON_TOP);
   }
-
-  m_locale.Init(wxLANGUAGE_DEFAULT);
-  // Initialize the catalogs we'll be using
-  m_locale.AddCatalog(wxT("Commander"));
-
-  InitProps(source_property, source_desc, source_unit, source_access, source_comment, destination_property, destination_desc, destination_unit, destination_access, destination_comment, all_property, all_desc, all_unit, all_access, all_comment);
 
   // If there is any of a certain format of image in the xrcs, then first
   // load a handler for that image type. This example uses XPMs, but if
@@ -120,9 +121,11 @@ bool MyApp::OnInit (void)
   // since it is the main application window.
   frame = new MyFrame();
 
-  property_dialog = new PropertyDialog(frame, -1, _("Properties"), wxDefaultPosition, wxSize(825,580));
+  property_dialog = new PropertyDialog(frame);
+  if (! property_dialog->Load(prop_file) )
   {
-    property_dialog->Load(all_property, all_desc, all_unit, all_access, all_comment);
+    wxSafeShowMessage(_("Fail to load property table "), _("Fail to load property table ")+prop_file+_(". ")+_("Use option -p  to specify the file to load."));
+    return false;
   }
 
   wxToolTip::Enable(true);
@@ -130,7 +133,6 @@ bool MyApp::OnInit (void)
 
   SetTopWindow(frame);
   // Set the default size.
-  frame->SetSize(800,600);
   frame->Centre (wxBOTH);
 
   // Show the frame as it's created initially hidden.
@@ -167,7 +169,9 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
         { wxCMD_LINE_SWITCH, _T("v"), _T("verbose"), _T("be verbose") },
         { wxCMD_LINE_SWITCH, _T("q"), _T("quiet"),   _T("be quiet") },
         { wxCMD_LINE_OPTION, _T("r"), _T("resource"), _T("resource dir") },
-	{ wxCMD_LINE_OPTION, _T("a"), _T("about"), _T("about image file") },
+	    { wxCMD_LINE_OPTION, _T("a"), _T("about"), _T("about image file") },
+        { wxCMD_LINE_OPTION, _T("p"), _T("properties"),   _T("property file") },
+
         { wxCMD_LINE_PARAM,  NULL, NULL, _T("input file"),
             wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
 
@@ -201,6 +205,53 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     else
     {
       about_img_file = AppDirectory+wxFileName::GetPathSeparator()+wxT("about.bmp");
+    }
+    if (parser.Found(wxT("properties"), &dir))
+    {
+      prop_file = dir;
+    }
+    else
+    {
+      prop_file = CurrentWorkDirectory+wxFileName::GetPathSeparator()+wxT("prop.csv");
+    }
+    if (!::wxFileExists(prop_file))
+    {
+      wxArrayString source_property;
+      wxArrayString source_desc;
+      wxArrayString source_unit;
+      wxArrayString source_access;
+      wxArrayString source_comment;
+  
+      wxArrayString destination_property;
+      wxArrayString destination_desc;
+      wxArrayString destination_unit;
+      wxArrayString destination_access;
+      wxArrayString destination_comment;
+
+      wxArrayString all_property;
+      wxArrayString all_desc;
+      wxArrayString all_unit;
+      wxArrayString all_access;
+      wxArrayString all_comment;
+
+      InitProps(source_property, source_desc, source_unit, source_access, source_comment, destination_property, destination_desc, destination_unit, destination_access, destination_comment, all_property, all_desc, all_unit, all_access, all_comment);
+      wxFileOutputStream os(prop_file);
+      if (!os.Ok())
+        return false;
+      wxTextOutputStream out(os);
+      out << _("\"property name\"") << wxT(",") 
+        << _("\"description\"") << wxT(",")
+        << _("\"unit\"") << wxT(",")
+        << _("\"access\"") << wxT(",")
+        << _("\"comment\"") << wxT("\n");
+      for (int i=0; i < all_property.GetCount(); ++i)
+      {
+        out << "\"" << all_property[i] << "\"" << wxT(",") 
+          << "\"" << all_desc[i] << "\"" << wxT(",")
+          << "\"" << all_unit[i] << "\"" << wxT(",")
+          << "\"" << all_access[i] << "\"" << wxT(",")
+          << "\"" << all_comment[i] << "\"" << wxT("\n");
+      }
     }
     size_t count = parser.GetParamCount();
     if (count > 0u)

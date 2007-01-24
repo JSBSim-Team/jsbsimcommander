@@ -247,7 +247,7 @@ void DiagramDocument::Export(wxTextOutputStream & tstream, const wxString & pref
   int n;
   if ( (n = prop_addition.GetCount()) > 0 )
   {
-    tstream << wxT("\n<!-- INTERFACE PROPERTIES -->\n") << endl ;
+    tstream << wxT('\n') << pre << wxT("<!-- Declare some interface properties -->\n\n");
     for (int i = 0; i< n; ++i)
     {
       tstream << pre << wxT("<property>") << prop_addition[i] << wxT("</property>") << endl ;
@@ -514,7 +514,10 @@ DiagramDocument::OnGeneral (wxCommandEvent & WXUNUSED (event))
     GetPropertyDialog()->ClearVar();
     for (int i=0; i<prop_addition.GetCount(); ++i)
     {
-      GetPropertyDialog()->AddItem(prop_addition[i], _("user defined in FCS"), wxEmptyString, wxEmptyString, wxEmptyString);
+  wxArrayString list;
+  list.Add(prop_addition[i]);
+  list.Add(wxT("user defined in FCS"));
+  GetPropertyDialog()->AddItem(list);
     }
   }
 }
@@ -579,7 +582,9 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (Gain)))
     {
-      GainPropertyDialog  dlg((Gain *)theShape, wxGetApp().source_property, this, wxID_ANY, _("Gain Componment"));
+	    //TODO
+      wxArrayString list;
+      GainPropertyDialog  dlg((Gain *)theShape, list, this, wxID_ANY, _("Gain Componment"));
       if ( dlg.ShowModal() == wxID_OK )
 	    {
     	  dlg.SetDataOut((Gain *)theShape);

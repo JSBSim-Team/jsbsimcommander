@@ -73,6 +73,7 @@ class TreeItemEvtHandler : public wxEvtHandler {
 
 class TreeItemData_base : public wxTreeItemData {
   public:
+    TreeItemData_base() : tree(NULL) {}
     virtual void Init(wxTreeCtrl* t){tree = t;}
     virtual void Load(JSBSim::Element * el){}
     virtual void Save(wxTextOutputStream & out, const wxString & prefix){}

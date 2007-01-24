@@ -7,20 +7,20 @@
  ------------- Copyright (C) 2004  Jon S. Berndt (jsb@hal-pc.org) -------------
 
  This program is free software; you can redistribute it and/or modify it under
- the terms of the GNU General Public License as published by the Free Software
+ the terms of the GNU Lesser General Public License as published by the Free Software
  Foundation; either version 2 of the License, or (at your option) any later
  version.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  details.
 
- You should have received a copy of the GNU General Public License along with
+ You should have received a copy of the GNU Lesser General Public License along with
  this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  Place - Suite 330, Boston, MA  02111-1307, USA.
 
- Further information about the GNU General Public License can also be found on
+ Further information about the GNU Lesser General Public License can also be found on
  the world wide web at http://www.gnu.org.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,9 +35,18 @@ INCLUDES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 #ifdef FGFS
-#  include STL_STRING
-#  include STL_MAP
-#  include STL_VECTOR
+#  include <simgear/compiler.h>
+#  ifdef SG_HAVE_STD_INCLUDES
+#    include <string>
+#    include <vector>
+#    include <iostream>
+#    include <map>
+#  else
+#    include <vector.h>
+#    include <string>
+#    include <iostream.h>
+#    include <map.h>
+#  endif
 #else
 #  include <string>
 #  include <map>
@@ -49,8 +58,13 @@ INCLUDES
    using std::cout;
    using std::endl;
 #endif
+   using std::string;
+   using std::map;
+   using std::vector;
+   using std::cout;
+   using std::endl;
 
-#include "FGColumnVector3.h"
+#include <math/FGColumnVector3.h>
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 DEFINITIONS
@@ -189,6 +203,9 @@ public:
   /// Returns the number of child elements for this element.
   int GetNumElements(void) {return children.size();}
 
+  /// Returns the number of named child elements for this element.
+  int GetNumElements(string);
+
   /** Converts the element data to a number.
       This function attempts to convert the first (and presumably only) line of
       data "owned" by the element into a real number. If there is not exactly one
@@ -312,11 +329,22 @@ public:
       @param p pointer to the parent Element. */
   void SetParent(Element* p) {parent = p;}
 
-  /**  */
+  /** Adds a child element to the list of children stored for this element.
+  *   @param el Child element to add. */
   void AddChildElement(Element* el) {children.push_back(el);}
+
+  /** Stores an attribute belonging to this element.
+  *   @param name The string name of the attribute.
+  *   @param value The string value of the attribute. */
   void AddAttribute(string name, string value);
+
+  /** Stores data belonging to this element.
+  *   @param d the data to store. */
   void AddData(string d);
 
+  /** Prints the element.
+  *   Prints this element and calls the Print routine for child elements.
+  *   @param d The tab level. A level corresponds to a single space. */
   void Print(int level=0);
 
 private:

@@ -17,6 +17,7 @@
 
 // begin wxGlade: ::dependencies
 #include <wx/tglbtn.h>
+#include <wx/notebook.h>
 // end wxGlade
 
 

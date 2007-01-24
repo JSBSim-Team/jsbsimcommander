@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Commander.cpp, 0.1.1, matthewzhenggong@yahoo.com.cn)
-AM_INIT_AUTOMAKE(JSBSimCommander, 0.1.1)
+AC_INIT(JSBSimCommander, 0.1.2, matthewzhenggong@gmail.com)
+AM_INIT_AUTOMAKE()
 
 # Checks for programs.
 AC_PROG_CPP
@@ -92,6 +92,7 @@ AC_OUTPUT( \
     src/simgear/xml/Makefile \
     src/input_output/Makefile \
     src/math/Makefile \
+    src/mattplot/Makefile \
     src/wx/Makefile \
     src/wx/plot/Makefile \
     src/wx/deprecated/Makefile \

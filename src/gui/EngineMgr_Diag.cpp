@@ -28,6 +28,7 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/fileconf.h>
+#include <wx/imaglist.h>
 
 #include "EngineMgr_Diag.h"
 #include "Engine_Diag.h"

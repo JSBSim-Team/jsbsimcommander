@@ -5,6 +5,25 @@
  Purpose:      XML element class
  Called by:    FGXMLParse
 
+ ------------- Copyright (C) 2001  Jon S. Berndt (jsb@hal-pc.org) -------------
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU Lesser General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ details.
+
+ You should have received a copy of the GNU Lesser General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ Place - Suite 330, Boston, MA  02111-1307, USA.
+
+ Further information about the GNU Lesser General Public License can also be found on
+ the world wide web at http://www.gnu.org.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 INCLUDES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
@@ -47,8 +66,10 @@ static const char *IdHdr = ID_XMLELEMENT;
 CLASS IMPLEMENTATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
+//Matt's change start
 bool Element::init_convert=false;
 Element::tMapConvert Element::convert;
+//Matt's change end
 
 Element::Element(string nm)
 {
@@ -68,7 +89,6 @@ Element::Element(string nm)
   convert["FT2"]["M2"] = 1.0/convert["M2"]["FT2"];
   convert["FT"]["IN"] = 12.0;
   convert["IN"]["FT"] = 1.0/convert["FT"]["IN"];
-  convert["IN"]["FT"] = 1.0/convert["FT"]["IN"];
   convert["LBS"]["KG"] = 0.45359237;
   convert["KG"]["LBS"] = 1.0/convert["LBS"]["KG"];
   convert["SLUG*FT2"]["KG*M2"] = 1.35594;
@@ -85,11 +105,13 @@ Element::Element(string nm)
   convert["LBS"]["N"] = 1.0/convert["N"]["LBS"];
   convert["KTS"]["FT/SEC"] = 1.68781;
   convert["FT/SEC"]["KTS"] = 1.0/convert["KTS"]["FT/SEC"];
+  convert["FT*LBS"]["N*M"] = 1.35581795;
+  convert["N*M"]["FT*LBS"] = 1/convert["FT*LBS"]["N*M"];
+  convert["IN"]["M"] = convert["IN"]["FT"] * convert["FT"]["M"];
+  convert["M"]["IN"] = convert["M"]["FT"] * convert["FT"]["IN"];
   //Matt's change start
-  convert["M"]["IN"] = convert["M"]["FT"]*convert["FT"]["IN"];
-  convert["IN"]["M"] = 1.0/convert["M"]["IN"];
-  convert["LBS*FT"]["N*M"] = convert["LBS"]["N"] * convert["FT"]["M"];
-  convert["N*M"]["LBS*FT"] = convert["N"]["LBS"] * convert["M"]["FT"];
+  convert["LBS*FT"]["N*M"] = 1.35581795;
+  convert["N*M"]["LBS*FT"] = 1/convert["LBS*FT"]["N*M"];
   convert["SLUG"]["KG"] = 14.593903138;
   convert["KG"]["SLUG"] = 1.0/convert["SLUG"]["KG"];
   convert["M/SEC"]["FT/SEC"] = convert["M"]["FT"];
@@ -126,9 +148,10 @@ Element::Element(string nm)
   convert["LBS/SEC"]["LBS/SEC"] = 1.00;
   convert["FT/SEC"]["FT/SEC"] = 1.00;
   convert["KTS"]["KTS"] = 1.00;
+  convert["FT*LBS"]["FT*LBS"] = 1.00;
+  convert["N*M"]["N*M"] = 1.00;
   //Matt's change start
   convert["LBS*FT"]["LBS*FT"] = 1.00;
-  convert["N*M"]["N*M"] = 1.00;
   convert["SLUG"]["SLUG"] = 1.00;
   convert["M/SEC"]["M/SEC"] = 1.00;
   }
@@ -211,6 +234,19 @@ double Element::GetDataAsNumber(void)
   } else {
     return 99e99;
   }
+}
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+int Element::GetNumElements(string element_name)
+{
+  int number_of_elements=0;
+  Element* el=FindElement(element_name);
+  while (el) {
+    number_of_elements++;
+    el=FindNextElement(element_name);
+  }
+  return number_of_elements;
 }
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -359,7 +395,7 @@ FGColumnVector3 Element::FindElementTripletConvertTo( string target_units)
     value = 0.0;
     cerr << "Could not find an X triplet item for this column vector." << endl;
   }
-  triplet(eX) = value;
+  triplet(1) = value;
 
   item = FindElement("y");
   if (!item) item = FindElement("pitch");
@@ -370,7 +406,7 @@ FGColumnVector3 Element::FindElementTripletConvertTo( string target_units)
     value = 0.0;
     cerr << "Could not find a Y triplet item for this column vector." << endl;
   }
-  triplet(eY) = value;
+  triplet(2) = value;
 
   item = FindElement("z");
   if (!item) item = FindElement("yaw");
@@ -381,7 +417,7 @@ FGColumnVector3 Element::FindElementTripletConvertTo( string target_units)
     value = 0.0;
     cerr << "Could not find a Z triplet item for this column vector." << endl;
   }
-  triplet(eZ) = value;
+  triplet(3) = value;
 
   return triplet;
 }
@@ -390,18 +426,20 @@ FGColumnVector3 Element::FindElementTripletConvertTo( string target_units)
 
 void Element::Print(int level)
 {
+  int i, spaces;
+
   level+=2;
-  for (int spaces=0; spaces<=level; spaces++) cout << " "; // format output
+  for (spaces=0; spaces<=level; spaces++) cout << " "; // format output
   cout << "Element Name: " << name;
-  for (int i=0; i<attributes.size(); i++) {
+  for (i=0; i<attributes.size(); i++) {
     cout << "  " << attribute_key[i] << " = " << attributes[attribute_key[i]];
   }
   cout << endl;
-  for (int i=0; i<data_lines.size(); i++) {
-    for (int spaces=0; spaces<=level; spaces++) cout << " "; // format output
+  for (i=0; i<data_lines.size(); i++) {
+    for (spaces=0; spaces<=level; spaces++) cout << " "; // format output
     cout << data_lines[i] << endl;
   }
-  for (int i=0; i<children.size(); i++) {
+  for (i=0; i<children.size(); i++) {
     children[i]->Print(level);
   }
 }
@@ -418,8 +456,10 @@ void Element::AddAttribute(string name, string value)
 
 void Element::AddData(string d)
 {
-  int string_start = d.find_first_not_of(" ");
-  if (string_start > 0) d.erase(0,string_start-1);
+  int string_start = d.find_first_not_of(" \t");
+  if (string_start > 0) {
+    d.erase(0,string_start);
+  }
   data_lines.push_back(d);
 }
 
