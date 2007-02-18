@@ -36,6 +36,7 @@
 #include "switch.h"
 #include "kinemat.h"
 #include "func.h"
+#include "sensor.h"
 #include "import.h"
 #include "MyApp.h"
 #include "Property_Diag.h"
@@ -118,6 +119,8 @@ void DiagramDocument::Import(JSBSim::Element * el)
         shape = new Kinemat;
       } else if (type == "fcs_function") {
         shape = new FCSFunction;
+      } else if (type == "sensor") {
+        shape = new Sensor;
       } else {
         wxString str = std2wxstr(type);
         str = _("Unknown component(") + str + _(")\n Please check the file.");
