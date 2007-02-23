@@ -8,19 +8,22 @@
 //
 // Functions:
 //
-// PIDPropertyDialog - Constructor
-// set_properties
 // do_layout
-// Show
+// GetDataIn
+// OnButtonPressCancel
+// OnButtonPressHelp
 // OnButtonPressOK
+// OnButtonPressTrigger
 // OnCheckboxClip
 // OnButtonPressCancel
 // OnButtonPressHelp
-// GetDataIn
+// OnClickInvertInput
+// PIDPropertyDialog - Constructor
+// set_properties
 // SetDataOut
+// Show
 //
 /////////////////////////////////////////////////////////////////////////////
-
 
 #ifdef __GNUG__
 // #pragma implementation
@@ -74,7 +77,7 @@ PIDPropertyDialog::PIDPropertyDialog(PID * pid, wxWindow* parent, int id, const 
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME)
 {
     // begin wxGlade: PIDPropertyDialog::PIDPropertyDialog
-    notebook_1 = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize, wxWS_EX_VALIDATE_RECURSIVELY);
+    notebook_1 = new wxNotebook(this, -1, wxDefaultPosition, wxDefaultSize,wxWS_EX_VALIDATE_RECURSIVELY);
     notebook_1_pane_1 = new wxPanel(notebook_1, -1);
     panel_toplevel = new wxPanel(notebook_1_pane_1, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL);
     sizer_clip_staticbox = new wxStaticBox(panel_toplevel, -1, wxT("Clipping"));
@@ -345,7 +348,7 @@ bool PIDPropertyDialog::Show( bool show)
 {
   bool tmp = wxDialog::Show(show);
 
-  if (show) panel_toplevel->InitDialog();
+  if (show) notebook_1->InitDialog();
 
   return tmp;
 }
@@ -366,6 +369,8 @@ void PIDPropertyDialog::GetDataIn(PID * g)
   kp = wxString::Format(wxT("%g"), g->GetKp());
   ki = wxString::Format(wxT("%g"), g->GetKi());
   kd = wxString::Format(wxT("%g"), g->GetKd());
+
+  *text_ctrl_order << order;
 
   if (clipable) {
       text_ctrl_clip_max->Enable(true);

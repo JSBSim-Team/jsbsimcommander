@@ -28,6 +28,7 @@
 #include "shape.h"
 #include "sum.h"
 #include "pid.h"
+#include "sensor.h"
 #include "gain.h"
 #include "filter.h"
 #include "deadband.h"
@@ -85,6 +86,11 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
     case TOOLBAR_ADD_SOURCE:
       {
         info = CLASSINFO (SourceShape);
+        break;
+      }
+    case TOOLBAR_ADD_SENSOR:
+      {
+        info = CLASSINFO (Sensor);
         break;
       }
     case TOOLBAR_ADD_DESTINATION:
@@ -344,6 +350,18 @@ MyCanvas::OnKey (wxKeyEvent & event)
       {
         toolbar->ToggleTool(TOOLBAR_ADD_FUNC, true);
         toolbar->OnLeftClick(TOOLBAR_ADD_FUNC, true);
+      }
+      break;
+    case '-' :
+      {
+        toolbar->ToggleTool(TOOLBAR_ADD_PID, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_PID, true);
+      }
+      break;
+    case '+' :
+      {
+        toolbar->ToggleTool(TOOLBAR_ADD_SENSOR, true);
+        toolbar->OnLeftClick(TOOLBAR_ADD_SENSOR, true);
       }
       break;
     case WXK_DELETE :
