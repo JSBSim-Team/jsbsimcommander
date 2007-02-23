@@ -262,7 +262,7 @@ wxArrayString Sensor::ImportXML(JSBSim::Element * element)
     }
   }
 
-//  InputIsInverted = *((GetInputSignList().Item(0))->GetData());
+  InputIsInverted = GetInputIsInverted();
 
   return strings;
 }

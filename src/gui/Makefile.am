@@ -19,7 +19,7 @@ LGear_Diag.cpp         condition.cpp        gain.cpp         switch_dlg.cpp \
 Mass_Diag.cpp          deadband.cpp         gain_dlg.cpp     toolbar.cpp \
 Property_Diag.cpp      deadband_dlg.cpp     import.cpp       view.cpp \
 Propulsion_Diag.cpp    doc.cpp              kinemat.cpp      EngineMgr_Diag.cpp\
-MyFrame.cpp            pid.cpp              pid_dlg.cpp      sensor.h \
+MyFrame.cpp            pid.cpp              pid_dlg.cpp      sensor.cpp \
 sensor_dlg.cpp
                    
 

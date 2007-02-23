@@ -64,5 +64,6 @@ EXTRA_DIST = \
   operator_ne.bmp      operator_and.bmp         operator_or.bmp \
   operator_not.xpm     operator_ifthen.xpm      ogl.xpm\
   operator_not.bmp     operator_ifthen.bmp      ogl.ico\
-  pid.xpm              pid.bmp
+  pid.xpm              pid.bmp			sensor.xpm \
+  sensor.bmp
 
