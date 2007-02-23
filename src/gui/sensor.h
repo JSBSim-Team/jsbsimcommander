@@ -34,36 +34,6 @@ protected:
   double lag;
   bool InputIsInverted;
   
-/*
-  enum eNoiseType {ePercent=0, eAbsolute} NoiseType;
-  double dt;
-  double min, max;
-  double span;
-  double bias;
-  double drift_rate;
-  double drift;
-  double noise_variance;
-  double lag;
-  double granularity;
-  double ca; /// lag filter coefficient "a"
-  double cb; /// lag filter coefficient "b"
-  double PreviousOutput;
-  double PreviousInput;
-  int noise_type;
-  int bits;
-  int quantized;
-  int divisions;
-  bool fail_low;
-  bool fail_high;
-  bool fail_stuck;
-
-  void Noise(void);
-  void Bias(void);
-  void Drift(void);
-  void Quantize(void);
-  void Lag(void);
-  */
-
 public:
   Sensor (double w = 0.0, double h = 0.0, const wxString & Name = wxT("sensor"));
   void OnDraw (wxDC & dc);

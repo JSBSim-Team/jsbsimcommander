@@ -59,7 +59,7 @@ Sensor::Sensor (double w, double h, const wxString & Name )
   NoiseType = 0;
   bits = 0;
   quantized = 0;
-  quant_name = "";
+  quant_property = "";
   max=0;
   min=0;
   bias=0;
@@ -217,10 +217,10 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 
 wxArrayString Sensor::ImportXML(JSBSim::Element * element)
 {
-  Element* scratch_element=0;
-  wxArrayString strings = ComponentShape::ImportXML(el);
+  JSBSim::Element* scratch_element=0;
+  wxArrayString strings = ComponentShape::ImportXML(element);
 
-  Element* quantization_element = element->FindElement("quantization");
+  JSBSim::Element* quantization_element = element->FindElement("quantization");
   if ( quantization_element) {
     quant_property = quantization_element->GetAttributeValue("name");
     if ( quantization_element->FindElement("bits") ) {
@@ -256,13 +256,13 @@ wxArrayString Sensor::ImportXML(JSBSim::Element * element)
     } else if (variation == "ABSOLUTE") {
       NoiseType = 1; //eAbsolute;
     } else {
-      NoiseType = ePercent;
-      cerr << "Unknown noise type in sensor: " << Name << endl;
+      NoiseType = 0;
+      cerr << "Unknown noise type in sensor: " << variation << endl;
       cerr << "  defaulting to PERCENT." << endl;
     }
   }
 
-  InputIsInverted = *((GetInputSignList().Item(0))->GetData());
+//  InputIsInverted = *((GetInputSignList().Item(0))->GetData());
 
   return strings;
 }
