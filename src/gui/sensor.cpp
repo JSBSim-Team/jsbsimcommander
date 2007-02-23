@@ -53,9 +53,19 @@ IMPLEMENT_DYNAMIC_CLASS (Sensor, ComponentShape)
 */
 
 Sensor::Sensor (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("sensor"), Name),
-   Noise(0.0)
+  :ComponentShape(w, h, wxT("sensor"), Name)
 {
+  noise_variance = 0;
+  NoiseType = 0;
+  bits = 0;
+  quantized = 0;
+  quant_name = "";
+  max=0;
+  min=0;
+  bias=0;
+  drift_rate=0;
+  lag=0;
+
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);
 
   ClearAttachments ();
@@ -170,7 +180,7 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 
   ExportInputs(stream,Pre);
 
-//  if (Noise != 0.0) stream << Pre << wxT("<noise> ") << Noise << wxT(" </noise>") << endl;
+//  if (noise_variance != 0.0) stream << Pre << wxT("<noise> ") << Noise << wxT(" </noise>") << endl;
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
@@ -180,13 +190,77 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 
 /**
 * ImportXML ====================================================================
+
+<sensor name=”name” rate_group=”name”>
+  <input> property </input>
+  <lag> number </lag>
+  <noise variation=”PERCENT|ABSOLUTE”> number </noise>
+  <quantization name="name">
+    <bits> number </bits>
+    <min> number </min>
+    <max> number </max>
+  </quantization>
+  <drift_rate> number </drift_rate>
+  <bias> number </bias>
+</sensor>
+
+  double noise_variance;
+  int NoiseType;
+  int bits
+  int quantized;
+  double max, min;
+  double bias;
+  double drift_rate;
+  double lag;
+  bool InputIsInverted;
 */
 
-wxArrayString Sensor::ImportXML(JSBSim::Element * el)
+wxArrayString Sensor::ImportXML(JSBSim::Element * element)
 {
+  Element* scratch_element=0;
   wxArrayString strings = ComponentShape::ImportXML(el);
 
-//  if ( el->FindElement("noise") ) Noise = el->FindElementValueAsNumber("noise");
+  Element* quantization_element = element->FindElement("quantization");
+  if ( quantization_element) {
+    quant_property = quantization_element->GetAttributeValue("name");
+    if ( quantization_element->FindElement("bits") ) {
+      bits = (int)quantization_element->FindElementValueAsNumber("bits");
+    }
+//    divisions = (1<<bits);
+    if ( quantization_element->FindElement("min") ) {
+      min = quantization_element->FindElementValueAsNumber("min");
+    }
+    if ( quantization_element->FindElement("max") ) {
+      max = quantization_element->FindElementValueAsNumber("max");
+    }
+ //   span = max - min;
+ //   granularity = span/divisions;
+  }
+  if ( element->FindElement("bias") ) {
+    bias = element->FindElementValueAsNumber("bias");
+  }
+  if ( element->FindElement("drift_rate") ) {
+    drift_rate = element->FindElementValueAsNumber("drift_rate");
+  }
+  if ( element->FindElement("lag") ) {
+    lag = element->FindElementValueAsNumber("lag");
+ //   denom = 2.00 + dt*lag;
+ //   ca = dt*lag / denom;
+ //   cb = (2.00 - dt*lag) / denom;
+  }
+  if ( element->FindElement("noise") ) {
+    noise_variance = element->FindElementValueAsNumber("noise");
+    string variation = element->FindElement("noise")->GetAttributeValue("variation");
+    if (variation == "PERCENT") {
+      NoiseType = 0; //ePercent;
+    } else if (variation == "ABSOLUTE") {
+      NoiseType = 1; //eAbsolute;
+    } else {
+      NoiseType = ePercent;
+      cerr << "Unknown noise type in sensor: " << Name << endl;
+      cerr << "  defaulting to PERCENT." << endl;
+    }
+  }
 
   InputIsInverted = *((GetInputSignList().Item(0))->GetData());
 
