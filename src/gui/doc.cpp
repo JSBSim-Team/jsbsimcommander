@@ -49,6 +49,8 @@
 #include "switch.h"
 #include "switch_dlg.h"
 #include "kinemat.h"
+#include "sensor.h"
+#include "sensor_dlg.h"
 #include "kinemat_dlg.h"
 #include "fcsprop_dlg.h"
 #include "toolbar.h"
@@ -57,6 +59,8 @@
 #include "Property_Diag.h"
 #include "func.h"
 #include "func_dlg.h"
+#include "sensor.h"
+#include "sensor_dlg.h"
 
 BEGIN_EVENT_TABLE (DiagramDocument, wxPanel)
   EVT_MENU (FCSBUILDER_EXPORT, DiagramDocument::OnExportXML)
@@ -606,6 +610,15 @@ DiagramDocument::SetProperty(wxShape * theShape)
         dlg.SetDataOut((PID *)theShape);
       }
     }
+  else if (theShape->IsKindOf (CLASSINFO (Sensor)))
+    {
+      SensorComponentEditor  dlg((Sensor *)theShape, this,wxID_ANY,_("Sensor Componment"));
+      if ( dlg.ShowModal() == wxID_OK )
+      {
+        dlg.SetDataOut((Sensor *)theShape);
+      }
+    }
+
   else if (theShape->IsKindOf (CLASSINFO (Filter)))
     {
       FilterPropertyDialog  dlg((Filter *)theShape, this,wxID_ANY,_("Filter Componment"));
