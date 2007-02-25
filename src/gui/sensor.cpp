@@ -188,6 +188,9 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     }
   }
 
+  if (!quant_property.empty() !! bits != 0) {
+  }
+
   if (drift_rate != 0.0) {
     stream << Pre << wxT("<drift_rate> ") << drift_rate << wxT(" </drift_rate>") << endl;
   }
