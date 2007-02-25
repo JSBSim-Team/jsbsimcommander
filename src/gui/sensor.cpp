@@ -192,6 +192,10 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     stream << Pre << wxT("<drift_rate> ") << drift_rate << wxT(" </drift_rate>") << endl;
   }
 
+  if (bias != 0.0) {
+    stream << Pre << wxT("<bias> ") << bias << wxT(" </bias>") << endl;
+  }
+
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
 
