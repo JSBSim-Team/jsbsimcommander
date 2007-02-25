@@ -180,7 +180,13 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 
   ExportInputs(stream,Pre);
 
-//  if (noise_variance != 0.0) stream << Pre << wxT("<noise> ") << Noise << wxT(" </noise>") << endl;
+  if (noise_variance != 0.0) {
+    if (NoiseType == 0) {
+      stream << Pre << wxT("<noise variation=\"PERCENT\"> ") << noise_variance << wxT(" </noise>") << endl;
+    } else {
+      stream << Pre << wxT("<noise variation=\"ABSOLUTE\"> ") << noise_variance << wxT(" </noise>") << endl;
+    }
+  }
 
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
