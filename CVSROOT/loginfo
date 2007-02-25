@@ -26,7 +26,7 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-CVSROOT /cvsroot/cvstools/syncmail %{sVv} jsb@hal-pc.org 
+CVSROOT /cvstools/syncmail %{sVv} jsb@hal-pc.org 
 
-DEFAULT /cvsroot/cvstools/syncmail %{sVv} jsbsimcommander-cvslogs@lists.sourceforge.net
+DEFAULT syncmail %{sVv} jsbsimcommander-cvslogs@lists.sourceforge.net
 
