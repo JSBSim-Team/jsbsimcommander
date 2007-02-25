@@ -196,6 +196,10 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     stream << Pre << wxT("<bias> ") << bias << wxT(" </bias>") << endl;
   }
 
+  if (lag != 0.0) {
+    stream << Pre << wxT("<lag> ") << lag << wxT(" </lag>") << endl;
+  }
+
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
 
