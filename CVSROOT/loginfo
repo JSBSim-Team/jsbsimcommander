@@ -28,5 +28,5 @@
 
 CVSROOT /cvstools/syncmail %{sVv} jsb@hal-pc.org 
 
-DEFAULT syncmail %{sVv} jsbsimcommander-cvslogs@lists.sourceforge.net
+DEFAULT /cvstools/syncmail %{sVv} jsbsimcommander-cvslogs@lists.sourceforge.net
 
