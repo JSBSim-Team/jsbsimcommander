@@ -188,6 +188,10 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     }
   }
 
+  if (drift_rate != 0.0) {
+    stream << Pre << wxT("<drift_rate> ") << drift_rate << wxT(" </drift_rate>") << endl;
+  }
+
   ExportCliper(stream,Pre);
   ExportOutput(stream,Pre);
 
@@ -209,16 +213,6 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
   <drift_rate> number </drift_rate>
   <bias> number </bias>
 </sensor>
-
-  double noise_variance;
-  int NoiseType;
-  int bits
-  int quantized;
-  double max, min;
-  double bias;
-  double drift_rate;
-  double lag;
-  bool InputIsInverted;
 */
 
 wxArrayString Sensor::ImportXML(JSBSim::Element * element)
