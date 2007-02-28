@@ -374,6 +374,7 @@ void SensorComponentEditor::GetDataIn(Sensor * g)
   wxArrayString inputs = g->GetInputNames();
 
   *text_ctrl_output_prop << g->GetOutputName();
+  
   if (inputs.GetCount() > 0) {
     if (inputs[0] != wxT("NULL"))
     {

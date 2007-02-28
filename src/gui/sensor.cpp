@@ -182,13 +182,24 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 
   if (noise_variance != 0.0) {
     if (NoiseType == 0) {
-      stream << Pre << wxT("<noise variation=\"PERCENT\"> ") << noise_variance << wxT(" </noise>") << endl;
+      stream << Pre << wxT("  <noise variation=\"PERCENT\"> ") << noise_variance << wxT(" </noise>") << endl;
     } else {
-      stream << Pre << wxT("<noise variation=\"ABSOLUTE\"> ") << noise_variance << wxT(" </noise>") << endl;
+      stream << Pre << wxT("  <noise variation=\"ABSOLUTE\"> ") << noise_variance << wxT(" </noise>") << endl;
     }
   }
 
-  if (!quant_property.empty() || bits != 0) {
+  if (bits != 0) {
+    if (!quant_property.empty()) {
+      stream << Pre << wxT("<quantization name=\"") << quant_property << wxT("\">") << endl;
+    } else {
+      stream << Pre << wxT("<quantization>") << endl;
+    }
+    stream << Pre << wxT("  <bits>") << bits << "</bits>" << endl;
+    stream << Pre << wxT("  <min>") << min << "</min>" << endl;
+    stream << Pre << wxT("  <max>") << min << "</max>" << endl;
+    if (!quant_property.empty()) {
+      stream << Pre << wxT("</quantization>") << endl;
+    }
   }
 
   if (drift_rate != 0.0) {
