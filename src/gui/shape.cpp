@@ -262,6 +262,81 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
     }
 }
 
+void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
+{
+  wxShapeEvtHandler::OnEndDragLeft(x, y, keys, attachment);
+  
+  ComponentShape * cshape = wxDynamicCast( GetShape(), ComponentShape);
+  if (cshape)
+  {
+    if (cshape->GetLines().IsEmpty())
+    {
+      double width = 0.0, height = 0.0;
+      cshape->GetBoundingBoxMin(&width, &height);
+      if (width < 4.0) width = 4.0;
+      if (height < 4.0) height = 4.0;
+
+      double left = (double)(cshape->GetX() - (width/2.0));
+      double top = (double)(cshape->GetY() - (height/2.0));
+      double right = (double)(cshape->GetX() + (width/2.0));
+      double bottom = (double)(cshape->GetY() + (height/2.0));
+
+      MyCanvas *canvas = (MyCanvas *) GetShape()->GetCanvas ();
+      wxDiagram * diagram = canvas->GetDiagram();
+      wxList * shapes = diagram->GetShapeList();
+      // let's iterate over the list
+      for ( wxNode *node = shapes->GetFirst(); node; node = node->GetNext() ) 
+      { 
+        wxLineShape *current = wxDynamicCast(node->GetData(), wxLineShape); 
+	if (current)
+	{
+	  bool flag = false;
+	  wxList * cp = current->GetLineControlPoints();
+	  wxNode * first = cp->GetFirst();
+	  wxNode * last = first;
+	  first = first->GetNext();
+	  unsigned int i=1;
+	  while (first)
+	  {
+	    wxRealPoint* p1 = (wxRealPoint*)first->GetData();
+	    wxRealPoint* p2 = (wxRealPoint*)last->GetData();
+	    double l = p1->x < p2->x ? p1->x : p2->x ;
+	    double r = p1->x > p2->x ? p1->x : p2->x ;
+	    double t = p1->y < p2->y ? p1->y : p2->y ;
+	    double b = p1->y > p2->y ? p1->y : p2->y ;
+	    // Check whether the line is cross the shape.
+	    // TODO too simple method to check.
+	    if (l < left && r > right && t >= top && b <= bottom
+	     || l >= left && r <= right && t < top && b > bottom)
+	    {
+	        flag = true;
+		break;
+	    }
+	    last = first;
+	    first = first->GetNext();
+	    ++i;
+	  }
+	  if (flag)
+	  {
+	    //TODO now we can insert the ComponentShape into the two MISOShape.
+            std::cout << "MyEvtHandler::OnEndDragLeft for ComponentShape without lines and find the line" << std::endl;
+            MISOShape * from = wxDynamicCast(current->GetFrom(), MISOShape);
+	    if (from)
+	    {
+	      std::cout << "From:" << from->GetName() << ", Type:" << from->GetType() << endl;
+	    }
+	    MISOShape * to   = wxDynamicCast(current->GetTo(), MISOShape);
+	    if (to)
+	    {
+	      std::cout << "To:" << to->GetName() << ", Type:" << to->GetType() << endl;
+	    }
+	    break;
+	  }
+	}
+      } 
+    }
+  }
+}
 
 /*
  * Single Input Multi Output Node

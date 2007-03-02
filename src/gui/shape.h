@@ -49,6 +49,7 @@ class MyEvtHandler: public wxShapeEvtHandler
   void OnBeginDragRight(double x, double y, int keys = 0, int attachment = 0);
   void OnDragRight(bool draw, double x, double y, int keys = 0, int attachment = 0);
   void OnEndDragRight(double x, double y, int keys = 0, int attachment = 0);
+  void OnEndDragLeft(double x, double y, int keys=0, int attachment = 0);
 };
 
 
