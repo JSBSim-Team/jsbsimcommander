@@ -90,7 +90,7 @@ public:
   MISOShape (double w = 0.0, double h = 0.0, const wxString & Type = wxT("notype"), const wxString & Name = wxT("noname"));
 
   //called after addline or move to adjust the line(s) to the shape
-  void NormalizeLine (wxLineShape * line);
+  static void NormalizeLine (wxLineShape * line);
   void NormalizeLines ();
 
   inline bool IsDrawReverse () const
@@ -307,7 +307,7 @@ public:
 
   //check and set
   void SetOrder();
-  void SetOrder(long int & o);
+  void SetOrder(const long int & o, bool exchange= true);
 
 };
 

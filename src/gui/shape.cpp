@@ -295,7 +295,7 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	  wxNode * first = cp->GetFirst();
 	  wxNode * last = first;
 	  first = first->GetNext();
-	  unsigned int i=1;
+	  unsigned int i=0;
 	  while (first)
 	  {
 	    wxRealPoint* p1 = (wxRealPoint*)first->GetData();
@@ -319,17 +319,92 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	  if (flag)
 	  {
 	    //TODO now we can insert the ComponentShape into the two MISOShape.
-            std::cout << "MyEvtHandler::OnEndDragLeft for ComponentShape without lines and find the line" << std::endl;
-            MISOShape * from = wxDynamicCast(current->GetFrom(), MISOShape);
-	    if (from)
 	    {
-	      std::cout << "From:" << from->GetName() << ", Type:" << from->GetType() << endl;
+              std::cout << "MyEvtHandler::OnEndDragLeft for ComponentShape without lines and find the line" << std::endl;
+              MISOShape * from = wxDynamicCast(current->GetFrom(), MISOShape);
+	      if (from)
+	      {
+	        std::cout << "From:" << from->GetName() << ", Type:" << from->GetType() << endl;
+	      }
+	      MISOShape * to   = wxDynamicCast(current->GetTo(), MISOShape);
+	      if (to)
+	      {
+	        std::cout << "To:" << to->GetName() << ", Type:" << to->GetType() << endl;
+	      }
 	    }
-	    MISOShape * to   = wxDynamicCast(current->GetTo(), MISOShape);
-	    if (to)
+            wxShape *from = current->GetFrom();
+	    wxShape *to = current->GetTo();
+	    int attachFrom = current->GetAttachmentFrom();
+	    int attachTo = current->GetAttachmentTo();
+	    from->RemoveLine(current);
+	    cshape->AddLine(current, to, 0, attachTo);
+	    
+	    wxNode * start = cp->Item(i);
+
+            wxLineShape * theShape;
+            theShape = new wxLineShape;
+            theShape->AssignNewIds ();
+            theShape->SetEventHandler(new MyEvtHandler(theShape, theShape));
+            theShape->SetPen (wxBLACK_PEN);
+            theShape->SetBrush (wxRED_BRUSH);
+            wxLineShape *lineShape = theShape;
+            // Yes, you can have more than 2 control points, in which case
+            // it becomes a multi-segment line.
+            lineShape->MakeLineControlPoints (i+2);
+            lineShape->AddArrow (ARROW_ARROW, ARROW_POSITION_END, 10.0, 0.0,
+                                 _T ("Normal arrowhead"));
+            diagram->AddShape (theShape);
+            from->AddLine ((wxLineShape *) theShape, cshape, attachFrom, 1);
+	    first = cp->GetFirst();
+	    for (int j=0; j<i+2; ++j)
 	    {
-	      std::cout << "To:" << to->GetName() << ", Type:" << to->GetType() << endl;
+	      *((wxRealPoint *) lineShape->GetLineControlPoints ()->Item (j)->
+             GetData ()) = *((wxRealPoint *) first->GetData());
+	      first = first->GetNext();
 	    }
+	    cshape->GetAttachmentPosition(1, &(((wxRealPoint *) lineShape->GetLineControlPoints ()->GetLast()-> GetData ())->x), &(((wxRealPoint *) lineShape->GetLineControlPoints ()->GetLast()-> GetData ())->y));
+            lineShape->Straighten();
+	    MISOShape::NormalizeLine(lineShape);
+            theShape->Show (true);
+
+	    wxRealPoint* startp = (wxRealPoint*)cp->Item(i)->GetData();
+            cshape->GetAttachmentPosition (0, &(startp->x), &(startp->y));
+	    first = cp->GetFirst();
+	    while(first != start)
+	    {
+              last = first;
+	      first = first->GetNext();
+	      cp->DeleteNode(last);
+	    }
+            current->Straighten();
+
+	    {
+              ComponentShape * cfrom = wxDynamicCast(from, ComponentShape);
+	      ComponentShape * cto   = wxDynamicCast(to, ComponentShape);
+	      if (cfrom)
+	      {
+		long int f = cfrom->GetOrder();
+	        if (cto)
+		{
+		  long int t = cto->GetOrder();
+		  cshape->SetOrder((t+f)/2, false);
+		}
+		else
+		{
+		  cshape->SetOrder(f+10, false);
+		}
+	      }
+	      else
+	      {
+	        if (cto)
+		{
+		  long int t = cto->GetOrder();
+		  cshape->SetOrder(t-10, false);
+		}
+	      }
+	    }
+            canvas->Refresh();
+	    canvas->Update();
 	    break;
 	  }
 	}
@@ -1097,14 +1172,16 @@ ComponentShape::SetOrder()
 
 
 void
-ComponentShape::SetOrder(long int & o)
+ComponentShape::SetOrder(const long int & o, bool exchange)
 {
   if ( order == o )
     return;
 
-  wxDiagram *diagram = GetCanvas()->GetDiagram ();
-  wxObjectList::compatibility_iterator node = diagram->GetShapeList ()->GetFirst ();
-  while (node)
+  if (exchange)
+  {
+    wxDiagram *diagram = GetCanvas()->GetDiagram ();
+    wxObjectList::compatibility_iterator node = diagram->GetShapeList ()->GetFirst ();
+    while (node)
     {
       wxShape *eachShape = (wxShape *) node->GetData ();
       if ( eachShape->IsKindOf(CLASSINFO(ComponentShape)))
@@ -1118,7 +1195,9 @@ ComponentShape::SetOrder(long int & o)
             }
         }
         node = node->GetNext ();
+    
     }
+  }
   order = o;
 }
 
@@ -1319,7 +1398,7 @@ ComponentShape::ExportOutput(wxTextOutputStream & stream, const wxString & prefi
 wxString
 ComponentShape::GetOutputName() const
 {
-  wxString rslt = wxT("NULL");
+  wxString rslt = _("NULL");
   wxNode * node = GetLines().GetFirst();
   while (node)
   {
@@ -1340,6 +1419,14 @@ ComponentShape::GetOutputName() const
       if (result)
       {
         rslt = result->GetName();
+      }
+      else if (shape->IsKindOf(CLASSINFO(MISOShape)))
+      {
+        rslt = mkName(wxDynamicCast(shape, MISOShape)->GetName(), true);
+      }
+      else if (shape->IsKindOf(CLASSINFO(SIMOShape)))
+      {
+        rslt = _("Multiple Outputs");
       }
       break; //only one output
     }
