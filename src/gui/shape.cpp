@@ -262,6 +262,50 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
     }
 }
 
+void MyEvtHandler::FindOneSegment(wxNode* &first, unsigned int &j, wxNode* last)
+{
+  // shift the dup control points
+  wxRealPoint* p1;
+  wxRealPoint* p2 = (wxRealPoint*)last->GetData();
+  while (first && (p1 = (wxRealPoint*)first->GetData()) 
+      && fabs(p1->x - p2->x) < 1e-4 
+      && fabs(p1->y - p2->y) < 1e-4 )
+  {
+    first = first->GetNext();
+    ++j;
+  }
+
+  // shift the lines in the same slope
+  double dx,dy;
+  if (first)
+  {
+    dy = p1->y - p2->y;
+    dx = p1->x - p2->x;
+    wxNode * prio = first->GetNext();
+    while (prio)
+    {
+      p1 = (wxRealPoint*)first->GetData();
+      p2 = (wxRealPoint*)prio->GetData();
+      double ddx, ddy;
+      ddy = p1->y - p2->y;
+      ddx = p1->x - p2->x;
+
+      if ( fabs(ddx) < 1e-4 && fabs(ddy) < 1e-4 
+        || fabs(ddx) < 1e-4 && fabs(dx) < 1e-4 && dy*ddy>0
+	|| fabs(dy / dx - ddy/ddx) < 1e-4)
+      {
+        first = prio;
+	++j;
+	prio = prio->GetNext();
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+}
+
 void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 {
   wxShapeEvtHandler::OnEndDragLeft(x, y, keys, attachment);
@@ -292,10 +336,15 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	{
 	  bool flag = false;
 	  wxList * cp = current->GetLineControlPoints();
-	  wxNode * first = cp->GetFirst();
-	  wxNode * last = first;
-	  first = first->GetNext();
+	  // find first segment line
+	  wxNode * last = cp->GetFirst();
 	  unsigned int i=0;
+	  // one step
+	  wxNode *first = last->GetNext();
+	  unsigned int j=1;
+          	  
+	  FindOneSegment(first, j, last);
+
 	  while (first)
 	  {
 	    wxRealPoint* p1 = (wxRealPoint*)first->GetData();
@@ -313,12 +362,16 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 		break;
 	    }
 	    last = first;
+	    i = j;
 	    first = first->GetNext();
-	    ++i;
+	    ++j;
+
+	    FindOneSegment(first, j, last);
 	  }
 	  if (flag)
 	  {
-	    //TODO now we can insert the ComponentShape into the two MISOShape.
+	    //Now we can insert the ComponentShape into the two MISOShape.
+	    /*************************************************************
 	    {
               std::cout << "MyEvtHandler::OnEndDragLeft for ComponentShape without lines and find the line" << std::endl;
               MISOShape * from = wxDynamicCast(current->GetFrom(), MISOShape);
@@ -332,6 +385,7 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	        std::cout << "To:" << to->GetName() << ", Type:" << to->GetType() << endl;
 	      }
 	    }
+	    ***************************************************************/
             wxShape *from = current->GetFrom();
 	    wxShape *to = current->GetTo();
 	    int attachFrom = current->GetAttachmentFrom();
@@ -356,9 +410,9 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
             diagram->AddShape (theShape);
             from->AddLine ((wxLineShape *) theShape, cshape, attachFrom, 1);
 	    first = cp->GetFirst();
-	    for (int j=0; j<i+2; ++j)
+	    for (int k=0; k<i+2; ++k)
 	    {
-	      *((wxRealPoint *) lineShape->GetLineControlPoints ()->Item (j)->
+	      *((wxRealPoint *) lineShape->GetLineControlPoints ()->Item (k)->
              GetData ()) = *((wxRealPoint *) first->GetData());
 	      first = first->GetNext();
 	    }
@@ -367,7 +421,7 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	    MISOShape::NormalizeLine(lineShape);
             theShape->Show (true);
 
-	    wxRealPoint* startp = (wxRealPoint*)cp->Item(i)->GetData();
+	    wxRealPoint* startp = (wxRealPoint*)cp->Item(j-1)->GetData();
             cshape->GetAttachmentPosition (0, &(startp->x), &(startp->y));
 	    first = cp->GetFirst();
 	    while(first != start)
@@ -377,6 +431,7 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	      cp->DeleteNode(last);
 	    }
             current->Straighten();
+	    MISOShape::NormalizeLine(current);
 
 	    {
               ComponentShape * cfrom = wxDynamicCast(from, ComponentShape);
