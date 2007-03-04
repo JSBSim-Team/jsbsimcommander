@@ -52,8 +52,8 @@ class MyEvtHandler: public wxShapeEvtHandler
   void OnEndDragLeft(double x, double y, int keys=0, int attachment = 0);
 
  protected:
-  /// find one look-like Segment Line from a line list start from last.
-  void FindOneSegment(wxNode* &first, unsigned int &j, wxNode* last);
+  /// find one look-like Segment Line from a line list start from tail.
+  void FindOneSegment(wxNode* &head, unsigned int &j, wxNode* tail);
 };
 
 

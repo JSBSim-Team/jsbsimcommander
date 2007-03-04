@@ -262,29 +262,29 @@ MyEvtHandler::OnEndDragRight (double x, double y, int WXUNUSED (keys),
     }
 }
 
-void MyEvtHandler::FindOneSegment(wxNode* &first, unsigned int &j, wxNode* last)
+void MyEvtHandler::FindOneSegment(wxNode* &head, unsigned int &j, wxNode* tail)
 {
   // shift the dup control points
   wxRealPoint* p1;
-  wxRealPoint* p2 = (wxRealPoint*)last->GetData();
-  while (first && (p1 = (wxRealPoint*)first->GetData()) 
+  wxRealPoint* p2 = (wxRealPoint*)tail->GetData();
+  while (head && (p1 = (wxRealPoint*)head->GetData()) 
       && fabs(p1->x - p2->x) < 1e-4 
       && fabs(p1->y - p2->y) < 1e-4 )
   {
-    first = first->GetNext();
+    head = head->GetNext();
     ++j;
   }
 
   // shift the lines in the same slope
   double dx,dy;
-  if (first)
+  if (head)
   {
     dy = p1->y - p2->y;
     dx = p1->x - p2->x;
-    wxNode * prio = first->GetNext();
+    wxNode * prio = head->GetNext();
     while (prio)
     {
-      p1 = (wxRealPoint*)first->GetData();
+      p1 = (wxRealPoint*)head->GetData();
       p2 = (wxRealPoint*)prio->GetData();
       double ddx, ddy;
       ddy = p1->y - p2->y;
@@ -294,7 +294,7 @@ void MyEvtHandler::FindOneSegment(wxNode* &first, unsigned int &j, wxNode* last)
         || fabs(ddx) < 1e-4 && fabs(dx) < 1e-4 && dy*ddy>0
 	|| fabs(dy / dx - ddy/ddx) < 1e-4)
       {
-        first = prio;
+        head = prio;
 	++j;
 	prio = prio->GetNext();
       }
@@ -337,18 +337,18 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	  bool flag = false;
 	  wxList * cp = current->GetLineControlPoints();
 	  // find first segment line
-	  wxNode * last = cp->GetFirst();
+	  wxNode * tail = cp->GetFirst();
 	  unsigned int i=0;
 	  // one step
-	  wxNode *first = last->GetNext();
+	  wxNode *head = tail->GetNext();
 	  unsigned int j=1;
           	  
-	  FindOneSegment(first, j, last);
+	  FindOneSegment(head, j, tail);
 
-	  while (first)
+	  while (head)
 	  {
-	    wxRealPoint* p1 = (wxRealPoint*)first->GetData();
-	    wxRealPoint* p2 = (wxRealPoint*)last->GetData();
+	    wxRealPoint* p1 = (wxRealPoint*)head->GetData();
+	    wxRealPoint* p2 = (wxRealPoint*)tail->GetData();
 	    double l = p1->x < p2->x ? p1->x : p2->x ;
 	    double r = p1->x > p2->x ? p1->x : p2->x ;
 	    double t = p1->y < p2->y ? p1->y : p2->y ;
@@ -361,12 +361,12 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 	        flag = true;
 		break;
 	    }
-	    last = first;
+	    tail = head;
 	    i = j;
-	    first = first->GetNext();
+	    head = head->GetNext();
 	    ++j;
 
-	    FindOneSegment(first, j, last);
+	    FindOneSegment(head, j, tail);
 	  }
 	  if (flag)
 	  {
@@ -409,12 +409,12 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
                                  _T ("Normal arrowhead"));
             diagram->AddShape (theShape);
             from->AddLine ((wxLineShape *) theShape, cshape, attachFrom, 1);
-	    first = cp->GetFirst();
+	    head = cp->GetFirst();
 	    for (int k=0; k<i+2; ++k)
 	    {
 	      *((wxRealPoint *) lineShape->GetLineControlPoints ()->Item (k)->
-             GetData ()) = *((wxRealPoint *) first->GetData());
-	      first = first->GetNext();
+             GetData ()) = *((wxRealPoint *) head->GetData());
+	      head = head->GetNext();
 	    }
 	    cshape->GetAttachmentPosition(1, &(((wxRealPoint *) lineShape->GetLineControlPoints ()->GetLast()-> GetData ())->x), &(((wxRealPoint *) lineShape->GetLineControlPoints ()->GetLast()-> GetData ())->y));
             lineShape->Straighten();
@@ -423,12 +423,12 @@ void MyEvtHandler::OnEndDragLeft(double x, double y, int keys, int attachment)
 
 	    wxRealPoint* startp = (wxRealPoint*)cp->Item(j-1)->GetData();
             cshape->GetAttachmentPosition (0, &(startp->x), &(startp->y));
-	    first = cp->GetFirst();
-	    while(first != start)
+	    head = cp->GetFirst();
+	    while(head != start)
 	    {
-              last = first;
-	      first = first->GetNext();
-	      cp->DeleteNode(last);
+              tail = head;
+	      head = head->GetNext();
+	      cp->DeleteNode(tail);
 	    }
             current->Straighten();
 	    MISOShape::NormalizeLine(current);
