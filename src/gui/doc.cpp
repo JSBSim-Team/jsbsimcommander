@@ -473,14 +473,47 @@ DiagramDocument::OnDel (wxCommandEvent & WXUNUSED (event))
   wxShape *shape = FindSelectedShape ();
   if (shape)
   {
-	    shape->Select (false);
+    shape->Select (false);
 
-	    // Generate commands to explicitly remove each connected line.
-	    RemoveLines (shape);
+    // Generate commands to explicitly remove each connected line.
+    MISOShape * cshape = wxDynamicCast( shape, MISOShape);
+    if (cshape && cshape->GetLines().GetCount() > 1)
+    {
+      wxObjectList::compatibility_iterator node = cshape->GetLines ().GetFirst ();
+      wxLineShape *remainLine=NULL;
+      wxShape *upshape=NULL;
+      int m = 99999;
+      while (node)
+      {
+        wxLineShape *line = (wxLineShape *) node->GetData ();
+	if (line->GetFrom() == cshape)
+        {
+	  remainLine=line;
+	}
+	else
+	{
+	  if (line->GetAttachmentTo() < m)
+	  {
+	    upshape = line->GetFrom();
+	    m = line->GetAttachmentTo();
+	  }
+	  line->Select (false);
+	  GetActiveDiagram()->RemoveShape (line);
+	  line->Unlink ();
+	}
+        node = node->GetNext ();
+      }
+      remainLine->SetFrom(upshape);
+      MISOShape::NormalizeLine(remainLine);
+    }
+    else
+    {
+      RemoveLines (shape);
+    }
 
-	    GetActiveDiagram()->RemoveShape (shape);
-	    shape->Unlink ();
-      shape->GetCanvas ()->Refresh ();
+    GetActiveDiagram()->RemoveShape (shape);
+    shape->Unlink ();
+    shape->GetCanvas ()->Refresh ();
   }
 }
 
