@@ -116,6 +116,8 @@ SensorComponentEditor::SensorComponentEditor(Sensor *sensor, wxWindow* parent, i
     set_properties();
     do_layout();
     // end wxGlade
+
+    GetDataIn(sensor);
 }
 
 
@@ -184,9 +186,7 @@ void SensorComponentEditor::OnButtonPressHelp(wxCommandEvent &event)
     event.Skip();
 }
 
-
 // wxGlade: add SensorComponentEditor event handlers
-
 
 void SensorComponentEditor::set_properties()
 {
@@ -350,7 +350,8 @@ bool SensorComponentEditor::Show( bool show)
 
 void SensorComponentEditor::GetDataIn(Sensor * g)
 {
-  name     = g->GetName();
+  //name     = g->GetName();
+  *text_ctrl_name << g->GetName();
   description  = g->GetDescription();
   order    = wxString::Format(wxT("%ld"), g->GetOrder());
   clipable = g->IsClipable();
@@ -373,7 +374,7 @@ void SensorComponentEditor::GetDataIn(Sensor * g)
 
   wxArrayString inputs = g->GetInputNames();
 
-  *text_ctrl_output_prop << g->GetOutputName();
+  text_ctrl_output_prop->SetValue(g->GetOutputName());
   
   if (inputs.GetCount() > 0) {
     if (inputs[0] != wxT("NULL"))
@@ -387,9 +388,20 @@ void SensorComponentEditor::GetDataIn(Sensor * g)
         button_invert_input->SetLabel(wxT("+"));
       }
     }
-    *text_ctrl_input_prop << inputs[0];
+    text_ctrl_input_prop->SetValue(inputs[0]);
   }
-  *text_ctrl_1 << g->GetDescription();
+  text_ctrl_1->SetValue(g->GetDescription());
+  
+  radio_box_noise_type->SetSelection(g->GetNoiseType());
+  text_ctrl_2->SetValue("");   *text_ctrl_2 << g->GetNoise();
+  text_ctrl_lag->SetValue(""); *text_ctrl_lag << g->GetLag();
+  text_ctrl_4->SetValue("");   *text_ctrl_4 << g->GetDriftRate();
+  text_ctrl_4_1->SetValue(""); *text_ctrl_4_1 << g->GetBias();
+  text_ctrl_7->SetValue("");   *text_ctrl_7 << g->GetMax();
+  text_ctrl_6->SetValue("");   *text_ctrl_6 << g->GetMin();
+  slider_1->SetValue(g->GetBits());
+  //g->GetQuantized();
+  text_ctrl_5->SetValue("");   *text_ctrl_5 << g->GetQuantProperty();
 }
 
 /**
@@ -398,8 +410,7 @@ void SensorComponentEditor::GetDataIn(Sensor * g)
 
 void SensorComponentEditor::SetDataOut(Sensor * g)
 {
-  g->SetName(name);
-//  g->SetDescription(description);
+  g->SetName(text_ctrl_name->GetValue());
 
   long int tmpl;
   order.ToLong(&tmpl);
@@ -415,5 +426,19 @@ void SensorComponentEditor::SetDataOut(Sensor * g)
   if (text_ctrl_input_prop->GetValue() != wxT("NULL")) // true if input prop is present
     if (button_invert_input->GetValue()) // true if inverted
       g->SetInputIsInverted(true);
+
+  g->SetQuantProperty(text_ctrl_5->GetValue());
+  double tmp;
+  text_ctrl_lag->GetValue().ToDouble(&tmp);
+  g->SetLag(tmp);
+  text_ctrl_4->GetValue().ToDouble(&tmp);
+  g->SetDriftRate(tmp);
+  text_ctrl_4_1->GetValue().ToDouble(&tmp);
+  g->SetBias(tmp);
+  text_ctrl_7->GetValue().ToDouble(&tmp);
+  g->SetMax(tmp);
+  text_ctrl_6->GetValue().ToDouble(&tmp);
+  g->SetMin(tmp);
+  g->SetNoiseType(radio_box_noise_type->GetSelection());
 }
 
