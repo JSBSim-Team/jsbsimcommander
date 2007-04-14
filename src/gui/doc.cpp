@@ -40,6 +40,8 @@
 #include "sum_dlg.h"
 #include "pid.h"
 #include "pid_dlg.h"
+#include "actuator.h"
+#include "actuator_dlg.h"
 #include "gain.h"
 #include "gain_dlg.h"
 #include "filter.h"
@@ -48,9 +50,9 @@
 #include "deadband_dlg.h"
 #include "switch.h"
 #include "switch_dlg.h"
-#include "kinemat.h"
 #include "sensor.h"
 #include "sensor_dlg.h"
+#include "kinemat.h"
 #include "kinemat_dlg.h"
 #include "fcsprop_dlg.h"
 #include "toolbar.h"
@@ -59,8 +61,6 @@
 #include "Property_Diag.h"
 #include "func.h"
 #include "func_dlg.h"
-#include "sensor.h"
-#include "sensor_dlg.h"
 
 BEGIN_EVENT_TABLE (DiagramDocument, wxPanel)
   EVT_MENU (FCSBUILDER_EXPORT, DiagramDocument::OnExportXML)
@@ -621,7 +621,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     {
 	    //TODO
       wxArrayString list;
-      GainPropertyDialog  dlg((Gain *)theShape, list, this, wxID_ANY, _("Gain Componment"));
+      GainPropertyDialog  dlg((Gain *)theShape, list, this, wxID_ANY, _("Gain Component"));
       if ( dlg.ShowModal() == wxID_OK )
 	    {
     	  dlg.SetDataOut((Gain *)theShape);
@@ -637,7 +637,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (PID)))
     {
-      PIDPropertyDialog  dlg((PID *)theShape, this,wxID_ANY,_("PID Componment"));
+      PIDPropertyDialog  dlg((PID *)theShape, this,wxID_ANY,_("PID Component"));
       if ( dlg.ShowModal() == wxID_OK )
       {
         dlg.SetDataOut((PID *)theShape);
@@ -645,16 +645,25 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (Sensor)))
     {
-      SensorComponentEditor  dlg((Sensor *)theShape, this,wxID_ANY,_("Sensor Componment"));
+      SensorComponentEditor  dlg((Sensor *)theShape, this,wxID_ANY,_("Sensor Component"));
       if ( dlg.ShowModal() == wxID_OK )
       {
         dlg.SetDataOut((Sensor *)theShape);
       }
     }
 
+  else if (theShape->IsKindOf (CLASSINFO (Actuator)))
+    {
+      ActuatorComponentEditor  dlg((Actuator *)theShape, this,wxID_ANY,_("Actuator Component"));
+      if ( dlg.ShowModal() == wxID_OK )
+      {
+        dlg.SetDataOut((Actuator *)theShape);
+      }
+    }
+
   else if (theShape->IsKindOf (CLASSINFO (Filter)))
     {
-      FilterPropertyDialog  dlg((Filter *)theShape, this,wxID_ANY,_("Filter Componment"));
+      FilterPropertyDialog  dlg((Filter *)theShape, this,wxID_ANY,_("Filter Component"));
       if ( dlg.ShowModal() == wxID_OK )
 	    {
 	      dlg.SetDataOut((Filter *)theShape);
@@ -662,7 +671,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (DeadBand)))
     {
-      DeadBandPropertyDialog  dlg((DeadBand *)theShape, this,wxID_ANY,_("DeadBand Componment"));
+      DeadBandPropertyDialog  dlg((DeadBand *)theShape, this,wxID_ANY,_("DeadBand Component"));
       if ( dlg.ShowModal() == wxID_OK )
     	{
 	      dlg.SetDataOut((DeadBand *)theShape);
@@ -670,7 +679,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (Switch)))
     {
-      SwitchPropertyDialog  dlg((Switch *)theShape, this,wxID_ANY,_("Switch Componment"));
+      SwitchPropertyDialog  dlg((Switch *)theShape, this,wxID_ANY,_("Switch Component"));
       if ( dlg.ShowModal() == wxID_OK )
 	    {
 	      dlg.SetDataOut((Switch *)theShape);
@@ -678,7 +687,7 @@ DiagramDocument::SetProperty(wxShape * theShape)
     }
   else if (theShape->IsKindOf (CLASSINFO (Kinemat)))
     {
-      KinematPropertyDialog  dlg((Kinemat *)theShape, this,wxID_ANY,_("Kinemat Componment"));
+      KinematPropertyDialog  dlg((Kinemat *)theShape, this,wxID_ANY,_("Kinemat Component"));
       if ( dlg.ShowModal() == wxID_OK )
 	    {
 	      dlg.SetDataOut((Kinemat *)theShape);

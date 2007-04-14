@@ -10,10 +10,6 @@
 #ifndef _FCSBUILDER_SHAPE_H_
 #define _FCSBUILDER_SHAPE_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
-
 #include <wx/deprecated/setup.h>
 
 #if wxUSE_PROLOGIO

@@ -7,20 +7,16 @@
 // Licence:     GPL licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
+#ifndef GAIN_DLG_H
+#define GAIN_DLG_H
 
 #include <wx/wx.h>
 #include <wx/image.h>
+
 // begin wxGlade: ::dependencies
 #include <wx/notebook.h>
 #include <wx/grid.h>
 // end wxGlade
-
-
-#ifndef GAIN_DLG_H
-#define GAIN_DLG_H
 
 class Gain;
 class GainPropertyDialog: public wxDialog 
@@ -105,5 +101,6 @@ class GainPropertyDialog: public wxDialog
 
 };
 
+#include "gain.h"
 
 #endif // GAIN_DLG_H

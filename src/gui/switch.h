@@ -11,15 +11,11 @@
 #ifndef _FCSBUILDER_SWITCH_H_
 #define _FCSBUILDER_SWITCH_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
 
 #include "condition.h"
-
-/*
- * FGSwitch Componment
- */
 
 class Switch;
 class SwitchPropertyDialog;

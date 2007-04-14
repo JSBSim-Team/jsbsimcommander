@@ -11,9 +11,11 @@
 #ifndef _FCSBUILDER_FCSFUNCTION_H_
 #define _FCSBUILDER_FCSFUNCTION_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
+
+#include "shape.h"
 
 class TreeItemData_function;
 #include <wx/treectrl.h>

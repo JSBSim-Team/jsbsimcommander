@@ -11,9 +11,11 @@
 #ifndef _FCSBUILDER_GAIN_H_
 #define _FCSBUILDER_GAIN_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
+
+#include "shape.h"
 
 struct MyPair
 {
@@ -22,10 +24,6 @@ struct MyPair
 };
 
 WX_DECLARE_LIST(MyPair,MyPairList);
-
-/*
- * FGGAIN Componment
- */
 
 class Gain: public ComponentShape
 {

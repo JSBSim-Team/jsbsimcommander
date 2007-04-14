@@ -11,13 +11,11 @@
 #ifndef _FCSBUILDER_FILTER_H_
 #define _FCSBUILDER_FILTER_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
 
-/*
- * FGFilter Componment
- */
+#include "shape.h"
 
 class Filter: public ComponentShape
 {

@@ -16,10 +16,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-// #pragma implementation
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -31,20 +27,12 @@
 #include <wx/wx.h>
 #endif
 
-#include "wx/deprecated/setup.h"
-
 #if wxUSE_PROLOGIO
 #include "wx/deprecated/wxexpr.h"
 #endif
 
-#include "wx/ogl/ogl.h"
-
-#include "FGXMLElement.h"
-#include "MyApp.h"
-
 #include "shape.h"
 #include "actuator.h"
-
 
 IMPLEMENT_DYNAMIC_CLASS (Actuator, ComponentShape)
 
@@ -53,8 +41,7 @@ IMPLEMENT_DYNAMIC_CLASS (Actuator, ComponentShape)
 */
 
 Actuator::Actuator (double w, double h, const wxString & Name )
-  :ComponentShape(w, h, wxT("actuator"), Name),
-   Noise(0.0)
+  :ComponentShape(w, h, wxT("actuator"), Name)
 {
   SetAttachmentMode (ATTACHMENT_MODE_EDGE);
 
@@ -62,7 +49,11 @@ Actuator::Actuator (double w, double h, const wxString & Name )
   GetAttachments ().Append (new wxAttachmentPoint (0, w * 0.5, 0.0));
   GetAttachments ().Append (new wxAttachmentPoint (1, -w * 0.5, 0.0));
 
-//  input_sign_list.Append(new bool(false));
+  Lag = 0.0;
+  Bias = 0.0;
+  Rate_Limit = 0.0;
+  Hysteresis_Width = 0.0;
+
   InputIsInverted = false;
 }
 
@@ -210,7 +201,7 @@ wxArrayString Actuator::ImportXML(JSBSim::Element * el)
   if ( el->FindElement("bias")) Bias = el->FindElementValueAsNumber("bias");
   if ( el->FindElement("hysteresis_width")) Hysteresis_Width = el->FindElementValueAsNumber("hysteresis_width");
 
-  InputIsInverted = *((GetInputSignList().Item(0))->GetData());
+  InputIsInverted = GetInputIsInverted();
 
   return strings;
 }

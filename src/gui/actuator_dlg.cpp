@@ -63,8 +63,8 @@ ActuatorComponentEditor::ActuatorComponentEditor(Actuator *actuator, wxWindow* p
     label_output_property = new wxStaticText(notebook_1_pane_1, -1, wxT("Output Property:"));
     txtEd_OutputProperty = new wxTextCtrl(notebook_1_pane_1, -1, wxT(""));
     txtEd_Description = new wxTextCtrl(nbk_Properties, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB|wxTE_MULTILINE|wxTE_WORDWRAP);
-    button_OK = new wxButton(this, -1, wxT("OK"));
-    button_Cancel = new wxButton(this, -1, wxT("Cancel"));
+    button_OK = new wxButton(this, wxID_OK, wxT("OK"));
+    button_Cancel = new wxButton(this, wxID_CANCEL, wxT("Cancel"));
     button_Help = new wxButton(this, -1, wxT("Help"));
 
     set_properties();
@@ -78,8 +78,8 @@ BEGIN_EVENT_TABLE(ActuatorComponentEditor, wxDialog)
     // begin wxGlade: ActuatorComponentEditor::event_table
     EVT_CHECKBOX(-1, ActuatorComponentEditor::OnCheckboxClip)
     EVT_TOGGLEBUTTON(-1, ActuatorComponentEditor::OnClickInvertInput)
-    EVT_BUTTON(-1, ActuatorComponentEditor::OnButtonPressOK)
-    EVT_BUTTON(-1, ActuatorComponentEditor::OnButtonPressCancel)
+    EVT_BUTTON(wxID_OK, ActuatorComponentEditor::OnButtonPressOK)
+    EVT_BUTTON(wxID_CANCEL, ActuatorComponentEditor::OnButtonPressCancel)
     EVT_BUTTON(-1, ActuatorComponentEditor::OnButtonPressHelp)
     // end wxGlade
 END_EVENT_TABLE();
@@ -243,17 +243,17 @@ bool ActuatorComponentEditor::Show( bool show)
 * GetDataIn ====================================================================
 */
 
-void ActuatorComponentEditor::GetDataIn(Sensor * g)
+void ActuatorComponentEditor::GetDataIn(Actuator * g)
 {
   //name     = g->GetName();
-  *txtEd_name << g->GetName();
+  *txtEd_Name << g->GetName();
   description  = g->GetDescription();
   order    = wxString::Format(wxT("%ld"), g->GetOrder());
   clipable = g->IsClipable();
   clip_max = g->GetClipMax();
   clip_min = g->GetClipMin();
 
-  *txtEd_order << order;
+  *txtEd_Order << order;
 
   if (clipable) {
       txtEd_MaxClip->Enable(true);
@@ -270,7 +270,12 @@ void ActuatorComponentEditor::GetDataIn(Sensor * g)
   wxArrayString inputs = g->GetInputNames();
 
   txtEd_OutputProperty->SetValue(g->GetOutputName());
-/*
+
+  txtEd_Lag->SetValue("");        *txtEd_Lag << g->GetLag();
+  txtEd_RateLimit->SetValue("");  *txtEd_RateLimit << g->GetRate_Limit();
+  txtEd_Hysteresis->SetValue(""); *txtEd_Hysteresis << g->GetHysteresis_Width();
+  txtEd_Bias->SetValue("");       *txtEd_Bias << g->GetBias();
+
   if (inputs.GetCount() > 0) {
     if (inputs[0] != wxT("NULL"))
     {
@@ -283,21 +288,23 @@ void ActuatorComponentEditor::GetDataIn(Sensor * g)
         button_invert_input->SetLabel(wxT("+"));
       }
     }
-    text_ctrl_input_prop->SetValue(inputs[0]);
+    txtEd_InputProperty->SetValue(inputs[0]);
   }
-  text_ctrl_1->SetValue(g->GetDescription());
-*/
+  txtEd_Description->SetValue(g->GetDescription());
+
 }
 
 /**
 * SetDataOut ===================================================================
 */
 
-void ActuatorComponentEditor::SetDataOut(Sensor * g)
+void ActuatorComponentEditor::SetDataOut(Actuator * g)
 {
   g->SetName(txtEd_Name->GetValue());
 
   long int tmpl;
+  double tmp;
+
   order.ToLong(&tmpl);
   g->SetOrder(tmpl);
   g->SetClipable(clipable);
@@ -305,10 +312,22 @@ void ActuatorComponentEditor::SetDataOut(Sensor * g)
   g->SetClipMax(clip_max);
   g->SetClipMin(clip_min);
 
-  g->SetDescription(text_ctrl_1->GetValue());
+  g->SetDescription(txtEd_Description->GetValue());
+
+  txtEd_Lag->GetValue().ToDouble(&tmp);
+  g->SetLag(tmp);
+
+  txtEd_RateLimit->GetValue().ToDouble(&tmp);
+  g->SetRate_Limit(tmp);
+
+  txtEd_Hysteresis->GetValue().ToDouble(&tmp);
+  g->SetHysteresis_Width(tmp);
+
+  txtEd_Bias->GetValue().ToDouble(&tmp);
+  g->SetBias(tmp);
 
   g->SetInputIsInverted(false);
-  if (text_ctrl_input_prop->GetValue() != wxT("NULL")) // true if input prop is present
+  if (txtEd_InputProperty->GetValue() != wxT("NULL")) // true if input prop is present
     if (button_invert_input->GetValue()) // true if inverted
       g->SetInputIsInverted(true);
 

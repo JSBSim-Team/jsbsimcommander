@@ -11,9 +11,11 @@
 #ifndef _FCSBUILDER_KINEMAT_H_
 #define _FCSBUILDER_KINEMAT_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
+
+#include "shape.h"
 
 struct MySettingPair
 {
@@ -22,11 +24,6 @@ struct MySettingPair
 };
 
 WX_DECLARE_LIST(MySettingPair,MySettingPairList);
-
-
-/*
- * FGKinemat Componment
- */
 
 class Kinemat: public ComponentShape
 {

@@ -7,10 +7,6 @@
 // Licence:     GPL licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-// #pragma implementation
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -18,15 +14,9 @@
 #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include <wx/valtext.h>
 #include <wx/valgen.h>
 
-#include "shape.h"
-#include "gain.h"
 #include "gain_dlg.h"
 
 BEGIN_EVENT_TABLE (GainPropertyDialog, wxDialog)

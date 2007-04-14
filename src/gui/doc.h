@@ -10,10 +10,6 @@
 #ifndef _FCSBUILDER_DOC_H_
 #define _FCSBUILDER_DOC_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
-#endif
-
 #include <vector>
 
 #include <wx/txtstrm.h>

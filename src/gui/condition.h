@@ -11,15 +11,12 @@
 #ifndef _FCSBUILDER_CONDITION_H_
 #define _FCSBUILDER_CONDITION_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
 
 extern wxString alias(wxString value, wxArrayString & array);
 
-/*
- * FGCondition 
- */
 class Condition;
 WX_DECLARE_LIST(Condition,ConditionList);
 

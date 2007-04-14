@@ -21,7 +21,6 @@
 
 #define TOOLPALETTECLASS    wxToolBar
 
-
 /*
  * ToolBar to add shapes
  */
@@ -70,6 +69,7 @@ enum
     TOOLBAR_ADD_DESTINATION,
     TOOLBAR_ADD_SUMMER,
     TOOLBAR_ADD_PID,
+    TOOLBAR_ADD_ACTUATOR,
     TOOLBAR_ADD_SENSOR,
     TOOLBAR_ADD_GAIN,
     TOOLBAR_ADD_FILTER,

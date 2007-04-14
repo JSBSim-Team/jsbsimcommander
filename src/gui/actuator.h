@@ -10,13 +10,13 @@
 #ifndef _FCSBUILDER_ACTUATOR_H_
 #define _FCSBUILDER_ACTUATOR_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-// #pragma interface
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
 #endif
 
-/*
- * FGActuator Componment
- */
+#include "shape.h"
+
+class ComponentShape;
 
 class Actuator: public ComponentShape
 {

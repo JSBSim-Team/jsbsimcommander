@@ -43,6 +43,7 @@
 #include "summer.xpm"
 #include "pid.xpm"
 #include "sensor.xpm"
+#include "actuator.xpm"
 #include "gain.xpm"
 #include "filter.xpm"
 #include "deadband.xpm"
@@ -117,6 +118,7 @@ DiagramDocument::CreateAddToolBar (wxWindow * parent)
   wxBitmap PaletteSensor (wxBITMAP(sensor));
   wxBitmap PaletteSummer (wxBITMAP(summer));
   wxBitmap PalettePID (wxBITMAP(pid));
+  wxBitmap PaletteActuator (wxBITMAP(actuator));
   wxBitmap PaletteGain (wxBITMAP(gain));
   wxBitmap PaletteFilter (wxBITMAP(filter));
   wxBitmap PaletteDeadBand (wxBITMAP(deadband));
@@ -162,6 +164,8 @@ DiagramDocument::CreateAddToolBar (wxWindow * parent)
 		    wxNullBitmap, wxITEM_CHECK, _("Dead Band"), _("Dead Band"), NULL);
   toolbar->AddTool (TOOLBAR_ADD_SWITCH, _("Switch"), PaletteSwitch,
 		    wxNullBitmap, wxITEM_CHECK, _("Switch"), _("Switch"), NULL);
+  toolbar->AddTool (TOOLBAR_ADD_ACTUATOR, _("Actuator"), PaletteActuator,
+		    wxNullBitmap, wxITEM_CHECK, _("Actuator"), _("Actuator"), NULL);
   toolbar->AddTool (TOOLBAR_ADD_KINEMAT, _("Kinemat"), PaletteKinemat,
 		    wxNullBitmap, wxITEM_CHECK, _("Kinemat"), _("Kinemat"),
 		    NULL);

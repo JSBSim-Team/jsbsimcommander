@@ -20,7 +20,7 @@ Mass_Diag.cpp          deadband.cpp         gain_dlg.cpp     toolbar.cpp \
 Property_Diag.cpp      deadband_dlg.cpp     import.cpp       view.cpp \
 Propulsion_Diag.cpp    doc.cpp              kinemat.cpp      EngineMgr_Diag.cpp\
 MyFrame.cpp            pid.cpp              pid_dlg.cpp      sensor.cpp \
-sensor_dlg.cpp
+sensor_dlg.cpp         actuator.cpp         actuator_dlg.cpp
                    
 
 noinst_HEADERS = \
@@ -34,6 +34,6 @@ Mass_Diag.h          deadband.h         gain_dlg.h     toolbar.h \
 Property_Diag.h      deadband_dlg.h     import.h       view.h \
 Propulsion_Diag.h    doc.h              kinemat.h      EngineMgr_Diag.h \
 MyFrame.h            pid.h              pid_dlg.h      sensor.h \
-sensor_dlg.h
+sensor_dlg.h         actuator.h         actuator_dlg.h
 
 
