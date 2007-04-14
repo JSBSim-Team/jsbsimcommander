@@ -28,6 +28,7 @@
 #include "shape.h"
 #include "sum.h"
 #include "pid.h"
+#include "actuator.h"
 #include "sensor.h"
 #include "gain.h"
 #include "filter.h"
@@ -106,6 +107,11 @@ MyCanvas::OnLeftClick (double x, double y, int WXUNUSED (keys))
     case TOOLBAR_ADD_PID:
       {
         info = CLASSINFO (PID);
+        break;
+      }
+    case TOOLBAR_ADD_ACTUATOR:
+      {
+        info = CLASSINFO (Actuator);
         break;
       }
     case TOOLBAR_ADD_GAIN:

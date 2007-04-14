@@ -37,8 +37,6 @@
 #include <wx/valgen.h>
 
 #include "sensor_dlg.h"
-//#include "Property_Diag.h"
-//#include "MyApp.h"
 
 // All non-MSW platforms use an xpm. MSW uses an .ico file
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
