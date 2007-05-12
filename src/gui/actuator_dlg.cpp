@@ -28,6 +28,11 @@
 
 #include "actuator_dlg.h"
 
+// All non-MSW platforms use an xpm. MSW uses an .ico file
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
+    #include "actuator.xpm"
+#endif
+
 ActuatorComponentEditor::ActuatorComponentEditor(Actuator *actuator, wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTHICK_FRAME|wxSTAY_ON_TOP|wxFULL_REPAINT_ON_RESIZE)
 {
