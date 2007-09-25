@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "plot.h"
+#pragma implementation
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -30,17 +30,21 @@
 #include <ctype.h>
 #include <cmath>
 
+#include <wx/fontdlg.h>
 #include <wx/txtstrm.h>
+#include <wx/wfstream.h>
 #include <wx/sstream.h>
 #include <wx/dcbuffer.h>
-#include "wx/metafile.h"
-#include "wx/print.h"
-#include "wx/printdlg.h"
-#include "wx/image.h"
-#include "wx/accel.h"
-#include "wx/xrc/xmlres.h"
+#include <wx/metafile.h>
+#include <wx/print.h>
+#include <wx/printdlg.h>
+#include <wx/image.h>
+#include <wx/accel.h>
+#include <wx/xrc/xmlres.h>
 #include <wx/clipbrd.h>
 #include <wx/numdlg.h>
+#include <wx/settings.h>
+#include <wx/colordlg.h>
 
 #if wxUSE_LIBGNOMEPRINT
 #include "wx/html/forcelnk.h"
@@ -49,11 +53,18 @@ FORCE_LINK(gnome_print)
 
 #include "MyApp.h"
 #include "plot.h"
+#include "Table.h"
 #include "Condition.h"
 #include "input_output/FGXMLParse.h"
 #include "math/FGFunction.h"
+#include "math/FGRealValue.h"
+#include "math/FGPropertyValue.h"
+#include "math/FGTable.h"
 using JSBSim::FGXMLParse;
 using JSBSim::FGFunction;
+using JSBSim::FGRealValue;
+using JSBSim::FGPropertyValue;
+using JSBSim::FGTable;
 
 static double ppi_x = 96.0;
 static double ppi_y = 96.0;
@@ -62,6 +73,839 @@ static wxSize ppi(96, 96);
 /** @file plot.cpp
   * Implement the plot handler, canvas, printer, etc.
   */
+
+
+void make_order(vector<double> &x, vector<double> &y, size_t num)
+{
+    VPRBTree rbtree;
+    vector<double>::iterator i=x.begin();
+    vector<double>::iterator j=y.begin();
+    for (;i != x.end(); ++i, ++j)
+    {
+      rbtree.insert(VPRBTree::value_type(*i, VP(*j, 1)));
+    }
+    while (rbtree.size() > num)
+    {
+      VPRBTree_Ptr no = rbtree.end();
+      double len = 99e99;
+      VPRBTree_Ptr k = rbtree.begin();
+      VPRBTree_Ptr e = rbtree.end();
+      ++k;
+      --e;
+      double last = k->first;
+      for (++k; k != e; ++k)
+      {
+        double tmp = k->first - last;
+        if (tmp < len)
+        {
+          no = k;
+          len = tmp;
+        }
+        last = k->first;
+      }
+      VPRBTree_Ptr no2 = no;
+      VPRBTree_Ptr end = rbtree.end();
+      --end;
+      --no2;
+      if (no2 == rbtree.begin() || no == end)
+      {
+        break;
+      }
+      double p0 = no2->second.power;
+      double p1 = no->second.power;
+      double ps = p0+p1;
+      rbtree.insert(
+              VPRBTree::value_type(
+                  (no2->first*p0+no->first*p1)/ps, 
+                  VP((no2->second.value*p0+no->second.value*p1)/ps,
+                     ps
+                     )
+                  )
+              );
+      rbtree.erase(no);
+      rbtree.erase(no2);
+    }
+    x.clear();
+    y.clear();
+    for (VPRBTree_Ptr k = rbtree.begin();
+            k != rbtree.end(); ++k)
+    {
+      x.push_back((*k).first);
+      y.push_back((*k).second.value);
+    }
+}
+
+void LoadColour(Element * element, wxColour &colour)
+{
+    wxString c = std2wxstr(element->GetDataLine());
+    colour.Set(c);
+    /*
+    if (c.Length() == 7 && c[0] == wxChar('#'))
+    {
+      unsigned long r,g,b;
+      r = g = b = 0xFF;
+      c.Mid(1, 2).ToULong(&r, 16);
+      c.Mid(3, 2).ToULong(&g, 16);
+      c.Mid(5, 2).ToULong(&b, 16);
+      colour.Set((unsigned char)r, (unsigned char)g, (unsigned char)b);
+    }
+    */
+}
+
+void LoadPen(Element * element, wxPen &pen)
+{
+    Element *el;
+    if ((el = element->FindElement("colour")))
+    {
+      LoadColour(el, pen.GetColour());
+    }
+    
+   double size = element->FindElementValueAsNumber("width");
+   if (size < 9999 && size > 0)
+   {
+     pen.SetWidth((int)size);
+   }
+   else
+   {
+     pen.SetWidth(1);
+   }
+
+   wxString styles = std2wxstr(element->FindElementValue("style"));
+   int style_tag = 0;
+   while (!styles.IsEmpty())
+   {
+     wxString style = styles.BeforeFirst('|');
+     if (style.Upper().Contains(wxT("SOLID")))
+     {
+       style_tag |= wxSOLID;
+     }
+     else if (style.Upper().Contains(wxT("TRANSPARENT")))
+     {
+       style_tag |= wxTRANSPARENT;
+     }
+     else if (style.Upper().Contains(wxT("DOT")))
+     {
+       style_tag |= wxDOT;
+     }
+     else if (style.Upper().Contains(wxT("LONG_DASH")))
+     {
+       style_tag |= wxLONG_DASH;
+     }
+     else if (style.Upper().Contains(wxT("SHORT_DASH")))
+     {
+       style_tag |= wxSHORT_DASH;
+     }
+     else if (style.Upper().Contains(wxT("DOT_DASH")))
+     {
+       style_tag |= wxDOT_DASH;
+     }
+     else if (style.Upper().Contains(wxT("BDIAGONAL_HATCH")))
+     {
+       style_tag |= wxBDIAGONAL_HATCH;
+     }
+     else if (style.Upper().Contains(wxT("CROSSDIAG_HATCH ")))
+     {
+       style_tag |= wxCROSSDIAG_HATCH ;
+     }
+     else if (style.Upper().Contains(wxT("FDIAGONAL_HATCH")))
+     {
+       style_tag |= wxFDIAGONAL_HATCH;
+     }
+     else if (style.Upper().Contains(wxT("HORIZONTAL_HATCH")))
+     {
+       style_tag |= wxHORIZONTAL_HATCH;
+     }
+     else if (style.Upper().Contains(wxT("VERTICAL_HATCH")))
+     {
+       style_tag |= wxVERTICAL_HATCH;
+     }
+     else if (style.Upper().Contains(wxT("CROSS_HATCH")))
+     {
+       style_tag |= wxCROSS_HATCH;
+     }
+
+     styles = styles.AfterFirst('|');
+   }
+   if (style_tag == 0)
+   {
+     style_tag = wxSOLID;
+   }
+   pen.SetStyle(style_tag);
+}
+
+void LoadFont(Element * element, wxFont &fnt)
+{
+  {
+   wxString info = std2wxstr(element->FindElementValue("NativeFontInfo"));
+   if (!info.IsEmpty() && fnt.SetNativeFontInfo(info))
+   {
+     return;
+   }
+  }
+  {
+   wxString info = std2wxstr(element->FindElementValue("NativeFontInfoUserDesc"));
+   if (!info.IsEmpty() && fnt.SetNativeFontInfoUserDesc(info))
+   {
+     return;
+   }
+  }
+
+   double size = element->FindElementValueAsNumber("size");
+   if (size < 9999 && size > 0 )
+   {
+     fnt.SetPointSize((int)size);
+   }
+
+   wxString style_str = std2wxstr(element->FindElementValue("style"));
+   if (style_str.Find(wxT("italic")) != -1)
+   {
+     fnt.SetStyle( wxFONTSTYLE_ITALIC );
+   }
+   else if (style_str.Find(wxT("slant")) != -1)
+   {
+     fnt.SetStyle( wxFONTSTYLE_SLANT );
+   }
+   else
+   {
+     fnt.SetStyle( wxFONTSTYLE_NORMAL );
+   }
+
+   wxString weight_str = std2wxstr(element->FindElementValue("weight"));
+   weight_str.LowerCase();
+   if (weight_str.Find(wxT("bold")) != -1)
+   {
+     fnt.SetWeight( wxFONTWEIGHT_BOLD);
+   }
+   else if (weight_str.Find(wxT("light")) != -1)
+   {
+     fnt.SetWeight( wxFONTWEIGHT_LIGHT);
+   }
+   else
+   {
+     fnt.SetWeight( wxFONTWEIGHT_NORMAL);
+   }
+   
+   wxString family_str = std2wxstr(element->FindElementValue("family"));
+   family_str.LowerCase();
+   if (family_str.Find(wxT("decorative")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_DECORATIVE );
+   }
+   else if (family_str.Find(wxT("roman")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_ROMAN );
+   }
+   else if (family_str.Find(wxT("script")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_SCRIPT );
+   }
+   else if (family_str.Find(wxT("swiss")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_SWISS );
+   }
+   else if (family_str.Find(wxT("modern")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_MODERN );
+   }
+   else if (family_str.Find(wxT("teletype")) != -1)
+   {
+     fnt.SetFamily( wxFONTFAMILY_TELETYPE );
+   }
+   else
+   {
+     fnt.SetFamily( wxFONTFAMILY_DEFAULT );
+   }
+
+   wxString underlined = std2wxstr(element->FindElementValue("underlined"));
+   underlined.LowerCase();
+   if (underlined == wxT("true") )
+   {
+     fnt.SetUnderlined(true);
+   }
+   else
+   {
+     fnt.SetUnderlined(false);
+   }
+   
+   wxString face_name_str = std2wxstr(element->FindElementValue("face"));
+   if (!face_name_str.IsEmpty())
+   {
+     fnt.SetFaceName(face_name_str);
+   }
+}
+
+
+void LoadPainter(Element * element, wxPen *pen, wxFont *fnt)
+{
+  if (element)
+  {
+    Element * tmp;
+    if (pen && (tmp = element->FindElement("pen")))
+    {
+        LoadPen(tmp, *pen);
+    }
+    if (fnt && (tmp = element->FindElement("font")))
+    {
+        LoadFont(tmp, *fnt);
+    }    
+  }
+}
+
+void ExportColour(wxTextOutputStream & tstream, const wxString & prefix, const wxColour &color, const wxString &tag=wxT("colour"))
+{
+  tstream << prefix << _("<!-- Colour Setting. Initial with '#', followd with RGB Hex number. -->\n");
+  tstream << prefix << wxT("<") << tag << wxT(">") << color.GetAsString(wxC2S_HTML_SYNTAX) << wxT("</") << tag << wxT(">\n");
+}
+
+void ExportPen(wxTextOutputStream & tstream, const wxString & prefix, const wxPen &pen, const wxString &tag=wxT("pen"))
+{
+  tstream << prefix << _("<!-- Pen Setting -->\n");
+  tstream << prefix << wxT("<") << tag << wxT(">\n");
+  {
+    wxString pre = prefix + wxT("    ");
+    ExportColour(tstream, pre, pen.GetColour());
+    int w = pen.GetWidth();
+    if (w < 1)
+      w = 1;
+    tstream << pre << _("<!-- The width of the Pen -->\n");
+    tstream << pre << wxT("<width> ") << w << wxT(" </width>\n");
+    wxString sty= wxEmptyString;
+    int s = pen.GetStyle();
+    bool first = true;
+    switch (s)
+    {
+    case wxTRANSPARENT :
+    {
+        sty = wxT("TRANSPARENT");
+    }
+    break;
+    case wxDOT :
+    {
+        sty = wxT("DOT");
+    }
+    break;
+    case wxLONG_DASH :
+    {
+        sty = wxT("LONG_DASH");
+    }
+    break;
+    case wxSHORT_DASH :
+    {
+        sty = wxT("SHORT_DASH");
+    }
+    break;
+    case wxDOT_DASH :
+    {
+        sty = wxT("DOT_DASH");
+    }
+    break;
+    case wxBDIAGONAL_HATCH :
+    {
+        sty = wxT("BDIAGONAL_HATCH");
+    }
+    break;
+    case wxCROSSDIAG_HATCH :
+    {
+        sty = wxT("CROSSDIAG_HATCH");
+    }
+    break;
+    case wxFDIAGONAL_HATCH :
+    {
+        sty = wxT("FDIAGONAL_HATCH");
+    }
+    break;
+    case wxHORIZONTAL_HATCH :
+    {
+        sty = wxT("HORIZONTAL_HATCH");
+    }
+    break;
+    case wxVERTICAL_HATCH :
+    {
+        sty = wxT("VERTICAL_HATCH");
+    }
+    break;
+    case wxCROSS_HATCH :
+    {
+        sty = wxT("CROSS_HATCH");
+    }
+    break;
+    default :
+    {
+        sty = wxT("SOLID");
+    }
+    break;
+    }
+    tstream << pre << _("<!-- The style of the pen -->\n");
+    tstream << pre << _("<!-- one of these tags: -->\n");
+    tstream << pre << _("<!-- one of these tags: \n");
+    tstream << pre << _("    SOLID             Solid style. \n");
+    tstream << pre << _("    TRANSPARENT       No pen is used. \n");
+    tstream << pre << _("    DOT Dotted        style. \n");
+    tstream << pre << _("    LONG_DASH         Long dashed style. \n");
+    tstream << pre << _("    SHORT_DASH        Short dashed style. \n");
+    tstream << pre << _("    DOT_DASH          Dot and dash style. \n");
+    tstream << pre << _("    BDIAGONAL_HATCH   Backward diagonal hatch. \n");
+    tstream << pre << _("    CROSSDIAG_HATCH   Cross-diagonal hatch. \n");
+    tstream << pre << _("    FDIAGONAL_HATCH   Forward diagonal hatch. \n");
+    tstream << pre << _("    CROSS_HATCH       Cross hatch. \n");
+    tstream << pre << _("    HORIZONTAL_HATCH  Horizontal hatch. \n");
+    tstream << pre << _("    VERTICAL_HATCH    Vertical hatch. -->\n");
+    tstream << pre << wxT("<style> ") << sty << wxT(" </style>\n");
+  }
+  tstream << prefix << wxT("</") << tag << wxT(">\n");
+}
+
+void ExportFont(wxTextOutputStream & tstream, const wxString & prefix, const wxFont &fnt, const wxString &tag=wxT("font"))
+{
+  tstream << prefix << _("<!-- Font Setting -->\n");
+  tstream << prefix << wxT("<") << tag << wxT(">\n");
+  {
+    wxString pre = prefix + wxT("    ");
+    tstream << pre << wxT("<NativeFontInfo>") << fnt.GetNativeFontInfoDesc() << wxT("</NativeFontInfo>\n") ;
+    tstream << pre << wxT("<NativeFontInfoUserDesc>") << fnt.GetNativeFontInfoUserDesc() << wxT("</NativeFontInfoUserDesc>\n") ;
+
+    tstream << pre << _("<!-- the point size of the font -->\n");
+    tstream << pre << wxT("<size> ") << fnt.GetPointSize() << wxT(" </size>\n");
+    wxString style_str;
+    switch (fnt.GetStyle())
+    {
+      case wxFONTSTYLE_ITALIC :
+        style_str = wxT("italic");
+        break;
+      case wxFONTSTYLE_SLANT :
+        style_str = wxT("slant");
+        break;
+      default :
+        style_str = wxT("normal");
+        break;
+    }
+    tstream << pre << _("<!-- the style of the font -->\n");
+    tstream << pre << _("<!-- one of these styles\n");
+    tstream << pre << wxT("     italic \n");
+    tstream << pre << wxT("     slant\n");
+    tstream << pre << wxT("     normal -->\n");
+    tstream << pre << wxT("<style> ") << style_str << wxT(" </style>\n");
+    wxString weight_str;
+    switch (fnt.GetWeight())
+    {
+      case wxFONTWEIGHT_BOLD :
+        weight_str = wxT("bold");
+        break;
+      case wxFONTWEIGHT_LIGHT :
+        weight_str = wxT("light");
+        break;
+      default :
+        weight_str = wxT("normal");
+        break;
+    }
+    tstream << pre << _("<!-- the weight of the font -->\n");
+    tstream << pre << _("<!-- one of these styles\n");
+    tstream << pre << wxT("     bold \n");
+    tstream << pre << wxT("     light\n");
+    tstream << pre << wxT("     normal -->\n");
+    tstream << pre << wxT("<weight> ") << weight_str << wxT(" </weight>\n");
+    wxString family_str;
+    switch (fnt.GetFamily())
+    {
+      case wxFONTFAMILY_DECORATIVE :
+        family_str = wxT("decorative");
+        break;
+      case wxFONTFAMILY_ROMAN :
+        family_str = wxT("roman");
+        break;
+      case wxFONTFAMILY_SCRIPT :
+        family_str = wxT("script");
+        break;
+      case wxFONTFAMILY_MODERN :
+        family_str = wxT("modern");
+        break;
+      case wxFONTFAMILY_SWISS :
+        family_str = wxT("swiss");
+        break;
+      case wxFONTFAMILY_TELETYPE :
+        family_str = wxT("teletype");
+        break;
+      default :
+        family_str = wxT("default");
+    }
+    tstream << pre << _("<!-- the family of the font -->\n");
+    tstream << pre << _("<!-- one of these families\n");
+    tstream << pre << wxT("     decorative roman \n");
+    tstream << pre << wxT("     script     swiss\n");
+    tstream << pre << wxT("     modern     teletype\n");
+    tstream << pre << wxT("     default -->\n");
+    tstream << pre << wxT("<family> ") << family_str << wxT(" </family>\n");
+    tstream << pre << _("<!-- the face name of the font -->\n");
+    tstream << pre << wxT("<face> ") << fnt.GetFaceName() << wxT(" </face>\n");
+    tstream << pre << _("<!-- whether underlined font (true or false) -->\n");
+    if (fnt.GetUnderlined())
+    {
+      tstream << pre << wxT("<underlined> true </underlined>\n");
+    }
+    else
+    {
+      tstream << pre << wxT("<underlined> false </underlined>\n");
+    }
+  }
+  tstream << prefix << wxT("</") << tag << wxT(">\n");
+}
+
+void ExportPainter(wxTextOutputStream & tstream, const wxString & prefix, const wxPen &pen, const wxFont &fnt, const wxString &tag=wxT("painter"))
+{
+  tstream << prefix << wxT("<") << tag << wxT(">\n");
+  {
+    wxString pre = prefix + wxT("    ");
+    ExportPen(tstream, pre, pen);
+    ExportFont(tstream, pre, fnt);
+  }
+  tstream << prefix << wxT("</") << tag << wxT(">\n");
+}
+
+
+typedef vector<const Table *> TableCPList;
+typedef TableCPList::const_iterator TableCPListCIter;
+
+void Export1DTable(wxTextOutputStream & tstream, const wxString & prefix, const TableCPList & list)
+{
+  tstream << prefix << std2wxstr(list[0]->GetIndepVar()) << wxT("(") << std2wxstr(list[0]->GetIndepVarLabel()) << wxT(") ") ;
+  for (TableCPListCIter i = list.begin(); i != list.end(); ++i)
+  {
+    tstream << std2wxstr((*i)->GetName()) << wxT('(') << std2wxstr((*i)->GetNameLabel()) << wxT(") ");
+  }
+  tstream << wxT("\n");
+  for (unsigned i=0u; i<list[0]->GetSize(); ++i)
+  {
+    tstream << prefix;
+    TableCPListCIter j = list.begin();
+    tstream << (*j)->GetData()[i].key << wxT(' ') << (*j)->GetData()[i].value << wxT(' ');
+    ++j;
+    for (; j != list.end(); ++j)
+    {
+      tstream << (*j)->GetData()[i].value << wxT(' ');
+    }
+    tstream << wxT("\n");
+  }
+}
+
+void ExportMDTable(wxTextOutputStream & tstream, const wxString & prefix, const TableCPList & list)
+{
+  tstream << prefix << wxT("<independentVar>") << std2wxstr(list[0]->GetIndepVar()) << wxT("(") << std2wxstr(list[0]->GetIndepVarLabel()) << wxT(")</independentVar>\n");
+  const Matt::TablePairList& l = list[0]->GetTables();
+  for ( unsigned i = 0u; i < l.size(); ++i)
+  {
+    tstream << prefix << wxT("  <table key=\"") << l[i].key << wxT("\">\n");
+    TableCPList tmp;
+    for (TableCPList::const_iterator j=list.begin(); j != list.end(); ++j)
+    {
+      tmp.push_back(&((*j)->GetTables()[i].table));
+    }
+    if (tmp[0]->GetDimension() == 1u)
+    {
+      Export1DTable(tstream, wxEmptyString, tmp);
+    }
+    else
+    {
+      ExportMDTable(tstream, prefix+wxT("  "), tmp);
+    }
+    tstream << prefix << wxT("  </table>\n");
+  }
+}
+
+void ExportTable(wxTextOutputStream & tstream, const wxString & prefix, const TableList & list, const wxString &tag=wxT("table"))
+{
+  tstream << prefix << wxT("<") << tag << wxT(">\n") ;
+  wxString pre = prefix+wxT("  ");
+  const Table & t1 = list[0];
+  TableCPList plist;
+  for (Matt::TableListCIter i= list.begin(); i!= list.end(); ++i)
+  {
+    plist.push_back(&(*i));
+  }
+  if (t1.GetDimension() == 1u)
+  {
+    Export1DTable(tstream, wxEmptyString, plist);
+  }
+  else
+  {
+    ExportMDTable(tstream, pre, plist);
+  }
+  tstream << prefix << wxT("</") << tag << wxT(">\n");
+}
+
+void ExportFGTable(wxTextOutputStream & tstream, const wxString & pre, const FGTable *tab)
+{
+  //TODO export FGTable
+  //tstream << prefix << wxT("<table>\n");
+  //tstream << prefix << wxT("</table>\n");
+}
+
+void ExportFunction(wxTextOutputStream & tstream, const wxString & prefix, const FGFunction * func)
+{
+  switch (func->GetType())
+  {
+    case FGFunction::eTopLevel :
+      tstream << prefix << wxT("<function name=\"") << std2wxstr(func->GetName()) << wxT("\">\n");
+      break;
+    case FGFunction::eProduct :
+      tstream << prefix << wxT("<product>\n");
+      break;
+    case FGFunction::eDifference :
+      tstream << prefix << wxT("<difference>\n");
+      break;
+    case FGFunction::eSum :
+      tstream << prefix << wxT("<sum>\n");
+      break;
+    case FGFunction::eQuotient :
+      tstream << prefix << wxT("<quotient>\n");
+      break;
+    case FGFunction::ePow :
+      tstream << prefix << wxT("<pow>\n");
+      break;
+    case FGFunction::eAbs :
+      tstream << prefix << wxT("<abs>\n");
+      break;
+    case FGFunction::eSin :
+      tstream << prefix << wxT("<sin>\n");
+      break;
+    case FGFunction::eExp :
+      tstream << prefix << wxT("<exp>\n");
+      break;
+    case FGFunction::eCos :
+      tstream << prefix << wxT("<cos>\n");
+      break;
+    case FGFunction::eTan :
+      tstream << prefix << wxT("<tan>\n");
+      break;
+    case FGFunction::eASin :
+      tstream << prefix << wxT("<asin>\n");
+      break;
+    case FGFunction::eACos :
+      tstream << prefix << wxT("<acos>\n");
+      break;
+    case FGFunction::eATan :
+      tstream << prefix << wxT("<atan>\n");
+      break;
+    case FGFunction::eATan2 :
+      tstream << prefix << wxT("<atan2>\n");
+      break;
+    case FGFunction::eDerivative :
+      tstream << prefix << wxT("<derivative>\n");
+      break;
+    case FGFunction::eIntegral :
+      tstream << prefix << wxT("<integral>\n");
+      break;
+    case FGFunction::eLT :
+      tstream << prefix << wxT("<lt>\n");
+      break;
+    case FGFunction::eLE :
+      tstream << prefix << wxT("<le>\n");
+      break;
+    case FGFunction::eGT :
+      tstream << prefix << wxT("<gt>\n");
+      break;
+    case FGFunction::eGE :
+      tstream << prefix << wxT("<ge>\n");
+      break;
+    case FGFunction::eEQ :
+      tstream << prefix << wxT("<eq>\n");
+      break;
+    case FGFunction::eNE :
+      tstream << prefix << wxT("<ne>\n");
+      break;
+    case FGFunction::eAND :
+      tstream << prefix << wxT("<and>\n");
+      break;
+    case FGFunction::eOR :
+      tstream << prefix << wxT("<or>\n");
+      break;
+    case FGFunction::eNOT :
+      tstream << prefix << wxT("<not>\n");
+      break;
+    case FGFunction::eIFTHEN :
+      tstream << prefix << wxT("<ifthen>\n");
+      break;
+  }
+  {
+    wxString pre = prefix + wxT("    ");
+    wxString desc = std2wxstr(func->GetDescription());
+    if (!desc.IsEmpty())
+    {
+      tstream << pre << wxT("<description>") << desc << wxT("</description>\n");
+    }
+    for (unsigned i=0u; i < func->GetParaCount(); ++i)
+    {
+      const FGFunction * f = dynamic_cast<const FGFunction *>(func->GetParameter(i));
+      if (f)
+      {
+        ExportFunction(tstream, pre, f);
+      }
+      else
+      {
+        const FGPropertyValue * p = dynamic_cast<const FGPropertyValue *>(func->GetParameter(i));
+        if (p)
+        {
+          tstream << pre << wxT("<property>") << std2wxstr(p->GetName()) << wxT("</property>\n");
+        }
+        else
+        {
+          const FGRealValue * r = dynamic_cast<const FGRealValue *>(func->GetParameter(i));
+          if (r)
+          {
+            tstream << pre << wxT("<value>") << r->GetValue() << wxT("</value>\n");
+          }
+          else
+          {
+            const FGTable * t = dynamic_cast<const FGTable *>(func->GetParameter(i));
+            if (t)
+            {
+              ExportFGTable(tstream, pre, t);
+            }
+            else
+            {
+              throw "Bad operation  detected";
+            }
+          }
+        }
+      }
+    }
+  }
+  switch (func->GetType())
+  {
+    case FGFunction::eTopLevel :
+      tstream << prefix << wxT("</function>\n");
+      break;
+    case FGFunction::eProduct :
+      tstream << prefix << wxT("</product>\n");
+      break;
+    case FGFunction::eDifference :
+      tstream << prefix << wxT("</difference>\n");
+      break;
+    case FGFunction::eSum :
+      tstream << prefix << wxT("</sum>\n");
+      break;
+    case FGFunction::eQuotient :
+      tstream << prefix << wxT("</quotient>\n");
+      break;
+    case FGFunction::ePow :
+      tstream << prefix << wxT("</pow>\n");
+      break;
+    case FGFunction::eAbs :
+      tstream << prefix << wxT("</abs>\n");
+      break;
+    case FGFunction::eSin :
+      tstream << prefix << wxT("</sin>\n");
+      break;
+    case FGFunction::eExp :
+      tstream << prefix << wxT("</exp>\n");
+      break;
+    case FGFunction::eCos :
+      tstream << prefix << wxT("</cos>\n");
+      break;
+    case FGFunction::eTan :
+      tstream << prefix << wxT("</tan>\n");
+      break;
+    case FGFunction::eASin :
+      tstream << prefix << wxT("</asin>\n");
+      break;
+    case FGFunction::eACos :
+      tstream << prefix << wxT("</acos>\n");
+      break;
+    case FGFunction::eATan :
+      tstream << prefix << wxT("</atan>\n");
+      break;
+    case FGFunction::eATan2 :
+      tstream << prefix << wxT("</atan2>\n");
+      break;
+    case FGFunction::eDerivative :
+      tstream << prefix << wxT("</derivative>\n");
+      break;
+    case FGFunction::eIntegral :
+      tstream << prefix << wxT("</integral>\n");
+      break;
+    case FGFunction::eLT :
+      tstream << prefix << wxT("</lt>\n");
+      break;
+    case FGFunction::eLE :
+      tstream << prefix << wxT("</le>\n");
+      break;
+    case FGFunction::eGT :
+      tstream << prefix << wxT("</gt>\n");
+      break;
+    case FGFunction::eGE :
+      tstream << prefix << wxT("</ge>\n");
+      break;
+    case FGFunction::eEQ :
+      tstream << prefix << wxT("</eq>\n");
+      break;
+    case FGFunction::eNE :
+      tstream << prefix << wxT("</ne>\n");
+      break;
+    case FGFunction::eAND :
+      tstream << prefix << wxT("</and>\n");
+      break;
+    case FGFunction::eOR :
+      tstream << prefix << wxT("</or>\n");
+      break;
+    case FGFunction::eNOT :
+      tstream << prefix << wxT("</not>\n");
+      break;
+    case FGFunction::eIFTHEN :
+      tstream << prefix << wxT("</ifthen>\n");
+      break;
+  }
+}
+
+void ExportCondition(wxTextOutputStream & tstream, const wxString & prefix, const Condition * cond)
+{
+  if (cond->isGroup)
+  {
+    tstream << prefix << wxT("<condition logic=\""); 
+    switch (cond->Logic)
+    {
+      case Condition::eOR :
+        tstream << wxT("OR");
+        break;
+      default :
+        tstream << wxT("AND");
+    }
+    tstream << wxT("\">\n");
+    wxString pre = prefix + wxT("    ");
+    for (vector <Condition>::const_iterator i=cond->conditions.begin(); i != cond->conditions.end(); ++i)
+    {
+      ExportCondition(tstream, pre, &(*i));
+    }
+    tstream << prefix << wxT("</condition>\n"); 
+  }
+  else
+  {
+    tstream << prefix;
+    if (cond->TestParam1)
+    {
+      if (cond->sign1 < 0)
+      {
+        tstream << wxT('-');
+      }
+      tstream << std2wxstr(cond->property1) << wxT(' ');
+    }
+    else
+    {
+      tstream << cond->TestValue1 << wxT(' ');
+    }
+    tstream << std2wxstr(cond->conditional) << wxT(' ');
+    if (cond->TestParam2)
+    {
+      if (cond->sign2 < 0)
+      {
+        tstream << wxT('-');
+      }
+      tstream << std2wxstr(cond->property2) << '\n';
+    }
+    else
+    {
+      tstream << cond->TestValue2 << '\n';
+    }
+  }
+}
 
 template <class T>
 void readNumsfromString(vector<T> &list, const wxString & str)
@@ -614,26 +1458,26 @@ void Curve::DrawBSpline(wxDC& dc, wxCoord x, wxCoord y, wxCoord w, wxCoord h, do
       if (list[j].x < x)
       {
 	double tmp = double(list[j-1].x-x)/double(x-list[j].x);
-        list[j].y = (tmp * list[j].y + list[j-1].y)/(1+tmp);	
+        list[j].y = int((tmp * list[j].y + list[j-1].y)/(1+tmp));
         list[j].x = x;
       }
       else if (list[j].x > x+w)
       {
 	double tmp = double(x+w-list[j-1].x)/double(list[j].x-x-w);
-        list[j].y =  (tmp * list[j].y + list[j-1].y)/(tmp+1);	
+        list[j].y = int( (tmp * list[j].y + list[j-1].y)/(tmp+1) );
         list[j].x = x+w;
       }
 
       if (list[j].y < y)
       {
 	double tmp = double(list[j-1].y-y)/double(y-list[j].y);
-        list[j].x = (tmp * list[j].x + list[j-1].x)/(1+tmp);	
+        list[j].x = int( (tmp * list[j].x + list[j-1].x)/(1+tmp) );
         list[j].y = y;
       }
       else if (list[j].y > y+h)
       {
 	double tmp = double(y+h-list[j-1].y) / double(list[j].y-y-h);
-        list[j].x =  (tmp * list[j].x + list[j-1].x)/(1+tmp);	
+        list[j].x =  int( (tmp * list[j].x + list[j-1].x)/(1+tmp) );
         list[j].y = y+h;
       }
       /*
@@ -735,26 +1579,26 @@ void Curve::DrawPolyline(wxDC& dc, wxCoord x, wxCoord y, wxCoord w, wxCoord h, d
       if (list[j].x < x)
       {
 	double tmp = double(list[j-1].x-x)/double(x-list[j].x);
-        list[j].y = (tmp * list[j].y + list[j-1].y)/(1+tmp);	
+        list[j].y = int( (tmp * list[j].y + list[j-1].y)/(1+tmp) );
         list[j].x = x;
       }
       else if (list[j].x > x+w)
       {
 	double tmp = double(x+w-list[j-1].x)/double(list[j].x-x-w);
-        list[j].y =  (tmp * list[j].y + list[j-1].y)/(tmp+1);	
+        list[j].y =  int( (tmp * list[j].y + list[j-1].y)/(tmp+1) );
         list[j].x = x+w;
       }
 
       if (list[j].y < y)
       {
 	double tmp = double(list[j-1].y-y)/double(y-list[j].y);
-        list[j].x = (tmp * list[j].x + list[j-1].x)/(1+tmp);	
+        list[j].x = int( (tmp * list[j].x + list[j-1].x)/(1+tmp) );
         list[j].y = y;
       }
       else if (list[j].y > y+h)
       {
 	double tmp = double(y+h-list[j-1].y) / double(list[j].y-y-h);
-        list[j].x =  (tmp * list[j].x + list[j-1].x)/(1+tmp);	
+        list[j].x = int( (tmp * list[j].x + list[j-1].x)/(1+tmp) );
         list[j].y = y+h;
       }
       /*
@@ -970,6 +1814,183 @@ void Curve::Load(Element * element)
     }
 }
 
+void Curve::Export(wxTextOutputStream & tstream, const wxString & prefix, const unsigned & n, bool reverse) const
+{
+  if (n < 2u)
+  {
+    if (reverse)
+    {
+      tstream << prefix << wxT("<rcurve>\n");
+    }
+    else
+    {
+      tstream << prefix << wxT("<curve>\n");
+    }
+  }
+  else
+  {
+    if (reverse)
+    {
+      tstream << prefix << wxT("<rcurve n=\"") << n << wxT("\">\n");
+    }
+    else
+    {
+      tstream << prefix << wxT("<curve n=\"") << n << wxT("\">\n");
+    }
+  }
+  {
+    wxString pre = prefix + wxT("    ");
+    tstream << pre << _("<!-- the font and colour for the curve -->\n");
+    ExportPainter(tstream, pre, pen, fnt);
+    tstream << pre << _("<!-- the type of the curve. (BSPLINE or POLYLINE) -->\n");
+    switch (type)
+    {
+      case CURVE_BSPLINE :
+        tstream << pre << wxT("<type> BSPLINE </type>\n");
+        break;
+      case CURVE_POLYLINE :
+        tstream << pre << wxT("<type> POLYLINE </type>\n");
+        break;
+    }
+    tstream << pre << _("<!-- show or hide. (FALSE or TRUE) -->\n");
+    if (isHide)
+    {
+      tstream << pre << wxT("<hide> TRUE </hide>\n");
+    }
+    else
+    {
+      tstream << pre << wxT("<hide> FALSE </hide>\n");
+    }
+    tstream << pre << _("<!-- the symbol on the curve. The 'filled' attribute can be 'true' or 'false'. -->\n");
+    tstream << pre << _("<!-- the type of symbol: -->\n");
+    tstream << pre << wxT("<!--     rec, tri_up, tri_down, tri_left, tri_right -->\n");
+    tstream << pre << wxT("<!--     diamond, pentagon, hexagon, none -->\n");
+    if (is_symbol_filled)
+    {
+      tstream << pre << wxT("<symbol filled=\"true\"> ");
+    }
+    else
+    {
+      tstream << pre << wxT("<symbol filled=\"false\"> ");
+    }
+    switch(symbol)
+    {
+      case CURVE_REC :
+        tstream << wxT("REC");
+        break;
+      case CURVE_TRI_DOWN :
+        tstream << wxT("TRI_DOWN");
+        break;
+      case CURVE_TRI_UP :
+        tstream << wxT("TRI_UP");
+        break;
+      case CURVE_TRI_LEFT :
+        tstream << wxT("TRI_LEFT");
+        break;
+      case CURVE_TRI_RIGHT :
+        tstream << wxT("TRI_RIGHT");
+        break;
+      case CURVE_DIAMOND :
+        tstream << wxT("DIAMOND");
+        break;
+      case CURVE_PENTAGON :
+        tstream << wxT("PENTAGON");
+        break;
+      case CURVE_HEXAGON :
+        tstream << wxT("HEXAGON");
+        break;
+      default :
+        tstream << wxT("NONE");
+        break;
+    }
+    tstream << wxT("</symbol>\n");
+    tstream << pre << _("<!-- the mark on the curve. -->\n");
+    tstream << pre << _("<!-- 'pos' attribute can be one of 'left_up', 'left_down', 'right_up', 'right_down', 'none'. -->\n");
+    tstream << pre << _("<!-- 'type' attribute can be one of 'prefix', 'suffix', 'replace', 'none'. -->\n");
+    tstream << pre << _("<!-- 'value' attribute is a number in [0,1] stands for the position. -->\n");
+    tstream << pre << _("<!-- 'legend' attribute is a number stands for the legend number starts from 0. -->\n");
+    tstream << pre << wxT("<text pos=\"");
+    switch (text_pos)
+    {
+      case CURVE_LEFT_UP :
+        tstream << wxT("left_up");
+        break;
+      case CURVE_RIGHT_UP :
+        tstream << wxT("right_up");
+        break;
+      case CURVE_LEFT_DOWN :
+        tstream << wxT("left_down");
+        break;
+      case CURVE_RIGHT_DOWN :
+        tstream << wxT("right_down");
+        break;
+      default :
+        tstream << wxT("none");
+        break;
+    }
+    tstream << wxT("\" type=\"");
+    switch (label_pos)
+    {
+      case CURVE_LABEL_PREFIX :
+        tstream << wxT("prefix");
+        break;
+      case CURVE_LABEL_SUFFIX :
+        tstream << wxT("suffix");
+        break;
+      case CURVE_LABEL_REPLACE :
+        tstream << wxT("replace");
+        break;
+      default :
+        tstream << wxT("none");
+        break;
+    }
+    tstream << wxT("\" value=\"");
+    tstream << text_value;
+    tstream << wxT("\" legend=\"");
+    tstream << legend_pos;
+    tstream << wxT("\">");
+    tstream << label;
+    tstream << wxT("</text>\n");
+  }
+    if (reverse)
+    {
+      tstream << prefix << wxT("</rcurve>\n");
+    }
+    else
+    {
+      tstream << prefix << wxT("</curve>\n");
+    }
+}
+
+bool Curve::operator != (const Curve & c) const
+{
+  if (pen != c.pen)
+    return true;
+  if (fnt != c.fnt)
+    return true;
+  if (type != c.type)
+    return true;
+  if (symbol != c.symbol)
+    return true;
+  if (text_pos != c.text_pos)
+    return true;
+  if (label_pos != c.label_pos)
+    return true;
+  if (text_value != c.text_value)
+    return true;
+  if (legend_pos != c.legend_pos)
+    return true;
+  if (label != c.label)
+    return true;
+  if (is_symbol_filled != c.is_symbol_filled)
+    return true;
+  if (isHide != c.isHide)
+    return true;
+
+  return false;
+}
+
+
 wxString Curve::GetWholeText() const
 {
         if (label_pos == CURVE_LABEL_PREFIX)
@@ -990,268 +2011,6 @@ wxString Curve::GetWholeText() const
 	}
 }
 
-void make_order(vector<double> &x, vector<double> &y, size_t num)
-{
-    VPRBTree rbtree;
-    vector<double>::iterator i=x.begin();
-    vector<double>::iterator j=y.begin();
-    for (;i != x.end(); ++i, ++j)
-    {
-      rbtree.insert(VPRBTree::value_type(*i, VP(*j, 1)));
-    }
-    while (rbtree.size() > num)
-    {
-      VPRBTree_Ptr no = rbtree.end();
-      double len = 99e99;
-      VPRBTree_Ptr k = rbtree.begin();
-      VPRBTree_Ptr e = rbtree.end();
-      ++k;
-      --e;
-      double last = k->first;
-      for (++k; k != e; ++k)
-      {
-        double tmp = k->first - last;
-        if (tmp < len)
-        {
-          no = k;
-          len = tmp;
-        }
-        last = k->first;
-      }
-      VPRBTree_Ptr no2 = no;
-      VPRBTree_Ptr end = rbtree.end();
-      --end;
-      --no2;
-      if (no2 == rbtree.begin() || no == end)
-      {
-        break;
-      }
-      double p0 = no2->second.power;
-      double p1 = no->second.power;
-      double ps = p0+p1;
-      rbtree.insert(
-              VPRBTree::value_type(
-                  (no2->first*p0+no->first*p1)/ps, 
-                  VP((no2->second.value*p0+no->second.value*p1)/ps,
-                     ps
-                     )
-                  )
-              );
-      rbtree.erase(no);
-      rbtree.erase(no2);
-    }
-    x.clear();
-    y.clear();
-    for (VPRBTree_Ptr k = rbtree.begin();
-            k != rbtree.end(); ++k)
-    {
-      x.push_back((*k).first);
-      y.push_back((*k).second.value);
-    }
-}
-
-void LoadColour(Element * element, wxColour &colour)
-{
-    wxString c = std2wxstr(element->GetDataLine());
-    if (c.Length() == 7 && c[0] == wxChar('#'))
-    {
-      unsigned long r,g,b;
-      r = g = b = 0xFF;
-      c.Mid(1, 2).ToULong(&r, 16);
-      c.Mid(3, 2).ToULong(&g, 16);
-      c.Mid(5, 2).ToULong(&b, 16);
-      colour.Set((unsigned char)r, (unsigned char)g, (unsigned char)b);
-    }
-}
-
-void LoadPen(Element * element, wxPen &pen)
-{
-    Element *el;
-    if ((el = element->FindElement("colour")))
-    {
-      LoadColour(el, pen.GetColour());
-    }
-    
-   int size = (int)element->FindElementValueAsNumber("width");
-   if (size < 9999)
-   {
-     pen.SetWidth(size);
-   }
-   else
-   {
-     pen.SetWidth(1);
-   }
-
-   wxString styles = std2wxstr(element->FindElementValue("style"));
-   int style_tag = 0;
-   while (!styles.IsEmpty())
-   {
-     wxString style = styles.BeforeFirst('|');
-     if (style.Upper().Contains(wxT("SOLID")))
-     {
-       style_tag |= wxSOLID;
-     }
-     else if (style.Upper().Contains(wxT("TRANSPARENT")))
-     {
-       style_tag |= wxTRANSPARENT;
-     }
-     else if (style.Upper().Contains(wxT("DOT")))
-     {
-       style_tag |= wxDOT;
-     }
-     else if (style.Upper().Contains(wxT("LONG_DASH")))
-     {
-       style_tag |= wxLONG_DASH;
-     }
-     else if (style.Upper().Contains(wxT("SHORT_DASH")))
-     {
-       style_tag |= wxSHORT_DASH;
-     }
-     else if (style.Upper().Contains(wxT("DOT_DASH")))
-     {
-       style_tag |= wxDOT_DASH;
-     }
-     else if (style.Upper().Contains(wxT("BDIAGONAL_HATCH")))
-     {
-       style_tag |= wxBDIAGONAL_HATCH;
-     }
-     else if (style.Upper().Contains(wxT("CROSSDIAG_HATCH ")))
-     {
-       style_tag |= wxCROSSDIAG_HATCH ;
-     }
-     else if (style.Upper().Contains(wxT("FDIAGONAL_HATCH")))
-     {
-       style_tag |= wxFDIAGONAL_HATCH;
-     }
-     else if (style.Upper().Contains(wxT("HORIZONTAL_HATCH")))
-     {
-       style_tag |= wxHORIZONTAL_HATCH;
-     }
-     else if (style.Upper().Contains(wxT("VERTICAL_HATCH")))
-     {
-       style_tag |= wxVERTICAL_HATCH;
-     }
-     else if (style.Upper().Contains(wxT("CROSS_HATCH")))
-     {
-       style_tag |= wxCROSS_HATCH;
-     }
-
-     styles = styles.AfterFirst('|');
-   }
-   if (style_tag == 0)
-   {
-     style_tag = wxSOLID;
-   }
-   pen.SetStyle(style_tag);
-}
-
-void LoadFont(Element * element, wxFont &fnt)
-{
-   int size = (int)element->FindElementValueAsNumber("size");
-   if (size < 9999)
-   {
-     fnt.SetPointSize(size);
-   }
-   else
-   {
-     fnt.SetPointSize(8);
-   }
-
-   wxString style_str = std2wxstr(element->FindElementValue("style"));
-   int style;
-   if (style_str.Find(wxT("italic")) != -1)
-   {
-     style = wxFONTSTYLE_ITALIC;
-   }
-   else if (style_str.Find(wxT("slant")) != -1)
-   {
-     style = wxFONTSTYLE_SLANT;
-   }
-   else
-   {
-     style = wxFONTSTYLE_NORMAL;
-   }
-   fnt.SetStyle(style);
-
-   wxString weight_str = std2wxstr(element->FindElementValue("weight"));
-   wxFontWeight weight;
-   if (weight_str.Find(wxT("bold")) != -1)
-   {
-     weight = wxFONTWEIGHT_BOLD;
-   }
-   else if (weight_str.Find(wxT("light")) != -1)
-   {
-     weight = wxFONTWEIGHT_LIGHT;
-   }
-   else
-   {
-     weight = wxFONTWEIGHT_NORMAL;
-   }
-   fnt.SetWeight(weight);
-   
-   wxString family_str = std2wxstr(element->FindElementValue("family"));
-   wxFontFamily family;
-   if (family_str.Find(wxT("decorative")) != -1)
-   {
-     family = wxFONTFAMILY_DECORATIVE;
-   }
-   else if (family_str.Find(wxT("roman")) != -1)
-   {
-     family = wxFONTFAMILY_ROMAN;
-   }
-   else if (family_str.Find(wxT("script")) != -1)
-   {
-     family = wxFONTFAMILY_SCRIPT;
-   }
-   else if (family_str.Find(wxT("swiss")) != -1)
-   {
-     family = wxFONTFAMILY_SWISS;
-   }
-   else if (family_str.Find(wxT("modern")) != -1)
-   {
-     family = wxFONTFAMILY_MODERN;
-   }
-   else if (family_str.Find(wxT("teletype")) != -1)
-   {
-     family = wxFONTFAMILY_TELETYPE;
-   }
-   else
-   {
-     family = wxFONTFAMILY_DEFAULT ;
-   }
-   fnt.SetFamily(family);
-
-   int underlined = (int)element->FindElementValueAsNumber("underlined");
-   if (underlined == 1)
-   {
-     fnt.SetUnderlined(true);
-   }
-   else
-   {
-     fnt.SetUnderlined(false);
-   }
-   
-   wxString face_name_str = std2wxstr(element->FindElementValue("face"));
-   fnt.SetFaceName(face_name_str);
-}
-
-
-void LoadPainter(Element * element, wxPen *pen, wxFont *fnt)
-{
-  if (element)
-  {
-    Element * tmp;
-    if (pen && (tmp = element->FindElement("pen")))
-    {
-        LoadPen(tmp, *pen);
-    }
-    if (fnt && (tmp = element->FindElement("font")))
-    {
-        LoadFont(tmp, *fnt);
-    }    
-  }
-}
-
 PosMgr::PosMgr() :
     pos_x(0),
     pos_y(0),
@@ -1262,6 +2021,8 @@ PosMgr::PosMgr() :
     grid_height(50),
     sub_grid_x(2),
     sub_grid_y(2),
+    grid_x(0u),
+    grid_y(0u),
     pen_grid(wxPen(wxT("grey"), 1, wxSOLID)),
     pen_sub_grid(wxPen(wxT("grey"), 1, wxDOT))
 {}
@@ -1291,23 +2052,41 @@ bool PosMgr::Load(Element * element)
         {
           grid_height = (unsigned int)wh;
         }
-        unsigned sub = (unsigned)tmp->FindElementValueAsNumber("subgridx");
-        if (sub > 200)
+        double sub = tmp->FindElementValueAsNumber("subgridx");
+        if (sub > 200 || sub < 0)
         {
             sub_grid_x = 0u;
         }
         else
         {
-            sub_grid_x = sub;
+            sub_grid_x = (unsigned)sub;
         }
-        sub = (unsigned)tmp->FindElementValueAsNumber("subgridy");
-        if (sub > 200)
+        sub = tmp->FindElementValueAsNumber("subgridy");
+        if (sub > 200 || sub < 0)
         {
             sub_grid_y = 0u;
         }
         else
         {
-            sub_grid_y = sub;
+            sub_grid_y = (unsigned)sub;
+        }
+        sub = tmp->FindElementValueAsNumber("gridx");
+        if (sub > 200 || sub < 0)
+        {
+            grid_x = 0u;
+        }
+        else
+        {
+            grid_x = (unsigned)sub;
+        }
+        sub = tmp->FindElementValueAsNumber("gridy");
+        if (sub > 200 || sub < 0)
+        {
+            grid_y = 0u;
+        }
+        else
+        {
+            grid_y = (unsigned)sub;
         }
         LoadPen(tmp->FindElement("grid_painter"), pen_grid);
         LoadPen(tmp->FindElement("sub_grid_painter"), pen_sub_grid);
@@ -1340,6 +2119,72 @@ bool PosMgr::Load(Element * element)
     }
     
     return true;
+}
+
+
+void PosMgr::Export(wxTextOutputStream & tstream, const wxString & prefix) const
+{
+  tstream << prefix << wxT("<pos_mgr>\n");
+  {
+   wxString pre = prefix + wxT("    ");
+   tstream << pre << _("<!-- Grid Setting -->\n");
+   tstream << pre << wxT("<grid>\n");
+   {
+    wxString pre1 = pre + wxT("    ");
+    tstream << pre1 << _("<!-- show the grid or not (true or false) -->\n");
+    tstream << pre1 << wxT("<show> ");
+    if (is_show_grid)
+    {
+      tstream << wxT("true");
+    }
+    else
+    {
+      tstream << wxT("false");
+    }
+    tstream << wxT(" </show>\n");
+    tstream << pre1 << _("<!-- the width of grid (deprecated) -->\n");
+    tstream << pre1 << wxT("<width> ") << grid_width << wxT(" </width>\n");
+    tstream << pre1 << _("<!-- the height of grid (deprecated) -->\n");
+    tstream << pre1 << wxT("<height> ") << grid_height << wxT(" </height>\n");
+    tstream << pre1 << _("<!-- the column number of grid  -->\n");
+    tstream << pre1 << wxT("<gridx> ") << grid_x << wxT(" </gridx>\n");
+    tstream << pre1 << _("<!-- the row number of grid  -->\n");
+    tstream << pre1 << wxT("<gridy> ") << grid_y << wxT(" </gridy>\n");
+    tstream << pre1 << _("<!-- the column number of sub grid in one grid -->\n");
+    tstream << pre1 << wxT("<subgridx> ") << sub_grid_x << wxT(" </subgridx>\n");
+    tstream << pre1 << _("<!-- the row number of sub grid in one grid -->\n");
+    tstream << pre1 << wxT("<subgridy> ") << sub_grid_y << wxT(" </subgridy>\n");
+    tstream << pre1 << _("<!-- the painter setting for the grid -->\n");
+    ExportPen(tstream, pre1, pen_grid, wxT("grid_painter"));
+    tstream << pre1 << _("<!-- the painter setting for the sub grid -->\n");
+    ExportPen(tstream, pre1, pen_sub_grid, wxT("sub_grid_painter"));
+   }
+   tstream << pre << wxT("</grid>\n");
+   tstream << pre << wxT("<!-- divide the grid in different group(s) -->\n");
+   for (vector<PosMap>::const_iterator i=div_list.begin(); i != div_list.end(); ++i)
+   {
+     tstream << pre << wxT("<div>\n");
+     {
+       wxString pre1 = pre + wxT("    ");
+       tstream << pre1 << wxT("<!-- divide column. The column number is the number of these numbers. Each number stands for the power of width.-->\n");
+       tstream << pre1 << wxT("<col> ");
+       for (vector<wxUint32>::const_iterator j=i->col_list.begin(); j != i->col_list.end(); ++j)
+       {
+         tstream << *j << wxT(" ");
+       }
+       tstream << wxT("</col>\n");
+       tstream << pre1 << wxT("<!-- divide row. The row number is the number of these numbers. Each number stands for the power of width.-->\n");
+       tstream << pre1 << wxT("<row> ");
+       for (vector<wxUint32>::const_iterator j=i->row_list.begin(); j != i->row_list.end(); ++j)
+       {
+         tstream << *j << wxT(" ");
+       }
+       tstream << wxT("</row>\n");
+     }
+     tstream << pre << wxT("</div>\n");
+   }
+  }
+  tstream << prefix << wxT("</pos_mgr>\n");
 }
 
 void PosMgr::GetPos(const size_t &r, const size_t &c, wxCoord &x, wxCoord &y, size_t &w, size_t &h, const unsigned int &no, wxDC* dc)
@@ -1402,17 +2247,6 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
     throw "div pos is out of range";
   }
 
-  if (dc)
-  {
-    // Calculate a suitable scaling factor
-    double scaleX=(double)(ppi.GetWidth()/ppi_x);
-    double scaleY=(double)(ppi.GetHeight()/ppi_y);
-    // Use x or y scaling factor, whichever fits on the DC
-    double actualScale = wxMin(scaleX,scaleY);
-    // Set the scale
-    width = wxCoord(grid_width * actualScale +0.5);
-    height = wxCoord(grid_height * actualScale +0.5);
-  }
 
   PosMap & div = div_list[no];
   div.row_pos.clear();
@@ -1421,7 +2255,7 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
   div.col_size.clear();
 
   double sum=0;
-  for (vector<size_t>::iterator i = div.row_list.begin(); i != div.row_list.end(); ++i)
+  for (vector<wxUint32>::iterator i = div.row_list.begin(); i != div.row_list.end(); ++i)
   {
     sum += *i;
   }
@@ -1430,12 +2264,12 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
   double h = size_h;
   while (h > 0)
   {
-    vector<size_t> dd =  div.row_list;
+    vector<wxUint32> dd =  div.row_list;
     bool flag = true;
     while (flag && h > 0)
     {
-    vector<size_t>::iterator i = dd.begin();
-    vector<size_t>::iterator j = div.row_size.begin();
+    vector<wxUint32>::iterator i = dd.begin();
+    vector<wxUint32>::iterator j = div.row_size.begin();
     flag = false;
     for (; i != dd.end(); ++i, ++j)
     {
@@ -1455,14 +2289,14 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
     }
   }
   double tmp = pos_y;
-  for (vector<size_t>::iterator i = div.row_size.begin(); i != div.row_size.end(); ++i)
+  for (vector<wxUint32>::iterator i = div.row_size.begin(); i != div.row_size.end(); ++i)
   {
     div.row_pos.push_back((wxCoord)tmp);
     tmp += *i;
   }
   
   sum=0;
-  for (vector<size_t>::iterator i = div.col_list.begin(); i != div.col_list.end(); ++i)
+  for (vector<wxUint32>::iterator i = div.col_list.begin(); i != div.col_list.end(); ++i)
   {
     sum += *i;
   }
@@ -1471,12 +2305,12 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
   double w = size_w;
   while (w > 0)
   {
-    vector<size_t> dd =  div.col_list;
+    vector<wxUint32> dd =  div.col_list;
     bool flag = true;
     while (flag && w > 0)
     {
-    vector<size_t>::iterator i = dd.begin();
-    vector<size_t>::iterator j = div.col_size.begin();
+    vector<wxUint32>::iterator i = dd.begin();
+    vector<wxUint32>::iterator j = div.col_size.begin();
     flag = false;
     for (; i != dd.end(); ++i, ++j)
     {
@@ -1496,7 +2330,7 @@ void PosMgr::cal(wxDC* dc, const unsigned int &no)
     }
   }
   tmp = pos_x;
-  for (vector<size_t>::iterator i = div.col_size.begin(); i != div.col_size.end(); ++i)
+  for (vector<wxUint32>::iterator i = div.col_size.begin(); i != div.col_size.end(); ++i)
   {
     div.col_pos.push_back((wxCoord)tmp);
     tmp += *i;
@@ -1510,14 +2344,32 @@ void PosMgr::DrawGrid(wxDC& dc)
     if (!is_show_grid)
         return;
 
-  // Calculate a suitable scaling factor
-  double scaleX=(double)(ppi.GetWidth()/ppi_x);
-  double scaleY=(double)(ppi.GetHeight()/ppi_y);
-  // Use x or y scaling factor, whichever fits on the DC
-  double actualScale = wxMin(scaleX,scaleY);
-  // Set the scale
-  width = wxCoord(grid_width * actualScale +0.5);
-  height = wxCoord(grid_height * actualScale +0.5);
+    // Calculate a suitable scaling factor
+    double scaleX=(double)(ppi.GetWidth()/ppi_x);
+    double scaleY=(double)(ppi.GetHeight()/ppi_y);
+    // Use x or y scaling factor, whichever fits on the DC
+    double actualScale = wxMin(scaleX,scaleY);
+    // Set the scale
+    if (grid_x == 0u)
+    {
+      grid_x = size_w / grid_width;
+    }
+    else
+    {
+      grid_width = size_w / grid_x;
+    }
+    if (grid_y == 0u)
+    {
+      grid_y = size_h / grid_height;
+    }
+    else
+    {
+      grid_height = size_h / grid_y;
+    }
+    width = grid_width;
+    height = grid_height;
+    size_w = width * grid_x;
+    size_h = height * grid_y;
 
     // Set the scale
     wxPen tmp_pen = pen_grid;
@@ -1554,13 +2406,13 @@ void PosMgr::DrawGrid(wxDC& dc)
     if (sub_grid_x > 0)
     {
       wxCoord x = left;
-      wxCoord sdx = wxCoord(width / (double)sub_grid_x);
+      double sdx = width / (double)sub_grid_x;
       while ( x < right)
       {
-        wxCoord sx = x+sdx;
-	while (sx < x+wxCoord(width) && sx < right)
+        double sx = x+sdx;
+        for (unsigned i = 1u; i < sub_grid_x; ++i)
 	{
-          dc.DrawLine(sx, top, sx, bottom);
+          dc.DrawLine((wxCoord)sx, top, (wxCoord)sx, bottom);
 	  sx += sdx;
 	}
 	x += width;
@@ -1570,13 +2422,13 @@ void PosMgr::DrawGrid(wxDC& dc)
     if (sub_grid_y > 0)
     {
       wxCoord y = top;
-      wxCoord sdy = wxCoord(height / (double)sub_grid_y);
+      double sdy = height / (double)sub_grid_y;
       while ( y < bottom)
       {
-        wxCoord sy = y+sdy;
-	while (sy < y+wxCoord(height) && sy < bottom)
+        double sy = y+sdy;
+        for (unsigned i = 1u; i < sub_grid_y; ++i)
 	{
-          dc.DrawLine(left, sy, right, sy);
+          dc.DrawLine(left, (wxCoord)sy, right, (wxCoord)sy);
 	  sy += sdy;
 	}
 	y += height;
@@ -1590,9 +2442,11 @@ PlotWindow::PlotWindow(PlotHandler * h) :
   col_pos(0),
   mgr_pos(0),
   axis_dir(X_RIGHT_Y_UP),
-  fnt_axis(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)),
+  fnt_axis(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
   pen_axis(*wxBLACK),
   cur_curve(NULL),
+  is_combine_curves(false),
+  combine_curves_distance(99e99),
   axis_x_pos(HIGH_OUT),
   axis_x_hide(false),
   auto_x_space(true),
@@ -1614,15 +2468,16 @@ PlotWindow::PlotWindow(PlotHandler * h) :
   strange_mode(false),
   x_pos_strange_mode(0)
 {
-  show_legend.push_back(true);
-  value_x_legend.push_back(0.5);
-  pos_x_legend.push_back(0.7);
-  pos_y_legend.push_back(0.5);
-  fnt_legend.push_back(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-  pen_legend.push_back(*wxBLACK);
-  align_left_legend.push_back(true);
-  indicate_left_legend.push_back(true);
-
+  Legend tmp;
+  tmp.show = true;
+  tmp.value_x = 0.5;
+  tmp.pos_x = 0.7;
+  tmp.pos_y = 0.5;
+  tmp.fnt = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  tmp.pen = *wxBLACK;
+  tmp.align_left = true;
+  tmp.indicate_left = true;
+  legend_list.push_back(tmp);
 }
 
 PlotWindow::PlotWindow(PlotHandler * h, Element * element) :
@@ -1630,7 +2485,7 @@ PlotWindow::PlotWindow(PlotHandler * h, Element * element) :
   col_pos(0),
   mgr_pos(0),
   axis_dir(X_RIGHT_Y_UP),
-  fnt_axis(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)),
+  fnt_axis(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT)),
   pen_axis(*wxBLACK),
   cur_curve(NULL),
   axis_x_pos(HIGH_OUT),
@@ -1654,14 +2509,16 @@ PlotWindow::PlotWindow(PlotHandler * h, Element * element) :
   strange_mode(false),
   x_pos_strange_mode(0)
 {
-  show_legend.push_back(true);
-  value_x_legend.push_back(0.5);
-  pos_x_legend.push_back(0.7);
-  pos_y_legend.push_back(0.5);
-  fnt_legend.push_back(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-  pen_legend.push_back(*wxBLACK);
-  align_left_legend.push_back(true);
-  indicate_left_legend.push_back(true);
+  Legend tmp;
+  tmp.show = true;
+  tmp.value_x = 0.5;
+  tmp.pos_x = 0.7;
+  tmp.pos_y = 0.5;
+  tmp.fnt = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  tmp.pen = *wxBLACK;
+  tmp.align_left = true;
+  tmp.indicate_left = true;
+  legend_list.push_back(tmp);
   if (!Load(element))
   {
     throw "fail to load in for PlotWindow";
@@ -1726,22 +2583,35 @@ bool PlotWindow::Load(Element * element)
     Element *tmp;
     if ((tmp = element->FindElement("pos")))
     {
-      row_pos = (size_t)tmp->FindElementValueAsNumber("row");
-      if (row_pos > 99)
+      double cv;
+      cv = tmp->FindElementValueAsNumber("row");
+      if (cv == 99e99)
       {
         wxLogError(_("Error when setting row position. it should be in range [0,99]"));
         return false;
       }
-      col_pos = (size_t)tmp->FindElementValueAsNumber("col");
-      if (col_pos == 99e99)
+      else
+      {
+        row_pos = (size_t)cv;
+      }
+      cv = tmp->FindElementValueAsNumber("col");
+      if (cv == 99e99)
       {
         wxLogError(_("Error when setting col position. it should be in range [0,99]"));
         return false;
       }
-      mgr_pos = (size_t)tmp->FindElementValueAsNumber("mgr");
-      if (mgr_pos == 99e99)
+      else
+      {
+        col_pos = (size_t)cv;
+      }
+      cv = tmp->FindElementValueAsNumber("mgr");
+      if (cv == 99e99)
       {
         mgr_pos = 0u;
+      }
+      else
+      {
+        mgr_pos = (size_t)cv;
       }
     }
     else
@@ -2025,122 +2895,123 @@ bool PlotWindow::Load(Element * element)
         show.LowerCase();
         if (show.Find(wxT("true")) != -1)
         {
-          show_legend[0] = true;
+          legend_list[0].show = true;
         }
         else
         {
-          show_legend[0] = false;
+          legend_list[0].show = false;
         }
         double sub = tmp->FindElementValueAsNumber("value");
         if (sub < 9999)
         {
-            value_x_legend[0] = sub;
+            legend_list[0].value_x = sub;
         }
         sub = tmp->FindElementValueAsNumber("x");
         if (sub < 9999)
         {
-            pos_x_legend[0]  = sub;
+            legend_list[0].pos_x  = sub;
         }
         sub = tmp->FindElementValueAsNumber("y");
         if (sub < 9999)
         {
-            pos_y_legend[0]  = sub;
+            legend_list[0].pos_y  = sub;
         }
         
-        LoadPainter(tmp->FindElement("painter"), &pen_legend[0], &fnt_legend[0]);
+        LoadPainter(tmp->FindElement("painter"), &(legend_list[0].pen), &(legend_list[0].fnt));
         
         wxString align = std2wxstr(tmp->FindElementValue("align"));
         align.LowerCase();
         if (align.Find(wxT("right")) == -1)
         {
-          align_left_legend[0] = true;
+          legend_list[0].align_left = true;
         }
         else
         {
-          align_left_legend[0] = false;
+          legend_list[0].align_left = false;
         }
         wxString indicate = std2wxstr(tmp->FindElementValue("indicate"));
         indicate.LowerCase();
         if (indicate.Find(wxT("right")) == -1)
         {
-          indicate_left_legend[0] = true;
+          legend_list[0].indicate_left = true;
         }
         else
         {
-          indicate_left_legend[0] = false;
+          legend_list[0].indicate_left = false;
         }
     }
     else
     {
-      show_legend[0] = false;
+      legend_list[0].show = false;
     }
     if (tmp && (tmp = element->FindNextElement("legend")))
     {
       while (tmp)
       {
+        Legend l;
         wxString show = std2wxstr(tmp->FindElementValue("show"));
         show.LowerCase();
         if (show.Find(wxT("true")) != -1)
         {
-          show_legend.push_back(true);
+          l.show = true;
         }
         else
         {
-          show_legend.push_back(false);
+          l.show = false;
         }
         double sub = tmp->FindElementValueAsNumber("value");
         if (sub < 9999)
         {
-            value_x_legend.push_back(sub);
+            l.value_x = sub;
         }
 	else
         {
-            value_x_legend.push_back(0.5);
+            l.value_x = 0.5;
         }
         sub = tmp->FindElementValueAsNumber("x");
         if (sub < 9999)
         {
-            pos_x_legend.push_back(sub);
+            l.pos_x = sub;
         }
 	else
         {
-            pos_x_legend.push_back(0.7);
+            l.pos_x = 0.7;
         }
         sub = tmp->FindElementValueAsNumber("y");
         if (sub < 9999)
         {
-            pos_y_legend.push_back(sub);
+            l.pos_y = sub;
         }
 	else
         {
-            pos_y_legend.push_back(0.3);
+            l.pos_y = 0.3;
         }
-        fnt_legend.push_back(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-        pen_legend.push_back(*wxBLACK);
+        l.fnt = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+        l.pen = *wxBLACK;
  
-        LoadPainter(tmp->FindElement("painter"), &pen_legend[0], &fnt_legend[0]);
+        LoadPainter(tmp->FindElement("painter"), &(l.pen), &(l.fnt));
         
         wxString align = std2wxstr(tmp->FindElementValue("align"));
         align.LowerCase();
         if (align.Find(wxT("right")) == -1)
         {
-          align_left_legend.push_back(true);
+          l.align_left = true;
         }
         else
         {
-          align_left_legend.push_back(false);
+          l.align_left = false;
         }
         wxString indicate = std2wxstr(tmp->FindElementValue("indicate"));
         indicate.LowerCase();
         if (indicate.Find(wxT("right")) == -1)
         {
-          indicate_left_legend.push_back(true);
+          l.indicate_left = true;
         }
         else
         {
-          indicate_left_legend.push_back(false);
+          l.indicate_left = false;
         }
-
+        legend_list.push_back(l);
         tmp = element->FindNextElement("legend");
       }
     }
@@ -2151,8 +3022,21 @@ bool PlotWindow::Load(Element * element)
       curve_list.pop_back();
     }
 
-    bool is_combine_curves = false;
-    double combine_curves_distance = 99e99;
+    while (!curve_tag_list.empty())
+    {
+      delete curve_tag_list.back().data_condition;
+      for (vector <FGFunction *>::iterator i= curve_tag_list.back().func_list.begin(); i != curve_tag_list.back().func_list.end(); ++i)
+      {
+        delete *i;
+      }
+      delete curve_tag_list.back().property;
+      curve_tag_list.pop_back();
+    }
+
+    curve_tag_list.clear();
+
+    is_combine_curves = false;
+    combine_curves_distance = 99e99;
     if ((tmp = element->FindElement("combine_curves")))
     {
       is_combine_curves = true;
@@ -2167,16 +3051,18 @@ bool PlotWindow::Load(Element * element)
         Element * data = tmp->FindElement("data");
         if (data)
         {
-            FGPropertyManager property;
-	    vector <FGFunction *> func_list;
+            CurvesTag tag;
+            tag.ns = curve_list.size();
+            tag.property = new FGPropertyManager();
 	    Element * func = data->FindElement("function");
 	    while (func)
 	    {
-	      func_list.push_back(new FGFunction( &property, func));
+	      tag.func_list.push_back(new FGFunction( tag.property, func));
 	      func = data->FindNextElement("function");
 	    }
-            Condition data_condition(data->FindElement("condition"), &property);
-            wxString data_name = std2wxstr(data->GetAttributeValue("name"));
+            tag.data_condition = new Condition(data->FindElement("condition"), tag.property);
+            tag.data_full_name = std2wxstr(data->GetAttributeValue("name"));
+            wxString data_name = tag.data_full_name;
             wxString no = data_name.AfterFirst('[').BeforeFirst(']');
             wxString root_data_name = data_name.BeforeFirst('[');
             Table * table = handler->GetTable(root_data_name);
@@ -2202,22 +3088,22 @@ bool PlotWindow::Load(Element * element)
                   return false;
                 }
               }
-              wxString table_type = std2wxstr(data->GetAttributeValue("type"));
-              table_type.UpperCase();
+              tag.table_type = std2wxstr(data->GetAttributeValue("type"));
+              tag.table_type.UpperCase();
               int dim;
-              if (table_type == wxT("1D"))
+              if (tag.table_type == wxT("1D"))
               {
                 dim = 1;
               }
-              else if (table_type == wxT("2D"))
+              else if (tag.table_type == wxT("2D"))
               {
                 dim = 2;
               }
-              else if (table_type == wxT("3D--"))
+              else if (tag.table_type == wxT("3D--"))
               {
                 dim = 3;
               }
-              else if (table_type == wxT("4D--"))
+              else if (tag.table_type == wxT("4D--"))
               {
                 dim = 4;
               }
@@ -2238,9 +3124,9 @@ bool PlotWindow::Load(Element * element)
                         {
 			  double a = table->GetKey(i);
 			  double f = table->GetValue(i);
-                          property.SetDouble(table->GetIndepVar(), a);
-                          property.SetDouble(table->GetName(), f);
-                          if (data_condition.Evaluate())
+                          tag.property->SetDouble(table->GetIndepVar(), a);
+                          tag.property->SetDouble(table->GetName(), f);
+                          if (tag.data_condition->Evaluate())
 			  {
 			    x.push_back(a);
                             y.push_back(f);
@@ -2263,9 +3149,9 @@ bool PlotWindow::Load(Element * element)
                       {
 			if (str_y_label.empty())
                           str_y_label = std2wxstr(table->GetNameLabel());
-                        wxString xcr = std2wxstr(data->FindElementValue("x"));
-			xcr.UpperCase();
-			if (xcr == wxT("COL"))
+                        tag.xcr = std2wxstr(data->FindElementValue("x"));
+			tag.xcr.UpperCase();
+			if (tag.xcr == wxT("COL"))
 			{
 			  if (str_x_label.empty())
                             str_x_label = std2wxstr(table->GetIndepVarLabel());
@@ -2280,7 +3166,7 @@ bool PlotWindow::Load(Element * element)
 			  {
 			    vector<double> x, y;
 			    double key;
-			    flag = pitch_col(x, y, key, ptr_list, table, &data_condition, &property);
+			    flag = pitch_col(x, y, key, ptr_list, table, tag.data_condition, tag.property);
 			    if (x.size() >1 )
 			    {
                               Curve * pp = new Curve(x,y);
@@ -2298,13 +3184,14 @@ bool PlotWindow::Load(Element * element)
 			}
 			else
 			{
+                          tag.xcr = wxT("ROW");
 			  if (str_x_label.empty())
                             str_x_label = std2wxstr((*table)[0].GetIndepVarLabel());
 			  unsigned s = table->GetSize();
                           for (unsigned j=0;
                                   j != s; ++j)
                           {
-                            property.SetDouble(table->GetIndepVar(), table->GetKey(j));
+                            tag.property->SetDouble(table->GetIndepVar(), table->GetKey(j));
 			    Table * sub_tab = &(*table)[j];
 			    unsigned ss = sub_tab->GetSize();
                             vector<double> x, y;
@@ -2313,9 +3200,9 @@ bool PlotWindow::Load(Element * element)
                             {
 			      double a = sub_tab->GetKey(i);
 			      double f = sub_tab->GetValue(i);
-                              property.SetDouble(sub_tab->GetIndepVar(), a);
-                              property.SetDouble(sub_tab->GetName(), f);
-			      if (data_condition.Evaluate())
+                              tag.property->SetDouble(sub_tab->GetIndepVar(), a);
+                              tag.property->SetDouble(sub_tab->GetName(), f);
+			      if (tag.data_condition->Evaluate())
 			      {
 			        x.push_back(a);
                                 y.push_back(f);
@@ -2351,6 +3238,7 @@ bool PlotWindow::Load(Element * element)
 			Element *bt = data->FindElement("baseT2D");
 			Element *nofilter = data->FindElement("nofilter");
                         wxString base_name = std2wxstr(bt->GetDataLine());
+                        tag.base_name = base_name;
                         wxString no = base_name.AfterFirst('[').BeforeFirst(']');
                         wxString root_base_name = base_name.BeforeFirst('[');
                         Table * base_table = handler->GetTable(root_base_name);
@@ -2386,6 +3274,7 @@ bool PlotWindow::Load(Element * element)
                         }
 			double dfrom = bt->GetAttributeValueAsNumber("from");
 			wxString coord = std2wxstr(bt->GetAttributeValue("coordT3D"));
+                        tag.coord = coord;
 			int from;
 			if (dfrom == 99e99 && coord.IsEmpty())
 			{
@@ -2403,6 +3292,7 @@ bool PlotWindow::Load(Element * element)
 			{
 			  from = (int)dfrom;
 			}
+                        tag.from = from;
 			Table * coord_table=NULL;
 			if (!coord.IsEmpty())
 			{
@@ -2449,6 +3339,7 @@ bool PlotWindow::Load(Element * element)
                           size_t dest_num = (*base_table).GetSize();
 			  if (nofilter)
 			  {
+                            tag.nofilter = true;
 			    double d = nofilter->GetAttributeValueAsNumber("num");
 			    if (d > 2 && d < 9999 )
 			    {
@@ -2458,7 +3349,12 @@ bool PlotWindow::Load(Element * element)
 			    {
 			     dest_num = 9999;
 			    }
+                            tag.dest_num = dest_num;
 			  }
+                          else
+                          {
+                            tag.nofilter = true;
+                          }
   			  size_t base_table_size = base_table->GetSize();
                           for (unsigned i = 0;i < base_table_size; ++i)
   			  {
@@ -2481,7 +3377,7 @@ bool PlotWindow::Load(Element * element)
 			    Table * body_table = &(*table)[k];
 			    Table * coord_sub_table;
   			    double key = table->GetKey(k);
-                            property.SetDouble(table->GetIndepVar(), key);
+                            tag.property->SetDouble(table->GetIndepVar(), key);
 			    xx.clear();
                             y.clear();
 			    if (coord_table)
@@ -2494,9 +3390,9 @@ bool PlotWindow::Load(Element * element)
                             for (vector<double>::iterator i = a.begin();
                                 i != a.end(); ++i, ++j, ++m)
                             {
-                              property.SetDouble(body_table->GetIndepVar(), *i);
-                              property.SetDouble((*body_table)[0].GetIndepVar(), *j);
-                              property.SetDouble(base_table->GetName(), *m);
+                              tag.property->SetDouble(body_table->GetIndepVar(), *i);
+                              tag.property->SetDouble((*body_table)[0].GetIndepVar(), *j);
+                              tag.property->SetDouble(base_table->GetName(), *m);
 			      vector<double> l;
 			      l.push_back(*j);
 			      l.push_back(*i);
@@ -2506,7 +3402,7 @@ bool PlotWindow::Load(Element * element)
 			      {
 			        continue;
 			      }
-                              property.SetDouble(body_table->GetName(), val);
+                              tag.property->SetDouble(body_table->GetName(), val);
 			      
 			      if (coord_table)
 			      {
@@ -2515,14 +3411,14 @@ bool PlotWindow::Load(Element * element)
 				{
 					continue;
 				}
-                                property.SetDouble(coord_sub_table->GetName(), valc);
-				if (data_condition.Evaluate())
+                                tag.property->SetDouble(coord_sub_table->GetName(), valc);
+				if (tag.data_condition->Evaluate())
 				{
                                   y.push_back(val);
 			          yc.push_back(valc);
 				}
 			      }
-			      else if (data_condition.Evaluate())
+			      else if (tag.data_condition->Evaluate())
 			      {
 				xx.push_back(*m);
                                 y.push_back(val);
@@ -2562,7 +3458,7 @@ bool PlotWindow::Load(Element * element)
   			    Table * sub_base_tab = &(*base_table)[i];
   			    Table * sub_coord_tab = &(*coord_table)[i];
   			    double key = base_table->GetKey(i);
-                            property.SetDouble(base_table->GetIndepVar(), key);
+                            tag.property->SetDouble(base_table->GetIndepVar(), key);
   			    size_t sub_base_table_size = sub_base_tab->GetSize();
 			    x.clear();
 			    y.clear();
@@ -2571,10 +3467,10 @@ bool PlotWindow::Load(Element * element)
 	                      double a = sub_base_tab->GetKey(j);
 	                      double f = sub_base_tab->GetValue(j);
 	                      double f2 = sub_coord_tab->GetValue(j);
-                              property.SetDouble(sub_base_tab->GetIndepVar(), a);
-                              property.SetDouble(sub_base_tab->GetName(), f);
-                              property.SetDouble(sub_coord_tab->GetName(), f2);
-			      if (data_condition.Evaluate())
+                              tag.property->SetDouble(sub_base_tab->GetIndepVar(), a);
+                              tag.property->SetDouble(sub_base_tab->GetName(), f);
+                              tag.property->SetDouble(sub_coord_tab->GetName(), f2);
+			      if (tag.data_condition->Evaluate())
 			      {
                                 y.push_back(f);
                                 x.push_back(f2);
@@ -2607,7 +3503,7 @@ bool PlotWindow::Load(Element * element)
                           for (unsigned k = 0;k < sub_bbase_table_size; ++k)
   			  {
 			    double key = sub_bbase_tab->GetKey(k);
-                            property.SetDouble(sub_bbase_tab->GetIndepVar(), key);
+                            tag.property->SetDouble(sub_bbase_tab->GetIndepVar(), key);
 			    x.clear();
 			    y.clear();
                             for (unsigned i = 0;i < base_table_size; ++i)
@@ -2616,16 +3512,16 @@ bool PlotWindow::Load(Element * element)
   			      Table * sub_coord_tab = &(*coord_table)[i];
   			      size_t sub_base_table_size = sub_base_tab->GetSize();
 	                      double a = base_table->GetKey(i);
-                              property.SetDouble(base_table->GetIndepVar(), a);
+                              tag.property->SetDouble(base_table->GetIndepVar(), a);
                               for (unsigned j = 0;j < sub_base_table_size; ++j)
                               {
 				if (sub_base_tab->GetKey(j) == key)
 				{
 	                      double f = sub_base_tab->GetValue(j);
 	                      double f2 = sub_coord_tab->GetValue(j);
-                              property.SetDouble(sub_base_tab->GetName(), f);
-                              property.SetDouble(sub_coord_tab->GetName(), f2);
-			      if (data_condition.Evaluate())
+                              tag.property->SetDouble(sub_base_tab->GetName(), f);
+                              tag.property->SetDouble(sub_coord_tab->GetName(), f2);
+			      if (tag.data_condition->Evaluate())
 			      {
                                   y.push_back(f);
                                   x.push_back(f2);
@@ -2671,7 +3567,16 @@ bool PlotWindow::Load(Element * element)
 			Element *bt = data->FindElement("baseT3D");
 			Element *nofilter = data->FindElement("nofilter");
 			Element *strange = data->FindElement("strange");
+                        if (strange)
+                        {
+                          tag.strange = true;
+                        }
+                        else
+                        {
+                          tag.strange = false;
+                        }
                         wxString base_name = std2wxstr(bt->GetDataLine());
+                        tag.base_name = base_name;
                         wxString no = base_name.AfterFirst('[').BeforeFirst(']');
                         wxString root_base_name = base_name.BeforeFirst('[');
                         Table * base_table = handler->GetTable(root_base_name);
@@ -2707,6 +3612,7 @@ bool PlotWindow::Load(Element * element)
                         }
 			double dfrom = bt->GetAttributeValueAsNumber("from");
 			wxString coord = std2wxstr(bt->GetAttributeValue("coordT4D"));
+                        tag.coord = coord;
 			int from;
 			if (dfrom == 99e99 && coord.IsEmpty())
 			{
@@ -2724,6 +3630,7 @@ bool PlotWindow::Load(Element * element)
 			{
 			  from = (int)dfrom;
 			}
+                        tag.from = from;
 			Table * coord_table=NULL;
 			if (!coord.IsEmpty())
 			{
@@ -2770,6 +3677,7 @@ bool PlotWindow::Load(Element * element)
                           size_t dest_num = (*base_table).GetSize();
 			  if (nofilter)
 			  {
+                            tag.nofilter = true;
 			    double d = nofilter->GetAttributeValueAsNumber("num");
 			    if (d > 2 && d < 9999 )
 			    {
@@ -2779,7 +3687,12 @@ bool PlotWindow::Load(Element * element)
 			    {
 			     dest_num = 9999;
 			    }
+                            tag.dest_num = dest_num;
 			  }
+                          else
+                          {
+                            tag.nofilter = false;
+                          }
   			  size_t base_table_size = base_table->GetSize();
                           for (unsigned i = 0;i < base_table_size; ++i)
   			  {
@@ -2809,7 +3722,7 @@ bool PlotWindow::Load(Element * element)
 			    Table * body_table = &(*table)[kk];
 			    Table * coord_sub_table;
   			    double key = table->GetKey(kk);
-                            property.SetDouble(table->GetIndepVar(), key);
+                            tag.property->SetDouble(table->GetIndepVar(), key);
                             y.clear();
 			    xx.clear();
 			    if (coord_table)
@@ -2823,10 +3736,10 @@ bool PlotWindow::Load(Element * element)
                             for (vector<double>::iterator i = a.begin();
                                 i != a.end(); ++i, ++j, ++k, ++m)
                             {
-                              property.SetDouble(body_table->GetIndepVar(), *i);
-                              property.SetDouble((*body_table)[0].GetIndepVar(), *j);
-                              property.SetDouble((*body_table)[0][0].GetIndepVar(), *k);
-                              property.SetDouble(base_table->GetName(), *m);
+                              tag.property->SetDouble(body_table->GetIndepVar(), *i);
+                              tag.property->SetDouble((*body_table)[0].GetIndepVar(), *j);
+                              tag.property->SetDouble((*body_table)[0][0].GetIndepVar(), *k);
+                              tag.property->SetDouble(base_table->GetName(), *m);
 			      vector<double> l;
 			      l.push_back(*k);
 			      l.push_back(*j);
@@ -2837,7 +3750,7 @@ bool PlotWindow::Load(Element * element)
 			      {
 				      continue;
 			      }
-                              property.SetDouble(body_table->GetName(), val);
+                              tag.property->SetDouble(body_table->GetName(), val);
 			      if (coord_table)
 			      {
 			        double valc = coord_sub_table->GetValue(l, &in_range);
@@ -2845,14 +3758,14 @@ bool PlotWindow::Load(Element * element)
 				{
 					continue;
 				}
-                                property.SetDouble(coord_sub_table->GetName(), valc);
-				if (data_condition.Evaluate())
+                                tag.property->SetDouble(coord_sub_table->GetName(), valc);
+				if (tag.data_condition->Evaluate())
 				{
                                   y.push_back(val);
 			          yc.push_back(valc);
 				}
 			      }
-			      else if (data_condition.Evaluate())
+			      else if (tag.data_condition->Evaluate())
 			      {
 				xx.push_back(*m);
                                 y.push_back(val);
@@ -2935,7 +3848,7 @@ bool PlotWindow::Load(Element * element)
   			    Table * sub_base_tab = &(*base_table)[i];
   			    Table * sub_coord_tab = &(*coord_table)[i];
   			    double key = base_table->GetKey(i);
-                            property.SetDouble(base_table->GetIndepVar(), key);
+                            tag.property->SetDouble(base_table->GetIndepVar(), key);
   			    size_t sub_base_table_size = sub_base_tab->GetSize();
 			    x.clear();
 			    y.clear();
@@ -2944,10 +3857,10 @@ bool PlotWindow::Load(Element * element)
 	                      double a = sub_base_tab->GetKey(j);
 	                      double f = sub_base_tab->GetValue(j);
 	                      double f2 = sub_coord_tab->GetValue(j);
-                              property.SetDouble(sub_base_tab->GetIndepVar(), a);
-                              property.SetDouble(sub_base_tab->GetName(), f);
-                              property.SetDouble(sub_coord_tab->GetName(), f2);
-			      if (data_condition.Evaluate())
+                              tag.property->SetDouble(sub_base_tab->GetIndepVar(), a);
+                              tag.property->SetDouble(sub_base_tab->GetName(), f);
+                              tag.property->SetDouble(sub_coord_tab->GetName(), f2);
+			      if (tag.data_condition->Evaluate())
 			      {
                                 y.push_back(f);
                                 x.push_back(f2);
@@ -2980,7 +3893,7 @@ bool PlotWindow::Load(Element * element)
                           for (unsigned k = 0;k < sub_bbase_table_size; ++k)
   			  {
 			    double key = sub_bbase_tab->GetKey(k);
-                            property.SetDouble(sub_bbase_tab->GetIndepVar(), key);
+                            tag.property->SetDouble(sub_bbase_tab->GetIndepVar(), key);
 			    x.clear();
 			    y.clear();
                             for (unsigned i = 0;i < base_table_size; ++i)
@@ -2994,9 +3907,9 @@ bool PlotWindow::Load(Element * element)
 				{
 	                      double f = sub_base_tab->GetValue(j);
 	                      double f2 = sub_coord_tab->GetValue(j);
-                              property.SetDouble(sub_base_tab->GetName(), f);
-                              property.SetDouble(sub_coord_tab->GetName(), f2);
-			      if (data_condition.Evaluate())
+                              tag.property->SetDouble(sub_base_tab->GetName(), f);
+                              tag.property->SetDouble(sub_coord_tab->GetName(), f2);
+			      if (tag.data_condition->Evaluate())
 			      {
                                   y.push_back(f);
                                   x.push_back(f2);
@@ -3043,11 +3956,8 @@ bool PlotWindow::Load(Element * element)
               wxLogError(_("Can not find proper table."));
               return false;
             }
-	    for (vector <FGFunction *>::iterator i=func_list.begin();
-			    i != func_list.end(); ++i)
-	    {
-	      delete *i;
-	    }
+            tag.ne = curve_list.size();
+            curve_tag_list.push_back(tag);
         }
         else
         {
@@ -3145,6 +4055,329 @@ bool PlotWindow::Load(Element * element)
        }
     }
     return true;
+}
+
+void PlotWindow::Export(wxTextOutputStream & tstream, const wxString & prefix) const
+{
+  tstream << prefix << wxT("<window>\n");
+  {
+    wxString pre = prefix + wxT("    ");
+    tstream << pre << _("<!-- the postion of the window -->\n");
+    tstream << pre << wxT("<pos>\n");
+    tstream << pre << _("    <!-- which row(start from 0) -->\n");
+    tstream << pre << wxT("    <row> ") << row_pos << wxT(" </row>\n");
+    tstream << pre << _("    <!-- which column(start from 0) -->\n");
+    tstream << pre << wxT("    <col> ") << col_pos << wxT(" </col>\n");
+    tstream << pre << _("    <!-- which div method(start from 0) -->\n");
+    tstream << pre << wxT("    <mgr> ") << mgr_pos << wxT(" </mgr>\n");
+    tstream << pre << wxT("</pos>\n");
+    tstream << pre << _("<!-- the direction of the axises -->\n");
+    tstream << pre << wxT("<dir>\n");
+    wxString xdir, ydir;
+    switch (axis_dir)
+    {
+      case X_LEFT_Y_UP :
+      case X_LEFT_Y_DOWN :
+        xdir = wxT("left");
+        break;
+      case X_RIGHT_Y_UP :
+      case X_RIGHT_Y_DOWN :
+        xdir = wxT("right");
+        break;
+      case X_UP_Y_LEFT :
+      case X_UP_Y_RIGHT :
+        xdir = wxT("up");
+        break;
+      case X_DOWN_Y_LEFT :
+      case X_DOWN_Y_RIGHT :
+        xdir = wxT("down");
+        break;
+    }
+    switch (axis_dir)
+    {
+      case X_LEFT_Y_UP :
+      case X_RIGHT_Y_UP :
+        ydir = wxT("up");
+        break;
+      case X_LEFT_Y_DOWN :
+      case X_RIGHT_Y_DOWN :
+        ydir = wxT("down");
+        break;
+      case X_UP_Y_LEFT :
+      case X_DOWN_Y_LEFT :
+        ydir = wxT("left");
+        break;
+      case X_UP_Y_RIGHT :
+      case X_DOWN_Y_RIGHT :
+        ydir = wxT("right");
+        break;
+    }
+    tstream << pre << _("    <!-- the direction of the x axis(one of 'left', 'right', 'up', 'down') -->\n");
+    tstream << pre << wxT("    <x> ") << xdir << wxT(" </x>\n");
+    tstream << pre << _("    <!-- the direction of the y axis(one of 'left', 'right', 'up', 'down') -->\n");
+    tstream << pre << wxT("    <y> ") << ydir << wxT(" </y>\n");
+    tstream << pre << wxT("</dir>\n");
+    tstream << pre << _("<!-- the axis setting -->\n");
+    tstream << pre << wxT("<axis>\n");
+    tstream << pre << _("    <!-- the setting for x axis -->\n");
+    tstream << pre << wxT("    <x>\n");
+    tstream << pre << _("        <!-- coordinate the x axis with another window(id from 0), or -1 if not any. -->\n");
+    tstream << pre << wxT("        <info_from> ") << x_info_from << wxT(" </info_from>\n");
+    wxString pos;
+    switch (axis_x_pos)
+    {
+      case LOW_OUT :
+        pos = wxT("LOW_OUT");
+        break;
+      case LOW_IN :
+        pos = wxT("LOW_IN");
+        break;
+      case HIGH_IN :
+        pos = wxT("HIGH_IN");
+        break;
+      case HIGH_OUT :
+        pos = wxT("HIGH_OUT");
+        break;
+    }
+    tstream << pre << _("        <!-- the position of the axis in the window(LOW_OUT, LOW_IN, HIGH_OUT, HIGH_OUT) -->\n");
+    tstream << pre << wxT("        <pos> ") << pos << wxT(" </pos>\n");
+    if (axis_x_hide)
+    {
+      pos = wxT("true");
+    }
+    else
+    {
+      pos = wxT("false");
+    }
+    tstream << pre << _("        <!-- hide or show(true or false) -->\n");
+    tstream << pre << wxT("        <hide> ") << pos << wxT(" </hide>\n");
+    tstream << pre << _("        <!-- auto calculate the range(true) or given with <max><min> tag(false) -->\n");
+    if (auto_x_space)
+    {
+      pos = wxT("true");
+      tstream << pre << wxT("        <auto_space> ") << pos << wxT(" </auto_space>\n");
+    }
+    else
+    {
+      pos = wxT("false");
+      tstream << pre << wxT("        <auto_space> ") << pos << wxT(" </auto_space>\n");
+      tstream << pre << wxT("        <max> ") << max_cx << wxT(" </max>\n");
+      tstream << pre << wxT("        <min> ") << min_cx << wxT(" </min>\n");
+    }
+    tstream << pre << _("        <!-- the lable for x axis -->\n");
+    tstream << pre << wxT("        <label> ") << str_x_label << wxT(" </label>\n");
+    tstream << pre << wxT("    </x>\n");
+    tstream << pre << _("    <!-- the setting for y axis -->\n");
+    tstream << pre << wxT("    <y>\n");
+    switch (axis_y_pos)
+    {
+      case LOW_OUT :
+        pos = wxT("LOW_OUT");
+        break;
+      case LOW_IN :
+        pos = wxT("LOW_IN");
+        break;
+      case HIGH_IN :
+        pos = wxT("HIGH_IN");
+        break;
+      case HIGH_OUT :
+        pos = wxT("HIGH_OUT");
+        break;
+    }
+    tstream << pre << _("        <!-- the position of the axis in the window(LOW_OUT, LOW_IN, HIGH_OUT, HIGH_OUT) -->\n");
+    tstream << pre << wxT("        <pos> ") << pos << wxT(" </pos>\n");
+    if (axis_y_hide)
+    {
+      pos = wxT("true");
+    }
+    else
+    {
+      pos = wxT("false");
+    }
+    tstream << pre << _("        <!-- hide or show(true or false) -->\n");
+    tstream << pre << wxT("        <hide> ") << pos << wxT(" </hide>\n");
+    tstream << pre << _("        <!-- auto calculate the range(true) or given with <max><min> tag(false) -->\n");
+    if (auto_y_space)
+    {
+      pos = wxT("true");
+      tstream << pre << wxT("        <auto_space> ") << pos << wxT(" </auto_space>\n");
+    }
+    else
+    {
+      pos = wxT("false");
+      tstream << pre << wxT("        <auto_space> ") << pos << wxT(" </auto_space>\n");
+      tstream << pre << wxT("        <max> ") << max_cy << wxT(" </max>\n");
+      tstream << pre << wxT("        <min> ") << min_cy << wxT(" </min>\n");
+    }
+    tstream << pre << _("        <!-- the lable for y axis -->\n");
+    tstream << pre << wxT("        <label> ") << str_y_label << wxT(" </label>\n");
+    tstream << pre << wxT("    </y>\n");
+    tstream << pre << _("    <!-- the pen and colour setting for axises -->\n");
+    ExportPainter(tstream, pre+wxT("    "), pen_axis, fnt_axis);
+    tstream << pre << wxT("</axis>\n");
+    tstream << wxT("\n");
+    for (LegendListCIter i= legend_list.begin(); i != legend_list.end(); ++i)
+    {
+      tstream << pre << _("<!-- legend setting -->\n");
+      tstream << pre << wxT("<legend>\n");
+      {
+        wxString pre2 = pre + wxT("    ");
+        tstream << pre2 << _("<!-- legend show or not (true or false) -->\n");
+        if (i->show)
+        {
+          tstream << pre2 << wxT("<show> true </show>\n");
+        }
+        else
+        {
+          tstream << pre2 << wxT("<show> false </show>\n");
+        }
+        tstream << pre2 << _("<!-- line from position [0,1] -->\n");
+        tstream << pre2 << wxT("<value> ") << i->value_x << wxT(" </value>\n");
+        tstream << pre2 << _("<!-- legend position [0,1] -->\n");
+        tstream << pre2 << wxT("<x> ") << i->pos_x << wxT(" </x>\n");
+        tstream << pre2 << wxT("<y> ") << i->pos_y << wxT(" </y>\n");
+        tstream << pre2 << _("<!-- legend painter setting -->\n");
+        ExportPainter(tstream, pre2, i->pen, i->fnt);
+        tstream << pre2 << _("<!-- legend align (left or right) -->\n");
+        if (i->align_left)
+        {
+          tstream << pre2 << wxT("<align> left </align>\n");
+        }
+        else
+        {
+          tstream << pre2 << wxT("<align> right </align>\n");
+        }
+        tstream << pre2 << _("<!-- legend indicate from (left or right) -->\n");
+        if (i->indicate_left)
+        {
+          tstream << pre2 << wxT("<indicate> left </indicate>\n");
+        }
+        else
+        {
+          tstream << pre2 << wxT("<indicate> right </indicate>\n");
+        }
+      }
+      tstream << pre << wxT("</legend>\n");
+      tstream << wxT("\n");
+    }
+    if (is_combine_curves)
+    {
+      tstream << pre << _("<!-- combine curves within distance -->\n");
+      tstream << pre << wxT("<combine_curves distance=\"") << combine_curves_distance << wxT("\"/>\n\n");
+    }
+    wxString pre2 = pre + wxT("    ");
+    wxString pre3 = pre2 + wxT("    ");
+    for (CurvesTagListCIter i=curve_tag_list.begin(); i != curve_tag_list.end(); ++i)
+    {
+      tstream << pre << _("<!-- curves' setting -->\n");
+      tstream << pre << wxT("<curves>\n");
+      tstream << pre << _("<!-- data from table -->\n");
+      tstream << pre << _("<!-- type can be 1D, 2D, 3D- -,4D- - -->\n");
+      tstream << pre2 << wxT("<data name=\"");
+      tstream << i->data_full_name;
+      tstream << wxT("\" type=\"");
+      tstream << i->table_type;
+      tstream << wxT("\">\n");
+      tstream << pre3 << _("<!-- functions for filter if any -->\n");
+      for (vector<FGFunction *>::const_iterator j = i->func_list.begin(); j != i->func_list.end(); ++j)
+      {
+        ExportFunction(tstream, pre3, *j);
+      }
+      tstream << pre3 << _("<!-- conditions for filter if any -->\n");
+      if (i->data_condition->conditions.size() > 0u)
+      {
+        ExportCondition(tstream, pre3, i->data_condition);
+      }
+      if (i->table_type == wxT("1D"))
+      {
+      
+      }
+      else if (i->table_type == wxT("2D"))
+      {
+        tstream << pre3 << wxT("<x>") << i->xcr << wxT("</x>\n");
+      }
+      else if (i->table_type == wxT("3D--"))
+      {
+        tstream << pre3 << wxT("<baseT2D from=\"") << i->from;
+        if (! i->coord.IsEmpty())
+        {
+         tstream << wxT("\" coordT3D=\"") << i->coord;
+        }
+        tstream << wxT("\">") << i->base_name << wxT("</baseT2D>\n");
+        if (i->nofilter)
+        {
+          if (i->dest_num >= 9999)
+          {
+            tstream << pre3 << wxT("<nofilter/>\n");
+          }
+          else
+          {
+            tstream << pre3 << wxT("<nofilter num=\"") << i->dest_num << wxT("\"/>\n");
+          }
+        }
+      }
+      else if (i->table_type == wxT("4D--"))
+      {
+        tstream << pre3 << wxT("<baseT3D from=\"") << i->from;
+        if (! i->coord.IsEmpty())
+        {
+         tstream << wxT("\" coordT4D=\"") << i->coord;
+        }
+        tstream << wxT("\">") << i->base_name << wxT("</baseT3D>\n");
+        if (i->nofilter)
+        {
+          if (i->dest_num >= 9999)
+          {
+            tstream << pre3 << wxT("<nofilter/>\n");
+          }
+          else
+          {
+            tstream << pre3 << wxT("<nofilter num=\"") << i->dest_num << wxT("\"/>\n");
+          }
+        }
+        if (i->strange)
+        {
+          tstream << pre3 << wxT("<strange/>\n");
+        }
+      }
+      tstream << pre2 << wxT("</data>\n");
+      const Curve * last = curve_list[i->ns];
+      unsigned n = 1u;
+      //TODO regroup problem
+      //if (*curve_list[i->ne-1] != *curve_list[i->ne-2])
+      //{
+      //  ++m;
+      //  curve_list[i->ne-1]->Export(tstream, pre2, 1u, true);
+      //}
+      vector<Curve *>::const_iterator j=curve_list.begin()+i->ns;
+      for (++j;j != curve_list.begin()+i->ne; ++j)
+      {
+        if ( *last != **j)
+        {
+          last->Export(tstream, pre2, n);
+          tstream << wxT("\n");
+          last = *j;
+          n = 1u;
+        }
+        else
+        {
+          ++n;
+        }
+      }
+      last->Export(tstream, pre2, 1u);
+      tstream << pre << wxT("</curves>\n");
+      tstream << wxT("\n");
+    }
+    tstream << pre << _("<!-- subwindow setting if any -->\n");
+    tstream << pre << wxT("<subwindows>\n");
+    for (vector<PlotWindow *>::const_iterator i = children.begin(); i != children.end(); ++i)
+    {
+      (*i)->Export(tstream, pre2);
+      tstream << wxT("\n");
+    }
+    tstream << pre << wxT("</subwindows>\n");
+  }
+  tstream << prefix << wxT("</window>\n");
 }
 
 double PlotWindow::distance(Curve * c1, Curve * c2)
@@ -3333,6 +4566,17 @@ void PlotWindow::clear()
     curve_list.pop_back();
   }
   cur_curve = NULL;
+
+    while (!curve_tag_list.empty())
+    {
+      delete curve_tag_list.back().data_condition;
+      for (vector <FGFunction *>::iterator i= curve_tag_list.back().func_list.begin(); i != curve_tag_list.back().func_list.end(); ++i)
+      {
+        delete *i;
+      }
+      delete curve_tag_list.back().property;
+      curve_tag_list.pop_back();
+    }
 }
 
 void PlotWindow::PopBackChild()
@@ -3390,7 +4634,6 @@ void PlotWindow::Draw(wxDC& dc, PosMgr& pos_mgr)
     Draw(dc, x, y, w, h, gw, gh);
     for (vector<PlotWindow *>::iterator i = children.begin(); i != children.end(); ++i)
     {
-      // TODO : optimize it!
       int j = (*i)->GetXInfoFrom();
       if (j == -1)
       {
@@ -3429,6 +4672,7 @@ void PlotWindow::Draw(wxDC& dc, PosMgr& pos_mgr)
 
     }
 }
+
 void PlotWindow::Draw(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const unsigned & gw, const unsigned & gh)
 {
   // get max_y & min_y
@@ -3494,9 +4738,9 @@ void PlotWindow::Draw(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t
     draw_y_axis(dc, x, y, w, h);
   }
   draw_curve(dc, x, y, w, h);
-  for (int i=0; i < show_legend.size(); ++i)
+  for (LegendListIter i=legend_list.begin(); i != legend_list.end(); ++i)
   {
-    if (show_legend[i])
+    if (i->show)
     {
       draw_legend(dc, x, y, w, h, i);
     }
@@ -3521,9 +4765,9 @@ void PlotWindow::get_interval(double & min, double & max, unsigned int num, doub
     for (int i = 0; i < -int_log_range; ++i)
       base /= 10;
   }
-  double delta[] = {1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 7.5, 8, 9, 10, 15};
+  double delta[] = {1, 2, 2.5, 5, 7.5, 10};
   double tmin, tmax, tmark_interval;
-  for (int i =0; delta[i] < 10; ++i)
+  for (int i =0; delta[i] <= 10; ++i)
   {
       tmark_interval = base*delta[i];
       tmin = floor(min / tmark_interval) * tmark_interval;
@@ -3534,7 +4778,7 @@ void PlotWindow::get_interval(double & min, double & max, unsigned int num, doub
       }
   }
   double smin, smax, smark_interval;
-  for (int i =0; delta[i] < 10; ++i)
+  for (int i =0; delta[i] <= 10; ++i)
   {
       smark_interval = base*delta[i];
       smax = ceil(max / smark_interval) * smark_interval;
@@ -3607,6 +4851,19 @@ void PlotWindow::DrawIndicator(wxDC& dc, PosMgr& pos_mgr, wxCoord &xpos, wxCoord
     DrawIndicator(dc, x, y, w, h, xpos, ypos, xvalue, yvalue);
 }
 
+void PlotWindow::DrawFocus(wxDC& dc, PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos, int mask)
+{
+    wxCoord x, y;
+    size_t w, h;
+    double xvalue, yvalue;
+    pos_mgr.GetPos(row_pos, col_pos, x, y, w, h, mgr_pos, &dc);
+    DrawFocus(dc, x, y, w, h, xpos, ypos, mask);
+    for (vector<PlotWindow *>::iterator i = children.begin(); i != children.end(); ++i)
+    {
+      (*i)->DrawFocus(dc, pos_mgr, xpos, ypos, mask);
+    }
+}
+
 bool PlotWindow::SetLegendPos(PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos, const int &no)
 {
     wxCoord x, y;
@@ -3614,13 +4871,116 @@ bool PlotWindow::SetLegendPos(PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos, con
     double xvalue, yvalue;
     pos_mgr.GetPos(row_pos, col_pos, x, y, w, h, mgr_pos);
     bool flag;
-    double xp = (xpos-x)/double(w);
-    double yp = (ypos-y)/double(h);
-    if (xp>0 && xp<1 && yp>0 && yp<1 && no < pos_x_legend.size())
+    double max_ty = getMaxY();
+    double max_tx = getMaxX();
+    double min_ty = getMinY();
+    double min_tx = getMinX();
+    double xp, yp;
+    double mx_max, my_max, mx_min, my_min;
+    switch (axis_dir)
+    {
+      case X_RIGHT_Y_UP :
+        {
+           xp = (xpos-x)/double(w)*(max_x-min_x)+min_x;
+           xp = (xp - min_tx) / (max_tx - min_tx);
+           yp = max_y - (ypos-y)/double(h)*(max_y-min_y);
+           yp = (max_ty - yp) / (max_ty - min_ty);
+           mx_max = (max_x-max_tx)/(max_tx-min_tx);
+           mx_min = (min_x-min_tx)/(max_tx-min_tx);
+           my_max = (min_ty-min_y)/(max_ty-min_ty);
+           my_min = (max_ty-max_y)/(max_ty-min_ty);
+        }
+        break;
+      case X_RIGHT_Y_DOWN :
+        {
+           xp = (xpos-x)/double(w)*(max_x-min_x)+min_x;
+           xp = (xp - min_tx) / (max_tx - min_tx);
+           yp = (ypos-y)/double(h)*(max_y-min_y)+min_y;
+           yp = (yp - min_ty) / (max_ty - min_ty);
+           mx_max = (max_x-max_tx)/(max_tx-min_tx);
+           mx_min = (min_x-min_tx)/(max_tx-min_tx);
+           my_max = (max_y-max_ty)/(max_ty-min_ty);
+           my_min = (min_y-min_ty)/(max_ty-min_ty);
+        }
+        break;
+      case X_LEFT_Y_UP :
+        {
+           xp = max_x - (xpos-x)/double(w)*(max_x-min_x);
+           xp = (max_tx - xp) / (max_tx - min_tx);
+           yp = max_y - (ypos-y)/double(h)*(max_y-min_y);
+           yp = (max_ty - yp) / (max_ty - min_ty);
+           mx_max = (min_tx-min_x)/(max_tx-min_tx);
+           mx_min = (max_tx-max_x)/(max_tx-min_tx);
+           my_max = (min_ty-min_y)/(max_ty-min_ty);
+           my_min = (max_ty-max_y)/(max_ty-min_ty);
+        }
+        break;
+      case X_LEFT_Y_DOWN :
+        {
+           xp = max_x - (xpos-x)/double(w)*(max_x-min_x);
+           xp = (max_tx - xp) / (max_tx - min_tx);
+           yp = (ypos-y)/double(h)*(max_y-min_y)+min_y;
+           yp = (yp - min_ty) / (max_ty - min_ty);
+           mx_max = (min_tx-min_x)/(max_tx-min_tx);
+           mx_min = (max_tx-max_x)/(max_tx-min_tx);
+           my_max = (max_y-max_ty)/(max_ty-min_ty);
+           my_min = (min_y-min_ty)/(max_ty-min_ty);
+        }
+        break;
+      case X_UP_Y_LEFT :
+        {
+           yp = max_x - (ypos-y)/double(h)*(max_x-min_x);
+           yp = (max_tx - yp) / (max_tx - min_tx);
+           xp = max_y - (xpos-x)/double(w)*(max_y-min_y);
+           xp = (max_ty - xp) / (max_ty - min_ty);
+           my_max = (min_tx-min_x)/(max_tx-min_tx);
+           my_min = (max_tx-max_x)/(max_tx-min_tx);
+           mx_max = (min_ty-min_y)/(max_ty-min_ty);
+           mx_min = (max_ty-max_y)/(max_ty-min_ty);
+        }
+        break;
+      case X_UP_Y_RIGHT :
+        {
+           yp = max_x - (ypos-y)/double(h)*(max_x-min_x);
+           yp = (max_tx - yp) / (max_tx - min_tx);
+           xp = (xpos-x)/double(w)*(max_y-min_y)+min_y;
+           xp = (xp - min_ty) / (max_ty - min_ty);
+           my_max = (min_tx-min_x)/(max_tx-min_tx);
+           my_min = (max_tx-max_x)/(max_tx-min_tx);
+           mx_max = (max_y-max_ty)/(max_ty-min_ty);
+           mx_min = (min_y-min_ty)/(max_ty-min_ty);
+        }
+        break;
+      case X_DOWN_Y_LEFT :
+        {
+           yp = (ypos-y)/double(h)*(max_x-min_x)+min_x;
+           yp = (yp - min_tx) / (max_tx - min_tx);
+           xp = max_y - (xpos-x)/double(w)*(max_y-min_y);
+           xp = (max_ty - xp) / (max_ty - min_ty);
+           my_max = (max_x-max_tx)/(max_tx-min_tx);
+           my_min = (min_x-min_tx)/(max_tx-min_tx);
+           mx_max = (min_ty-min_y)/(max_ty-min_ty);
+           mx_min = (max_ty-max_y)/(max_ty-min_ty);
+        }
+        break;
+      case X_DOWN_Y_RIGHT :
+        {
+           yp = (ypos-y)/double(h)*(max_x-min_x)+min_x;
+           yp = (yp - min_tx) / (max_tx - min_tx);
+           xp = (xpos-x)/double(w)*(max_y-min_y)+min_y;
+           xp = (xp - min_ty) / (max_ty - min_ty);
+           my_max = (max_x-max_tx)/(max_tx-min_tx);
+           my_min = (min_x-min_tx)/(max_tx-min_tx);
+           mx_max = (max_y-max_ty)/(max_ty-min_ty);
+           mx_min = (min_y-min_ty)/(max_ty-min_ty);
+        }
+        break;
+    }
+    if (xp>mx_min && xp<1+mx_max && yp>my_min && yp<1+my_max && no < legend_list.size())
     {
       flag = true;
-      pos_x_legend[no] = xp;
-      pos_y_legend[no] = yp;
+      legend_list[no].pos_x = xp;
+      legend_list[no].pos_y = yp;
     }
     else
     {
@@ -3650,17 +5010,87 @@ bool PlotWindow::SetLegendVal(PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos, con
     bool exchange;
     AxisDirMap(axis_dir, dirx, diry, posx, posy, rangex, rangey, exchange, x, y, w, h);
     bool flag;
-    double xp = (xpos-x)/double(w);
-    double yp = (ypos-y)/double(h);
-    if (!exchange && xp>0 && xp<1 && yp>0 && yp<1 && no < value_x_legend.size())
+    double max_ty = getMaxY();
+    double max_tx = getMaxX();
+    double min_ty = getMinY();
+    double min_tx = getMinX();
+    double xp, yp;
+    switch (axis_dir)
     {
-      flag = true;
-      value_x_legend[no] = xp;
+      case X_RIGHT_Y_UP :
+        {
+           xp = (xpos-x)/double(w)*(max_x-min_x)+min_x;
+           xp = (xp - min_tx) / (max_tx - min_tx);
+           yp = max_y - (ypos-y)/double(h)*(max_y-min_y);
+           yp = (max_ty - yp) / (max_ty - min_ty);
+        }
+        break;
+      case X_RIGHT_Y_DOWN :
+        {
+           xp = (xpos-x)/double(w)*(max_x-min_x)+min_x;
+           xp = (xp - min_tx) / (max_tx - min_tx);
+           yp = (ypos-y)/double(h)*(max_y-min_y)+min_y;
+           yp = (yp - min_ty) / (max_ty - min_ty);
+        }
+        break;
+      case X_LEFT_Y_UP :
+        {
+           xp = max_x - (xpos-x)/double(w)*(max_x-min_x);
+           xp = (max_tx - xp) / (max_tx - min_tx);
+           yp = max_y - (ypos-y)/double(h)*(max_y-min_y);
+           yp = (max_ty - yp) / (max_ty - min_ty);
+        }
+        break;
+      case X_LEFT_Y_DOWN :
+        {
+           xp = max_x - (xpos-x)/double(w)*(max_x-min_x);
+           xp = (max_tx - xp) / (max_tx - min_tx);
+           yp = (ypos-y)/double(h)*(max_y-min_y)+min_y;
+           yp = (yp - min_ty) / (max_ty - min_ty);
+        }
+        break;
+      case X_UP_Y_LEFT :
+        {
+           yp = max_x - (ypos-y)/double(h)*(max_x-min_x);
+           yp = (max_tx - yp) / (max_tx - min_tx);
+           xp = max_y - (xpos-x)/double(w)*(max_y-min_y);
+           xp = (max_ty - xp) / (max_ty - min_ty);
+        }
+        break;
+      case X_UP_Y_RIGHT :
+        {
+           yp = max_x - (ypos-y)/double(h)*(max_x-min_x);
+           yp = (max_tx - yp) / (max_tx - min_tx);
+           xp = (xpos-x)/double(w)*(max_y-min_y)+min_y;
+           xp = (xp - min_ty) / (max_ty - min_ty);
+        }
+        break;
+      case X_DOWN_Y_LEFT :
+        {
+           yp = (ypos-y)/double(h)*(max_x-min_x)+min_x;
+           yp = (yp - min_tx) / (max_tx - min_tx);
+           xp = max_y - (xpos-x)/double(w)*(max_y-min_y);
+           xp = (max_ty - xp) / (max_ty - min_ty);
+        }
+        break;
+      case X_DOWN_Y_RIGHT :
+        {
+           yp = (ypos-y)/double(h)*(max_x-min_x)+min_x;
+           yp = (yp - min_tx) / (max_tx - min_tx);
+           xp = (xpos-x)/double(w)*(max_y-min_y)+min_y;
+           xp = (xp - min_ty) / (max_ty - min_ty);
+        }
+        break;
     }
-    else if (exchange && xp>0 && xp<1 && yp>0 && yp<1 && no < value_x_legend.size())
+    if (!exchange && xp>0 && xp<1 && yp>0 && yp<1 && no < legend_list.size())
     {
       flag = true;
-      value_x_legend[no] = yp;    
+      legend_list[no].value_x = xp;
+    }
+    else if (exchange && xp>0 && xp<1 && yp>0 && yp<1 && no < legend_list.size())
+    {
+      flag = true;
+      legend_list[no].value_x = yp;    
     }
     else
     {
@@ -3955,6 +5385,146 @@ void PlotWindow::DrawIndicator(wxDC& dc, const wxCoord &x, const wxCoord &y, con
   }
 }
 
+void PlotWindow::DrawFocus(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const wxCoord &xpos, const wxCoord &ypos, int mask)
+{
+ if (mask & Focus::CURVE && xpos > x && xpos < x+(wxCoord)w && ypos > y && ypos < y+(wxCoord)h)
+ {
+  int dirx, diry, posx, posy, rangex, rangey;
+  bool exchange;
+  AxisDirMap(axis_dir, dirx, diry, posx, posy, rangex, rangey, exchange, x, y, w, h);
+
+  double sx = max_x-min_x;
+  double sy = max_y-min_y;
+  double xvalue;
+  wxCoord xpos_new = xpos;
+  wxCoord ypos_new = ypos;
+  if (exchange)
+  {
+    xvalue = (ypos - posx)/double(rangex)*sx*dirx+min_x;
+  }
+  else
+  {
+    xvalue = (xpos - posx)/double(rangex)*sx*dirx+min_x;
+  }
+  for (vector<Curve *>::iterator i = curve_list.begin();
+          i != curve_list.end(); ++i)
+  {
+    double yvalue = (*i)->evaluate(xvalue);
+    if (exchange)
+    {
+      xpos_new  = int((yvalue-min_y)/sy*rangey)*diry+posy;
+    }
+    else
+    {
+      ypos_new  = int((yvalue-min_y)/sy*rangey)*diry+posy;
+    }
+    if ( (xpos_new-xpos)*(xpos_new-xpos)+(ypos_new-ypos)*(ypos_new-ypos) < 10)
+    {
+        wxPen old_pen = (*i)->GetPen();
+        wxPen old_pen2 = dc.GetPen();
+        (*i)->SetPen(wxPen(*wxRED, 3));
+        (*i)->DrawCurve(dc, x,y,w,h,min_x,max_x,min_y,max_y, axis_dir);
+        (*i)->SetPen(old_pen);
+        dc.SetPen(old_pen2);
+        Focus tmp;
+        tmp.window = this;
+        tmp.type = Focus::CURVE;
+        tmp.iter = i - curve_list.begin();
+        handler->AddFocus(tmp);
+        break;
+    }
+  }
+ }
+
+  wxRect r(xpos-2, ypos-2, 4, 4);
+  if (mask & Focus::AXISY && !axis_y_hide && r.Intersects(rect_axis_y))
+  {
+    wxPoint p[5];
+    p[0].x = rect_axis_y.GetX();
+    p[0].y = rect_axis_y.GetY();
+    p[1].x = p[0].x+rect_axis_y.GetWidth();
+    p[1].y = p[0].y;
+    p[2].x = p[1].x;
+    p[2].y = p[1].y+rect_axis_y.GetHeight();
+    p[3].x = p[0].x;
+    p[3].y = p[2].y;
+    p[4].x = p[0].x;
+    p[4].y = p[0].y;
+    dc.DrawLines(5, p);
+    Focus tmp;
+    tmp.window = this;
+    tmp.type = Focus::AXISY;
+    tmp.iter = 0;
+    handler->AddFocus(tmp);
+  }
+  if (mask & Focus::AXISX && !axis_x_hide && r.Intersects(rect_axis_x))
+  {
+    wxPoint p[5];
+    p[0].x = rect_axis_x.GetX();
+    p[0].y = rect_axis_x.GetY();
+    p[1].x = p[0].x+rect_axis_x.GetWidth();
+    p[1].y = p[0].y;
+    p[2].x = p[1].x;
+    p[2].y = p[1].y+rect_axis_x.GetHeight();
+    p[3].x = p[0].x;
+    p[3].y = p[2].y;
+    p[4].x = p[0].x;
+    p[4].y = p[0].y;
+    dc.DrawLines(5, p);
+    Focus tmp;
+    tmp.window = this;
+    tmp.type = Focus::AXISX;
+    tmp.iter = 0;
+    handler->AddFocus(tmp);
+  }
+
+  if (mask & Focus::LEGEND)
+  for (LegendListCIter i=legend_list.begin(); i != legend_list.end(); ++i)
+  {
+   if (r.Intersects(i->rect))
+   {
+    wxPoint p[5];
+    p[0].x = i->rect.GetX();
+    p[0].y = i->rect.GetY();
+    p[1].x = p[0].x+i->rect.GetWidth();
+    p[1].y = p[0].y;
+    p[2].x = p[1].x;
+    p[2].y = p[1].y+i->rect.GetHeight();
+    p[3].x = p[0].x;
+    p[3].y = p[2].y;
+    p[4].x = p[0].x;
+    p[4].y = p[0].y;
+    dc.DrawLines(5, p);
+    Focus tmp;
+    tmp.window = this;
+    tmp.type = Focus::LEGEND;
+    tmp.iter = i-legend_list.begin();
+    handler->AddFocus(tmp);
+   }
+  }
+
+  if (mask & Focus::WINDOW && xpos >= x && xpos <= x+w && ypos >= y && ypos <= y+h)
+  {
+    wxPoint p[5];
+    p[0].x = x;
+    p[0].y = y;
+    p[1].x = x+w;
+    p[1].y = y;
+    p[2].x = x+w;
+    p[2].y = y+h;
+    p[3].x = x;
+    p[3].y = y+h;
+    p[4].x = x;
+    p[4].y = y;
+    dc.DrawLines(5, p);
+    Focus tmp;
+    tmp.window = this;
+    tmp.type = Focus::WINDOW;
+    tmp.iter = 0u;
+    handler->AddFocus(tmp);
+  }
+}
+
 bool PlotWindow::SelectCurrentCurve(PosMgr& pos_mgr, const wxCoord &xpos, const wxCoord &ypos)
 {
     wxCoord x, y;
@@ -4028,41 +5598,58 @@ bool PlotWindow::SelectCurrentCurve(const wxCoord &x, const wxCoord &y, const si
 }
 
 
-void PlotWindow::draw_vertical_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &yh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &right)
+wxRect PlotWindow::draw_vertical_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &yh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &right)
 {
+  wxRect rslt;
+  rslt.SetX(x-3);
+  rslt.SetWidth(6);
+
   wxCoord dir;
   if (yh > y)
+  {
       dir = 1;
+      rslt.SetY(y-2);
+      rslt.SetHeight(yh-y+4);
+  }
   else
+  {
       dir = -1;
+      rslt.SetY(yh-2);
+      rslt.SetHeight(y-yh+4);
+  }
 
   wxCoord mw, mh;
   DrawTexText(dc, text, x+3, yh, mw, mh, false);
 
+  // Calculate a suitable scaling factor
+  double scaleX=(double)(ppi.GetWidth()/ppi_x);
+  double scaleY=(double)(ppi.GetHeight()/ppi_y);
+  // Use x or y scaling factor, whichever fits on the DC
+  double actualScale = wxMin(scaleX,scaleY);
   dc.DrawLine(x, y, x, yh-dir*mh);
   wxPoint p[3];
-  p[0].x = x+3;
-  p[0].y = yh-dir*mh-dir*6;
+  p[0].x = x+int(3*actualScale+0.5);
+  p[0].y = yh-dir*mh-dir*int(6*actualScale+0.5);
   p[1].x = x;
   p[1].y = yh-dir*mh;
-  p[2].x = x-3;
+  p[2].x = x-int(3*actualScale+0.5);
   p[2].y = p[0].y;
   dc.DrawPolygon(3, p);
 
   wxCoord dw;
   if (right)
-    dw = -3;
+    dw = -int(3*actualScale+0.5);
   else
-    dw = 3;
+    dw = int(3*actualScale+0.5);
 
   mh /= 2;
   if (right)
   {
-    DrawTexText(dc, text, x+3, yh-dir*mh-mh, mw, mh);
+    DrawTexText(dc, text, x+int(3*actualScale+0.5), yh-dir*mh-mh, mw, mh);
   }
   else
   {
-    DrawTexText(dc, text, x-mw-3, yh-dir*mh-mh, mw, mh);
+    DrawTexText(dc, text, x-mw-int(3*actualScale+0.5), yh-dir*mh-mh, mw, mh);
   }
 
   wxCoord last = -9999;
@@ -4079,57 +5666,78 @@ void PlotWindow::draw_vertical_axis(wxDC& dc, const wxCoord &x, const wxCoord &y
       break;
     }
     dc.DrawLine(x, mark_pos, x+dw, mark_pos);
-    if (last < dir*(mark_pos-y-2))
+    if (last < dir*(mark_pos-y-int(2*actualScale+0.5)))
     {
       if (right)
       {
-        dc.DrawText(str, x+3, mark_pos-mh/2+dir*mh/2);
+        dc.DrawText(str, x+int(3*actualScale+0.5), mark_pos-mh/2+dir*mh/2);
+        rslt.Union(wxRect(x+int(actualScale+0.5), mark_pos-mh/2+dir*mh/2-int(2*actualScale+0.5), mw+int(4*actualScale+0.5), mh+int(4*actualScale+0.5)));
       }
       else
       {
-        dc.DrawText(str, x-mw-3, mark_pos-mh/2+dir*mh/2);
+        dc.DrawText(str, x-mw-int(3*actualScale+0.5), mark_pos-mh/2+dir*mh/2);
+        rslt.Union(wxRect(x-mw-int(5*actualScale+0.5), mark_pos-mh/2+dir*mh/2-int(2*actualScale+0.5), mw+int(4*actualScale+0.5), mh+int(4*actualScale+0.5)));
       }
       last = dir*(mark_pos-y+dir*mh);
     }
   }
+
+  return rslt;
 }
 
-void PlotWindow::draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &xh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &bottom)
+wxRect PlotWindow::draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &xh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &bottom)
 {
+  wxRect rslt;
+  rslt.SetY(y-3);
+  rslt.SetHeight(6);
+
   wxCoord dir;
   if (xh > x)
+  {
       dir = 1;
+      rslt.SetX(x-2);
+      rslt.SetWidth(xh-x+4);
+  }
   else
+  {
       dir = -1;
+      rslt.SetX(xh-2);
+      rslt.SetWidth(x-xh+4);
+  }
 
+  // Calculate a suitable scaling factor
+  double scaleX=(double)(ppi.GetWidth()/ppi_x);
+  double scaleY=(double)(ppi.GetHeight()/ppi_y);
+  // Use x or y scaling factor, whichever fits on the DC
+  double actualScale = wxMin(scaleX,scaleY);
   dc.DrawLine(x, y, xh, y);
   wxPoint p[3];
-  p[0].x = xh-dir*6;
-  p[0].y = y+3;
+  p[0].x = xh-int(dir*6*actualScale+0.5);
+  p[0].y = y+int(3*actualScale+0.5);
   p[1].x = xh;
   p[1].y = y;
   p[2].x = p[0].x;
-  p[2].y = y-3;
+  p[2].y = y-int(3*actualScale+0.5);
   dc.DrawPolygon(3, p);
 
   wxCoord dh;
   if (bottom)
-    dh = -3;
+    dh = -int(3*actualScale+0.5);
   else
-    dh = 3;
+    dh = int(3*actualScale+0.5);
 
   if (mark_list.size() > 3u)
   {
 
   wxCoord mw, mh, tw;
-  DrawTexText(dc, text, xh, y+3, tw, mh, false);
+  DrawTexText(dc, text, xh, y+int(3*actualScale+0.5), tw, mh, false);
   if (bottom)
   {
-    DrawTexText(dc, text, xh-tw/2-dir*(tw/2+3), y+3, tw, mh);
+    DrawTexText(dc, text, xh-tw/2-dir*(tw/2+int(3*actualScale+0.5)), y+int(3*actualScale+0.5), tw, mh);
   }
   else
   {
-    DrawTexText(dc, text, xh-tw/2-dir*(tw/2+3), y-mh-3, tw, mh);
+    DrawTexText(dc, text, xh-tw/2-dir*(tw/2+int(3*actualScale+0.5)), y-mh-int(3*actualScale+0.5), tw, mh);
   }
 
   wxCoord last = 0;
@@ -4146,15 +5754,17 @@ void PlotWindow::draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y,
       break;
     }
     dc.DrawLine(mark_pos, y, mark_pos, y+dh);
-    if (last < dir*(mark_pos-x-3))
+    if (last < dir*(mark_pos-x-int(3*actualScale+0.5)))
     {
       if (bottom)
       {
-        dc.DrawText(str, mark_pos-mw/2+dir*mw/2, y+3);
+        dc.DrawText(str, mark_pos-mw/2+dir*mw/2, y+int(3*actualScale+0.5));
+        rslt.Union(wxRect(mark_pos-mw/2+dir*mw/2-2, y+1, mw+4, mh+4));
       }
       else
       {
-        dc.DrawText(str, mark_pos-mw/2+dir*mw/2, y-mh-3);
+        dc.DrawText(str, mark_pos-mw/2+dir*mw/2, y-mh-int(3*actualScale+0.5));
+        rslt.Union(wxRect(mark_pos-mw/2+dir*mw/2-2, y-mh-5, mw+4, mh+4));
       }
       last = dir*(mark_pos-x+dir*mw);
     }
@@ -4164,14 +5774,14 @@ void PlotWindow::draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y,
   {
 
   wxCoord mw, mh, tw;
-  DrawTexText(dc, text, xh, y+3, tw, mh, false);
+  DrawTexText(dc, text, xh, y+int(3*actualScale+0.5), tw, mh, false);
   if (bottom)
   {
-    DrawTexText(dc, text, xh-tw/2+dir*(tw/2+3), y+3, tw, mh);
+    DrawTexText(dc, text, xh-tw/2+dir*(tw/2+int(3*actualScale+0.5)), y+int(3*actualScale+0.5), tw, mh);
   }
   else
   {
-    DrawTexText(dc, text, xh-tw/2+dir*(tw/2+3), y-mh-3, tw, mh);
+    DrawTexText(dc, text, xh-tw/2+dir*(tw/2+int(3*actualScale+0.5)), y-mh-int(3*actualScale+0.5), tw, mh);
   }
 
   wxCoord last = 0;
@@ -4184,20 +5794,24 @@ void PlotWindow::draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y,
     dc.GetTextExtent(str, &mw, &mh);
     wxCoord mark_pos = x+wxCoord(scale*(*i-min));
     dc.DrawLine(mark_pos, y, mark_pos, y+dh);
-    if (last < dir*(mark_pos-x-3))
+    if (last < dir*(mark_pos-x-int(3*actualScale+0.5)))
     {
       if (bottom)
       {
-        dc.DrawText(str, mark_pos-mw/2-dir*mw/2, y+3);
+        dc.DrawText(str, mark_pos-mw/2-dir*mw/2, y+int(3*actualScale+0.5));
+        rslt.Union(wxRect(mark_pos-mw/2-dir*mw/2-int(2*actualScale+0.5), y+int(1*actualScale+0.5), mw+int(4*actualScale+0.5), mh+int(4*actualScale+0.5)));
       }
       else
       {
-        dc.DrawText(str, mark_pos-mw/2-dir*mw/2, y-mh-3);
+        dc.DrawText(str, mark_pos-mw/2-dir*mw/2, y-mh-int(3*actualScale+0.5));
+        rslt.Union(wxRect(mark_pos-mw/2-dir*mw/2-int(2*actualScale+0.5), y-mh-int(5*actualScale+0.5), mw+int(4*actualScale+0.5), mh+int(4*actualScale+0.5)));
       }
       last = dir*(mark_pos-x+dir*mw);
     }
   }
   }
+
+  return rslt;
 }
 
 void PlotWindow::draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h)
@@ -4225,16 +5839,16 @@ void PlotWindow::draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_y_pos)
     {
         case LOW_OUT :
-            draw_vertical_axis(dc, x, yh, y, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_vertical_axis(dc, x, yh, y, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case LOW_IN :
-            draw_vertical_axis(dc, x, yh, y, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_vertical_axis(dc, x, yh, y, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         case HIGH_IN :
-            draw_vertical_axis(dc, xh, yh, y, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_vertical_axis(dc, xh, yh, y, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case HIGH_OUT :
-            draw_vertical_axis(dc, xh, yh, y, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_vertical_axis(dc, xh, yh, y, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         default :
             break;
@@ -4245,16 +5859,16 @@ void PlotWindow::draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_y_pos)
     {
         case LOW_OUT :
-            draw_vertical_axis(dc, x, y, yh, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_vertical_axis(dc, x, y, yh, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case LOW_IN :
-            draw_vertical_axis(dc, x, y, yh, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_vertical_axis(dc, x, y, yh, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         case HIGH_IN :
-            draw_vertical_axis(dc, xh, y, yh, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_vertical_axis(dc, xh, y, yh, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case HIGH_OUT :
-            draw_vertical_axis(dc, xh, y, yh, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_vertical_axis(dc, xh, y, yh, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         default :
             break;
@@ -4265,16 +5879,16 @@ void PlotWindow::draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_y_pos)
     {
         case LOW_OUT :
-            draw_horizon_axis(dc, xh, y, x, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_horizon_axis(dc, xh, y, x, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case LOW_IN :
-            draw_horizon_axis(dc, xh, y, x, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_horizon_axis(dc, xh, y, x, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         case HIGH_IN :
-            draw_horizon_axis(dc, xh, yh, x, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_horizon_axis(dc, xh, yh, x, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case HIGH_OUT :
-            draw_horizon_axis(dc, xh, yh, x, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_horizon_axis(dc, xh, yh, x, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         default :
             break;
@@ -4285,16 +5899,16 @@ void PlotWindow::draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_y_pos)
     {
         case LOW_OUT :
-            draw_horizon_axis(dc, x, y, xh, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_horizon_axis(dc, x, y, xh, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case LOW_IN :
-            draw_horizon_axis(dc, x, y, xh, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_horizon_axis(dc, x, y, xh, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         case HIGH_IN :
-            draw_horizon_axis(dc, x, yh, xh, min_y, max_y, y_mark_list, str_y_label, false);
+            rect_axis_y = draw_horizon_axis(dc, x, yh, xh, min_y, max_y, y_mark_list, str_y_label, false);
             break;
         case HIGH_OUT :
-            draw_horizon_axis(dc, x, yh, xh, min_y, max_y, y_mark_list, str_y_label, true);
+            rect_axis_y = draw_horizon_axis(dc, x, yh, xh, min_y, max_y, y_mark_list, str_y_label, true);
             break;
         default :
             break;
@@ -4327,16 +5941,16 @@ void PlotWindow::draw_x_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_x_pos)
     {
         case LOW_OUT :
-            draw_vertical_axis(dc, x, yh, y, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_vertical_axis(dc, x, yh, y, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case LOW_IN :
-            draw_vertical_axis(dc, x, yh, y, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_vertical_axis(dc, x, yh, y, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         case HIGH_IN :
-            draw_vertical_axis(dc, xh, yh, y, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_vertical_axis(dc, xh, yh, y, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case HIGH_OUT :
-            draw_vertical_axis(dc, xh, yh, y, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_vertical_axis(dc, xh, yh, y, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         default :
             break;
@@ -4347,16 +5961,16 @@ void PlotWindow::draw_x_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_x_pos)
     {
         case LOW_OUT :
-            draw_vertical_axis(dc, x, y, yh, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_vertical_axis(dc, x, y, yh, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case LOW_IN :
-            draw_vertical_axis(dc, x, y, yh, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_vertical_axis(dc, x, y, yh, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         case HIGH_IN :
-            draw_vertical_axis(dc, xh, y, yh, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_vertical_axis(dc, xh, y, yh, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case HIGH_OUT :
-            draw_vertical_axis(dc, xh, y, yh, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_vertical_axis(dc, xh, y, yh, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         default :
             break;
@@ -4367,16 +5981,16 @@ void PlotWindow::draw_x_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_x_pos)
     {
         case LOW_OUT :
-            draw_horizon_axis(dc, xh, y, x, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_horizon_axis(dc, xh, y, x, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case LOW_IN :
-            draw_horizon_axis(dc, xh, y, x, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_horizon_axis(dc, xh, y, x, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         case HIGH_IN :
-            draw_horizon_axis(dc, xh, yh, x, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_horizon_axis(dc, xh, yh, x, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case HIGH_OUT :
-            draw_horizon_axis(dc, xh, yh, x, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_horizon_axis(dc, xh, yh, x, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         default :
             break;
@@ -4387,16 +6001,16 @@ void PlotWindow::draw_x_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     switch (axis_x_pos)
     {
         case LOW_OUT :
-            draw_horizon_axis(dc, x, y, xh, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_horizon_axis(dc, x, y, xh, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case LOW_IN :
-            draw_horizon_axis(dc, x, y, xh, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_horizon_axis(dc, x, y, xh, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         case HIGH_IN :
-            draw_horizon_axis(dc, x, yh, xh, min_x, max_x, x_mark_list, str_x_label, false);
+            rect_axis_x = draw_horizon_axis(dc, x, yh, xh, min_x, max_x, x_mark_list, str_x_label, false);
             break;
         case HIGH_OUT :
-            draw_horizon_axis(dc, x, yh, xh, min_x, max_x, x_mark_list, str_x_label, true);
+            rect_axis_x = draw_horizon_axis(dc, x, yh, xh, min_x, max_x, x_mark_list, str_x_label, true);
             break;
         default :
             break;
@@ -4433,29 +6047,70 @@ void PlotWindow::draw_curve(wxDC& dc, const wxCoord &x, const wxCoord &y, const 
   }
 }
 
-void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const int & no)
+void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, LegendListIter & iter)
 {
+    unsigned int no = iter - legend_list.begin();
     double xvalue, yvalue;
     wxCoord xpos;
     wxCoord ypos;
+    wxCoord xlegend;
+    wxCoord ylegend;
     bool x_horizontal_dir;
+    double max_ty = getMaxY();
+    double max_tx = getMaxX();
+    double min_ty = getMinY();
+    double min_tx = getMinX();
     if (axis_dir == X_RIGHT_Y_UP || axis_dir == X_RIGHT_Y_DOWN 
             || axis_dir == X_LEFT_Y_UP || axis_dir == X_LEFT_Y_DOWN)
     {
-
-      xpos = x + (wxCoord)(w*value_x_legend[no]);
+      if (axis_dir == X_RIGHT_Y_UP || axis_dir == X_RIGHT_Y_DOWN)
+      {
+        xpos = x + (wxCoord)(w*(iter->value_x*(max_tx-min_tx)+min_tx-min_x)/(max_x - min_x));
+        xlegend = x + (wxCoord)(w*(iter->pos_x*(max_tx-min_tx)+min_tx-min_x)/(max_x - min_x));
+      }
+      else
+      {
+        xpos = x + (wxCoord)(w*(max_x - max_tx + iter->value_x*(max_tx-min_tx))/(max_x - min_x));
+        xlegend = x + (wxCoord)(w*(max_x - max_tx + iter->pos_x*(max_tx-min_tx))/(max_x - min_x));
+      }
       ypos = y + h/2;
+      if (axis_dir == X_LEFT_Y_DOWN || axis_dir == X_RIGHT_Y_DOWN)
+      {
+        ylegend = y + (wxCoord)(h*(iter->pos_y*(max_ty-min_ty)+min_ty-min_y)/(max_y - min_y));
+      }
+      else
+      {
+        ylegend = y + (wxCoord)(h*(max_y - max_ty + iter->pos_y*(max_ty-min_ty))/(max_y - min_y));
+      }
       x_horizontal_dir = true;
     }
     else
     {
       xpos = x + w/2;
-      ypos = y + (wxCoord)(h*value_x_legend[no]);
+      if (axis_dir == X_DOWN_Y_RIGHT || axis_dir == X_UP_Y_RIGHT)
+      {
+        xlegend = x + (wxCoord)(w*(iter->pos_x*(max_ty-min_ty)+min_ty-min_y)/(max_y - min_y));
+      }
+      else
+      {
+        xlegend = x + (wxCoord)(w*(max_y - max_ty + iter->pos_x*(max_ty-min_ty))/(max_y - min_y));
+      }
+      if (axis_dir == X_DOWN_Y_LEFT || axis_dir == X_DOWN_Y_RIGHT)
+      {
+        ypos = y + (wxCoord)(h*(iter->value_x*(max_tx-min_tx)+min_tx-min_x)/(max_x - min_x));
+        ylegend = y + (wxCoord)(h*(iter->pos_y*(max_tx-min_tx)+min_tx-min_x)/(max_x - min_x));
+      }
+      else
+      {
+        ypos = y + (wxCoord)(h*(max_x - max_tx + iter->value_x*(max_tx-min_tx))/(max_x - min_x));
+        ylegend = y + (wxCoord)(h*(max_x - max_tx + iter->pos_y*(max_tx-min_tx))/(max_x - min_x));
+      }
       x_horizontal_dir = false;
     }
-    wxCoord xlegend = x + (wxCoord)(w*pos_x_legend[no]);
-    wxCoord ylegend = y + (wxCoord)(h*pos_y_legend[no]);
-
+    iter->rect.SetX(xlegend);
+    iter->rect.SetY(ylegend);
+    iter->rect.SetWidth(2);
+    iter->rect.SetHeight(2);
 
     // Calculate a suitable scaling factor
     double scaleX=(double)(ppi.GetWidth()/ppi_x);
@@ -4463,14 +6118,14 @@ void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const
     // Use x or y scaling factor, whichever fits on the DC
     double actualScale = wxMin(scaleX,scaleY);
     // Set the scale
-    wxFont tmp_font = fnt_legend[no];
+    wxFont tmp_font = iter->fnt;
     tmp_font.SetPointSize(int(tmp_font.GetPointSize()*actualScale+0.5));
   
     dc.SetFont(tmp_font);
-    dc.SetTextForeground(pen_legend[no].GetColour());
+    dc.SetTextForeground(iter->pen.GetColour());
     
-    wxPen tmp_pen = *wxBLACK_PEN;
-    tmp_pen.SetWidth(int(pen_axis.GetWidth()*actualScale+0.5));
+    wxPen tmp_pen = iter->pen;
+    tmp_pen.SetWidth(int(iter->pen.GetWidth()*actualScale+0.5));
     dc.SetPen(tmp_pen);
 
     int first = 0;
@@ -4519,10 +6174,10 @@ void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const
       dc.SetPen(wxPen(*wxRED, tmp_pen.GetWidth()));
       dc.SetTextForeground(*wxRED);
     }
-      if (align_left_legend[no])
+      if (iter->align_left)
       {
         DrawTexText(dc, text, xlegend, ylegend, sw, sh);
-        if (indicate_left_legend[no])
+        if (iter->indicate_left)
         {
           dc.DrawLine(xpos, ypos, xlegend-2, ylegend+sh/2);
         }
@@ -4530,12 +6185,13 @@ void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const
         {
           dc.DrawLine(xpos, ypos, xlegend+sw+2, ylegend+sh/2);
         }
+        iter->rect.Union(wxRect(xlegend-2, ylegend-2, sw+4, sh+4));
       }
       else
       {
         DrawTexText(dc, text, xlegend, ylegend, sw, sh, false);
         DrawTexText(dc, text, xlegend-sw, ylegend, sw, sh);
-        if (indicate_left_legend[no])
+        if (iter->indicate_left)
         {
           dc.DrawLine(xpos, ypos, xlegend-sw-2, ylegend+sh/2);
         }
@@ -4543,11 +6199,12 @@ void PlotWindow::draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const
         {
           dc.DrawLine(xpos, ypos, xlegend+2, ylegend+sh/2);
         }
+        iter->rect.Union(wxRect(xlegend-sw-2, ylegend-2, sw+4, sh+4));
       }
     if (handler->IsDrawIndicator() && *i == cur_curve && !strange_mode)
     {
       dc.SetPen(wxPen(*wxBLACK, tmp_pen.GetWidth()));
-      dc.SetTextForeground(pen_legend[no].GetColour());
+      dc.SetTextForeground(iter->pen.GetColour());
     }
         if (!x_horizontal_dir)
         {
@@ -4598,7 +6255,7 @@ double PlotWindow::getMinY()
 double PlotWindow::getMaxX()
 {
   if (curve_list.empty())
-    return 0;
+    return 1;
   
   vector<Curve *>::iterator i = curve_list.begin();
   double rslt = (*i)->Xmax();
@@ -4700,7 +6357,7 @@ PlotHandler::PlotHandler(wxWindow * parent) :
   
   PosMgr::PosMap pm;
   pm.cached = false;
-  vector<size_t> a;
+  vector<wxUint32> a;
   a.push_back(1);
   pm.row_list = a;
   pm.col_list = a;
@@ -4741,7 +6398,6 @@ PlotHandler::~PlotHandler()
     
 void PlotHandler::OnOpen(wxCommandEvent& event)
 {
-  /* TODO
   if (hasLoaded)
   {
     if (wxMessageBox(_("Do you want to save it before openning a new file"), _("Message"), wxYES_NO, owner) == wxYES)
@@ -4749,7 +6405,6 @@ void PlotHandler::OnOpen(wxCommandEvent& event)
       Save();
     }
   }
-  */
   wxString  filename = wxFileSelector(_("Choose a file to open"), wxT(""), wxT(""), wxT("xml"), wxT("XML files(*.xml)|*.xml"), wxOPEN|wxFILE_MUST_EXIST, owner);
   if ( !filename.empty() )
   {
@@ -4787,7 +6442,7 @@ bool PlotHandler::Load(const wxString & filename)
     {
       hasLoaded = true;
       owner->Refresh();
-      owner->Update();
+      //owner->Update();
     }
     else
     {
@@ -4799,18 +6454,20 @@ bool PlotHandler::Load(const wxString & filename)
 
 void PlotHandler::OnSave(wxCommandEvent& event)
 {
+  event.Skip();
   Save();
 }
 
 void PlotHandler::OnSaveAs(wxCommandEvent& event)
 {
+  event.Skip();
   wxString  filename = wxFileSelector(_("Choose a file to save"), wxT(""), FileName.AfterLast (wxFileName::GetPathSeparator()).BeforeLast (wxT ('.')), wxT("xml"), wxT("XML files (*.xml)|*.xml|BMP files (*.bmp)|*.bmp|JPEG files (*.jpg)|*.jpg|PNG files (*.png)|*.png"), wxSAVE|wxOVERWRITE_PROMPT, owner);
   if ( !filename.empty() )
   {
       wxString suf = filename.AfterLast(wxT('.'));
-      if (suf == wxT("xml"))
+      if (suf.Lower() == wxT("xml"))
       {
-        if (!wxCopyFile(FileName, filename))
+        if (!Save(filename))
         {
           wxLogError(wxString(_("Fail to save file as "))+filename);
 	}
@@ -4824,13 +6481,13 @@ void PlotHandler::OnSaveAs(wxCommandEvent& event)
       int multi =  wxGetNumberFromUser( _("Set the PPI multiplier"), wxString::Format(wxT("PPI = %g X "), ppi_x), _("PPI Setting"), (long)1, (long)1, (long)10, owner);
       w *= multi;
       h *= multi;
-      ppi.SetWidth( ppi_x * multi);
-      ppi.SetHeight( ppi_y * multi);
+      ppi.SetWidth( int(ppi_x * multi+0.5) );
+      ppi.SetHeight( int(ppi_y * multi+0.5) );
       wxBitmap tbitmap(w, h);
       mdc.SelectObject(tbitmap);
       draw(mdc, w, h);
       mdc.SelectObject(wxNullBitmap); 
-      ppi.Set(ppi_x, ppi_y);
+      ppi.Set( int(ppi_x+0.5), int(ppi_y+0.5));
 
       if (suf == wxT("bmp"))
         tbitmap.SaveFile(filename, wxBITMAP_TYPE_BMP);
@@ -4858,8 +6515,8 @@ void PlotHandler::OnCopy(wxCommandEvent& event)
       int multi =  wxGetNumberFromUser( _("Set the PPI multiplier"), wxString::Format(wxT("PPI = %g X "), ppi_x), _("PPI Setting"), (long)1, (long)1, (long)10, owner);
       w *= multi;
       h *= multi;
-      ppi.SetWidth( ppi_x * multi);
-      ppi.SetHeight( ppi_y * multi);
+      ppi.SetWidth( int(ppi_x * multi+0.5) );
+      ppi.SetHeight( int(ppi_y * multi+0.5) );
       wxBitmap tbitmap(w, h);
       if (tbitmap.Ok())
       {
@@ -4872,7 +6529,7 @@ void PlotHandler::OnCopy(wxCommandEvent& event)
       {
         wxMessageBox(_("Fail to create bitmap."), _("Message"), wxOK|wxICON_ERROR , owner);
       }
-      ppi.Set(ppi_x, ppi_y);
+      ppi.Set( int(ppi_x+0.5), int(ppi_y+0.5) );
     }
     wxTheClipboard->Close();
   }
@@ -5000,6 +6657,7 @@ void PlotHandler::draw(wxDC& dc, wxCoord w, wxCoord h)
          h = h-th;
          DrawTexText(dc, str_title, (w-tw)/2, 5, tw, th, false);
          DrawTexText(dc, str_title, (w-tw)/2, 5, tw, th);
+         rect_title = wxRect((w-tw)/2-2, 3, tw+4, th+4);
        }
        break;
      case TITLE_DOWN :
@@ -5009,9 +6667,11 @@ void PlotHandler::draw(wxDC& dc, wxCoord w, wxCoord h)
          h = h-th;
          DrawTexText(dc, str_title, (w-tw)/2, h+5, tw, th, false);
          DrawTexText(dc, str_title, (w-tw)/2, h+5, tw, th);
+         rect_title = wxRect((w-tw)/2-2, h+3, tw+4, th+4);
        }
        break;
      default :
+       rect_title = wxRect(0, 0, -1, -1);
        break;
     }
     
@@ -5076,7 +6736,7 @@ void PlotHandler::SetWYSWYG(bool b)
       canvas->SetScrollRate(5, 5);        
     }
     owner->Refresh();
-    owner->Update();
+    //owner->Update();
 }
 
 
@@ -5130,6 +6790,64 @@ void PlotHandler::DrawIndicator(wxDC &dc, wxCoord x, wxCoord y)
  }
 }
 
+
+void PlotHandler::DrawFocus(wxDC &dc, wxCoord x, wxCoord y, int mask)
+{
+  if (bitmap.Ok())
+  {
+    dc.DrawBitmap(bitmap, 0, 0, false);
+  }
+  else
+  {
+    wxCoord w,h;
+    canvas->GetVirtualSize(&w, &h);
+    Draw(dc, w, h);
+  }
+  ClearFocus();
+  dc.SetPen(wxPen(*wxRED, 3));
+  if (mask & Focus::TITLE)
+  {
+    wxRect r(x-2, y-2, 4, 4);
+    if (r.Intersects(rect_title))
+    {
+    wxPoint p[5];
+    p[0].x = rect_title.GetX();
+    p[0].y = rect_title.GetY();
+    p[1].x = p[0].x+rect_title.GetWidth();
+    p[1].y = p[0].y;
+    p[2].x = p[1].x;
+    p[2].y = p[1].y+rect_title.GetHeight();
+    p[3].x = p[0].x;
+    p[3].y = p[2].y;
+    p[4].x = p[0].x;
+    p[4].y = p[0].y;
+    dc.DrawLines(5, p);
+    Focus tmp;
+    tmp.window = NULL;
+    tmp.type = Focus::TITLE;
+    tmp.iter = 0;
+    AddFocus(tmp);
+    }
+  }
+  if (mask & Focus::GRID)
+  {
+    wxRect r(x-2, y-2, 4, 4);
+    wxRect rect(pos_mgr.GetX(), pos_mgr.GetY(), pos_mgr.GetW(), pos_mgr.GetH() );
+    if (r.Intersects(rect))
+    {
+    Focus tmp;
+    tmp.window = NULL;
+    tmp.type = Focus::GRID;
+    tmp.iter = 0;
+    AddFocus(tmp);
+    }
+  }
+  for (vector<PlotWindow *>::iterator i = windows_list.begin(); i != windows_list.end(); ++i)
+  {
+    (*i)->DrawFocus(dc, pos_mgr, x, y, mask);
+  }
+}
+
 bool PlotHandler::SetLegendPos(wxCoord x, wxCoord y, const int & no)
 {
   bool flag = false;
@@ -5178,7 +6896,7 @@ bool PlotHandler::Load(Element * element)
       if (owner->IsKindOf(CLASSINFO(wxFrame)) || owner->IsKindOf(CLASSINFO(wxDialog)))
       {
         if (width.ToULong(&w) && height.ToULong(&h))
-        owner->SetSize(wxSize(w, h));
+        owner->SetClientSize(wxSize(w, h));
       }
     }
     if ((tmp = element->FindElement("title")))
@@ -5223,10 +6941,15 @@ bool PlotHandler::Load(Element * element)
     }
 
     table_map.clear();
+    table_list_list.clear();
     tmp = element->FindElement("table");
     while (tmp)
     {
       TableList tl = Table::Load(tmp);
+      if (tl.size() >= 1u)
+      {
+        table_list_list.push_back(tl);
+      }
       for (TableListIter i = tl.begin(); i != tl.end(); ++i)
       {
 	if (table_map.find(std2wxstr(i->GetName())) == table_map.end())
@@ -5253,6 +6976,41 @@ bool PlotHandler::Load(Element * element)
       tmp = element->FindNextElement("table");
     }
 
+    table_list_clist.clear();
+    tmp = element->FindElement("ctable");
+    while (tmp)
+    {
+      TableList tl = Table::Load(tmp);
+      if (tl.size() >= 1u)
+      {
+        table_list_clist.push_back(tl);
+      }
+      for (TableListIter i = tl.begin(); i != tl.end(); ++i)
+      {
+	if (table_map.find(std2wxstr(i->GetName())) == table_map.end())
+	{
+          table_map[std2wxstr(i->GetName())] = *i;
+          table_map[std2wxstr(i->GetNameLabel())] = *i;
+          table_map[std2wxstr(i->GetName())+wxT("(0)")] = *i;
+          table_map[std2wxstr(i->GetNameLabel())+wxT("(0)")] = *i;
+	}
+	else
+	{
+	  for (int j = 1; j < 100; ++j)
+	  {
+	    wxString index = wxString::Format(wxT("(%d)"), j);
+	    if (table_map.find(std2wxstr(i->GetName())+index) == table_map.end())
+	     {
+               table_map[std2wxstr(i->GetName())+index] = *i;
+               table_map[std2wxstr(i->GetNameLabel())+index] = *i;
+	       break;
+	     }
+	  }
+	}
+      }
+      tmp = element->FindNextElement("ctable");
+    }
+
     while (!windows_list.empty())
     {
       delete windows_list.back();
@@ -5275,9 +7033,88 @@ bool PlotHandler::Load(Element * element)
     return true;
 }
 
-void PlotHandler::Save()
+bool PlotHandler::Save(const wxString & filename)
 {
+  if (!filename.IsEmpty())
+  {
+    FileName = filename;
+  }
+  wxFileOutputStream stream(FileName);
+  if (!stream.Ok())
+    return false;
 
+  wxTextOutputStream tstream(stream,wxEOL_UNIX);
+
+  tstream << wxT("<?xml version=\"1.0\"?>\n");
+  tstream << wxT("<!--  Generated by PlotHandler for Nomograph -->\n");
+
+  Export(tstream, wxEmptyString);
+
+  return true;
+}
+
+void PlotHandler::Export(wxTextOutputStream & tstream, const wxString & prefix) const
+{
+  tstream << prefix << wxT("<plot_config") << wxT(" version=\"1\">\n");
+
+ {
+  wxString pre = prefix + wxT("    ");
+
+  tstream << pre << wxT("<size>\n"); 
+  {
+    int w, h;
+    owner->GetClientSize(&w, &h);
+    tstream << pre << wxT("  <width> ") << w << wxT(" </width>\n"); 
+    tstream << pre << wxT("  <height> ") << h << wxT(" </height>\n"); 
+  }
+  tstream << pre << wxT("</size>\n\n"); 
+
+  tstream << pre << wxT("<title>\n"); 
+  {
+    wxString subpre = pre + wxT("    ");
+    tstream << subpre << wxT("<name> ") << str_title << wxT(" </name>\n"); 
+    wxString pos;
+    switch (pos_title)
+    {
+      case TITLE_UP :
+        pos = wxT("up");
+        break;
+      case TITLE_DOWN :
+        pos = wxT("down");
+        break;
+      default :
+        pos = wxT("none");
+    }
+    tstream << subpre << wxT("<pos> ") << pos << wxT(" </pos>\n"); 
+    ExportPainter(tstream, subpre, pen_title, fnt_title);
+  }
+  tstream << pre << wxT("</title>\n\n"); 
+
+  pos_mgr.Export(tstream, pre);
+  tstream << '\n';
+
+  tstream << pre << wxT("<!-- data in start -->\n");
+  for (vector<TableList>::const_iterator i= table_list_list.begin(); i != table_list_list.end(); ++i)
+  {
+    ExportTable(tstream, pre, *i, wxT("table"));
+    tstream << wxT("\n");
+  }
+  tstream << pre << wxT("<!-- data in end -->\n");
+  for (vector<TableList>::const_iterator i= table_list_clist.begin(); i != table_list_clist.end(); ++i)
+  {
+    ExportTable(tstream, pre, *i, wxT("ctable"));
+    tstream << wxT("\n");
+  }
+
+  for (vector<PlotWindow *>::const_iterator i= windows_list.begin(); i != windows_list.end(); ++i)
+  {
+    (*i)->Export(tstream, pre);
+    tstream << wxT('\n');
+  }
+
+ }
+
+  tstream << prefix  << wxT("</plot_config>") << endl;
 }
 
 void PlotHandler::get_paper_size(int &w, int &h)
@@ -5306,11 +7143,13 @@ EVT_CHAR(PlotCanvas::OnKey)
 EVT_MOTION(PlotCanvas::OnMotion)
 EVT_LEFT_DOWN(PlotCanvas::OnMouseLeftDown) 
 EVT_RIGHT_DOWN(PlotCanvas::OnMouseRightDown) 
+EVT_MENU_RANGE(FONT_START, FONT_START+99, PlotCanvas::OnFont) 
+EVT_MENU_RANGE(PEN_START, SUB_PEN_START+99, PlotCanvas::OnPen) 
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id, PlotHandler *hdl, const wxPoint& pos, const wxSize& size):
-    wxScrolledWindow(parent, id, pos, size, wxRETAINED), handler(hdl), mode(0), no(0)
+    wxScrolledWindow(parent, id, pos, size, wxRETAINED), handler(hdl), mode(0), mask(-1), no(0)
 {
     handler->canvas = this;
     SetBackgroundColour(* wxWHITE);
@@ -5400,18 +7239,220 @@ void PlotCanvas::OnMouseLeftDown(wxMouseEvent& event)
   }
 }
 
+void PlotCanvas::mkMenu(wxMenu & main)
+{
+  int n=0;
+  for (FocusListCIter i = handler->focus_list.begin(); i != handler->focus_list.end(); ++i, ++n)
+  {
+    wxString item;// = wxString::Format(wxT("%u "), size_t(i->window) % 0xffu);
+    wxMenu * sub = new wxMenu;
+    switch (i->type)
+    {
+      case Focus::WINDOW :
+        item += wxT("window");
+        break;
+      case Focus::LEGEND :
+        item += wxT("legend");
+        sub->Append(FONT_START+n, _("Select Fo&nt..."));
+        sub->Append(PEN_START+n, _("Select &Pen..."));
+        break;
+      case Focus::AXISX :
+        item += wxT("AxisX");
+        sub->Append(FONT_START+n, _("Select Fo&nt..."));
+        sub->Append(PEN_START+n, _("Select &Pen..."));
+        break;
+      case Focus::AXISY :
+        item += wxT("AxisY");
+        sub->Append(FONT_START+n, _("Select Fo&nt..."));
+        sub->Append(PEN_START+n, _("Select &Pen..."));
+        break;
+      case Focus::CURVE :
+        item += wxT("curve");
+        sub->Append(FONT_START+n, _("Select Fo&nt..."));
+        sub->Append(PEN_START+n, _("Select &Pen..."));
+        break;
+      case Focus::TITLE :
+        item += wxT("title");
+        sub->Append(FONT_START+n, _("Select Fo&nt..."));
+        sub->Append(PEN_START+n, _("Select &Colour..."));
+        break;
+      case Focus::GRID :
+        item += wxT("GRID");
+        sub->Append(PEN_START+n, _("Select &Pen for grid..."));
+        sub->Append(SUB_PEN_START+n, _("Select &Pen for subgrid..."));
+        break;
+    }
+    main.AppendSubMenu(sub, item);
+  }
+}
+
 void PlotCanvas::OnMouseRightDown(wxMouseEvent& event)
 {
     event.Skip();
-    handler->ClearIndicators();
-    wxClientDC dc(this);
-    DoPrepareDC(dc);
-    wxCoord w,h;
-    GetVirtualSize(&w, &h);
-    handler->Draw(dc, w, h);
-    //handler->DrawIndicator(dc, xx, yy);
-    SetCursor(wxNullCursor);
-    mode = 0;
+    if (event.ControlDown())
+    {
+      int xx, yy;
+      CalcUnscrolledPosition( event.GetX(), event.GetY(), &xx, &yy);
+      {
+        wxClientDC dc(this);
+        DoPrepareDC(dc);
+        handler->DrawFocus(dc, xx, yy, mask);
+      }
+      wxMenu menu;
+      mkMenu(menu);
+      PopupMenu(&menu);
+      Refresh();
+      //Update();
+    }
+    else
+    {
+      handler->ClearIndicators();
+      wxClientDC dc(this);
+      DoPrepareDC(dc);
+      wxCoord w,h;
+      GetVirtualSize(&w, &h);
+      handler->Draw(dc, w, h);
+      //handler->DrawIndicator(dc, xx, yy);
+      SetCursor(wxNullCursor);
+      mode = 0;
+    }
+}
+
+void PlotCanvas::OnFont(wxCommandEvent& event)
+{
+  int n = event.GetId() - FONT_START;
+  Focus f = handler->focus_list[n];
+  switch (f.type)
+  {
+    case Focus::WINDOW :
+      {
+      
+      }
+      break;
+    case Focus::LEGEND :
+      {
+        wxFont font = wxGetFontFromUser(this, f.window->GetLegendList()[f.iter].fnt, _("Choose the font for legend drawing."));
+        if (font.IsOk())
+        {
+          f.window->GetLegendList()[f.iter].fnt = font;
+	  Refresh();
+        }
+      }
+      break;
+    case Focus::AXISX :
+    case Focus::AXISY :
+      {
+        wxFont font = wxGetFontFromUser(this, f.window->GetAxisFont(), _("Choose the font for axis drawing."));
+        if (font.IsOk())
+        {
+          f.window->SetAxisFont(font);
+	  Refresh();
+        }
+      }
+      break;
+    case Focus::CURVE :
+      {
+      
+      }
+      break;
+    case Focus::TITLE :
+      {
+        wxFont font = wxGetFontFromUser(this, handler->GetTitleFont(), _("Choose the font for title drawing."));
+        if (font.IsOk())
+        {
+          handler->SetTitleFont(font);
+	  Refresh();
+        }
+      }
+      break;
+    case Focus::GRID :
+      {
+      
+      }
+      break;
+  }
+}
+
+void PlotCanvas::OnPen(wxCommandEvent& event)
+{
+  int n = event.GetId() - PEN_START;
+  bool sub_pen = false;
+  if (event.GetId() - SUB_PEN_START >=0)
+  {
+    n = event.GetId() - SUB_PEN_START;
+    sub_pen = true;
+  }
+  Focus f = handler->focus_list[n];
+  switch (f.type)
+  {
+    case Focus::WINDOW :
+      {
+      
+      }
+      break;
+    case Focus::LEGEND :
+      {
+        PenSettingDialog pendlg(this, f.window->GetLegendPen(f.iter));
+	if (pendlg.ShowModal() == wxID_OK)
+	{
+	  f.window->SetLegendPen(pendlg.GetPen(), f.iter);
+	  Refresh();
+	}
+      }
+      break;
+    case Focus::AXISX :
+    case Focus::AXISY :
+      {
+        PenSettingDialog pendlg(this, f.window->GetAxisPen());
+	if (pendlg.ShowModal() == wxID_OK)
+	{
+	  f.window->SetAxisPen(pendlg.GetPen());
+	  Refresh();
+	}
+      }
+      break;
+    case Focus::CURVE :
+      {
+        PenSettingDialog pendlg(this, f.window->at(f.iter)->GetPen());
+	if (pendlg.ShowModal() == wxID_OK)
+	{
+	  f.window->at(f.iter)->SetPen(pendlg.GetPen());
+	  Refresh();
+	}
+      }
+      break;
+    case Focus::TITLE :
+      {
+          wxColour c = wxGetColourFromUser(this, handler->GetTitlePen().GetColour(), _("Colour Setting"));
+          if (c.IsOk())
+          {
+	    wxPen p(c);
+            handler->SetTitlePen(p);
+            Refresh();
+          }
+      }
+      break;
+    case Focus::GRID :
+      if (sub_pen)
+      {
+        PenSettingDialog pendlg(this, handler->GetPosMgr().GetSubGridPen());
+	if (pendlg.ShowModal() == wxID_OK)
+	{
+	  handler->GetPosMgr().SetSubGridPen(pendlg.GetPen());
+	  Refresh();
+	}
+      }
+      else
+      {
+        PenSettingDialog pendlg(this, handler->GetPosMgr().GetGridPen());
+	if (pendlg.ShowModal() == wxID_OK)
+	{
+	  handler->GetPosMgr().SetGridPen(pendlg.GetPen());
+	  Refresh();
+	}
+      }
+      break;
+  }
 }
 
 void PlotCanvas::OnKey(wxKeyEvent& event)
@@ -5432,7 +7473,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
     SetVirtualSize(w, h+10);
     SetScrollRate(5, 5);
     Refresh();
-    Update();
+    //Update();
     SetCursor(wxNullCursor);
     mode = 0;	
 	}
@@ -5454,7 +7495,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
     SetScrollRate(5, 5);
     }
     Refresh();
-    Update();
+    //Update();
     SetCursor(wxNullCursor);
     mode = 0;	
 	}
@@ -5470,7 +7511,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
     SetVirtualSize(w+10, h);
     SetScrollRate(5, 5);
     Refresh();
-    Update();
+    //Update();
     SetCursor(wxNullCursor);
     mode = 0;	
 	}
@@ -5492,7 +7533,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
     SetScrollRate(5, 5);
     }
     Refresh();
-    Update();
+    //Update();
     SetCursor(wxNullCursor);
     mode = 0;	
 	}
@@ -5519,7 +7560,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
 	break;
       case WXK_UP :
 	{
-    handler->GetPosMgr().SetGridHeight(handler->GetPosMgr().GetGridHeight()+1);
+    handler->GetPosMgr().SetGridY(handler->GetPosMgr().GetGridY()+1u);
     handler->ClearIndicators();
     wxClientDC dc(this);
     DoPrepareDC(dc);
@@ -5532,10 +7573,10 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
 	break;
       case WXK_DOWN :
 	{
-    unsigned int gh = handler->GetPosMgr().GetGridHeight()-1;
-    if (gh < 5)
-      gh =5;
-    handler->GetPosMgr().SetGridHeight(gh);
+    unsigned int gh = handler->GetPosMgr().GetGridY()-1u;
+    if (gh < 1u)
+      gh =1u;
+    handler->GetPosMgr().SetGridY(gh);
     handler->ClearIndicators();
     wxClientDC dc(this);
     DoPrepareDC(dc);
@@ -5548,7 +7589,7 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
 	break;
       case WXK_RIGHT :
 	{
-    handler->GetPosMgr().SetGridWidth(handler->GetPosMgr().GetGridWidth()+1);
+    handler->GetPosMgr().SetGridX(handler->GetPosMgr().GetGridX()+1u);
     handler->ClearIndicators();
     wxClientDC dc(this);
     DoPrepareDC(dc);
@@ -5561,10 +7602,10 @@ void PlotCanvas::OnKey(wxKeyEvent& event)
 	break;
       case WXK_LEFT :
 	{
-    unsigned int gh = handler->GetPosMgr().GetGridWidth()-1;
-    if (gh < 5)
-      gh =5;
-    handler->GetPosMgr().SetGridWidth(gh);
+    unsigned int gh = handler->GetPosMgr().GetGridX()-1u;
+    if (gh < 1u)
+      gh =1u;
+    handler->GetPosMgr().SetGridX(gh);
     handler->ClearIndicators();
     wxClientDC dc(this);
     DoPrepareDC(dc);
@@ -5601,7 +7642,7 @@ bool PlotPrintout::OnPrintPage(int page)
 	{
 	    ppi = dc->GetPPI();
             DrawPageOne(dc);
-	    ppi.Set(ppi_x, ppi_y);
+	    ppi.Set(int(ppi_x+0.5), int(ppi_y+0.5));
 	}
 
         return true;
@@ -5669,4 +7710,160 @@ void PlotPrintout::DrawPageOne(wxDC *dc)
 }
 
 
+
+BEGIN_EVENT_TABLE(PenSampleCtrl, wxWindow)
+EVT_PAINT(PenSampleCtrl::OnPaint)
+END_EVENT_TABLE()
+
+PenSampleCtrl::PenSampleCtrl(const wxPen& pen, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name) :
+	wxWindow(parent, id, pos, size, style, name),
+	m_pen(pen)
+{
+}
+
+void PenSampleCtrl::OnPaint(wxPaintEvent& event)
+{
+  wxPaintDC dc(this);
+  dc.SetPen(m_pen);
+  wxCoord w,h;
+  GetVirtualSize(&w, &h);
+  h = h/2;
+  dc.DrawLine(0, h, w, h);
+}
+
+
+BEGIN_EVENT_TABLE(PenSettingDialog, wxDialog)
+EVT_COMBOBOX(XRCID("combo_box_width"), PenSettingDialog::OnWidth)
+EVT_CHOICE(XRCID("choice_style"), PenSettingDialog::OnStyle)
+EVT_BUTTON(XRCID("button_colour"), PenSettingDialog::OnColour)
+END_EVENT_TABLE()
+
+PenSettingDialog::PenSettingDialog(wxWindow* parent, const wxPen & pen)
+{
+    wxXmlResource::Get()->LoadDialog(this, parent, wxT("pen_setting_dlg"));
+  pen_ctrl = new PenSampleCtrl(pen, this, wxID_ANY);
+  wxXmlResource::Get()->AttachUnknownControl(wxT("pen_ctrl"), pen_ctrl, this);
+    combo_box_width = XRCCTRL(*this, "combo_box_width", wxComboBox);
+    combo_box_width->SetSelection(pen.GetWidth());
+    choice_style = XRCCTRL(*this, "choice_style", wxChoice);
+    switch (pen.GetStyle())
+    {
+      case wxSOLID :
+	      choice_style->SetStringSelection(_("SOLID"));
+	      break;
+      case wxTRANSPARENT  :
+	      choice_style->SetStringSelection(_("TRANSPARENT"));
+	      break;
+      case wxDOT  :
+	      choice_style->SetStringSelection(_("DOT"));
+	      break;
+      case wxLONG_DASH  :
+	      choice_style->SetStringSelection(_("LONG_DASH"));
+	      break;
+      case wxSHORT_DASH  :
+	      choice_style->SetStringSelection(_("SHORT_DASH"));
+	      break;
+      case wxDOT_DASH  :
+	      choice_style->SetStringSelection(_("DOT_DASH"));
+	      break;
+      case wxSTIPPLE  :
+	      choice_style->SetStringSelection(_("STIPPLE"));
+	      break;
+      case wxUSER_DASH  :
+	      choice_style->SetStringSelection(_("USER_DASH"));
+	      break;
+      case wxBDIAGONAL_HATCH  :
+	      choice_style->SetStringSelection(_("BDIAGONAL_HATCH"));
+	      break;
+      case wxCROSSDIAG_HATCH  :
+	      choice_style->SetStringSelection(_("CROSSDIAG_HATCH"));
+	      break;
+      case wxFDIAGONAL_HATCH  :
+	      choice_style->SetStringSelection(_("FDIAGONAL_HATCH"));
+	      break;
+      case wxCROSS_HATCH  :
+	      choice_style->SetStringSelection(_("CROSS_HATCH"));
+	      break;
+      case wxHORIZONTAL_HATCH  :
+	      choice_style->SetStringSelection(_("HORIZONTAL_HATCH"));
+	      break;
+      case wxVERTICAL_HATCH  :
+	      choice_style->SetStringSelection(_("VERTICAL_HATCH"));
+	      break;
+    }
+}
+
+void PenSettingDialog::OnWidth(wxCommandEvent& event)
+{
+  long i;
+  if (combo_box_width->GetValue().ToLong(&i))
+  {
+    pen_ctrl->GetPen().SetWidth((int)i);
+  }
+    pen_ctrl->Refresh();
+}
+
+void PenSettingDialog::OnStyle(wxCommandEvent& event)
+{
+  wxString s = choice_style->GetStringSelection();
+  if (s == _("SOLID"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxSOLID);
+  }
+  else if (s == _("TRANSPARENT"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxTRANSPARENT );
+  }
+  else if (s == _("DOT"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxDOT );
+  }
+  else if (s == _("LONG_DASH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxLONG_DASH );
+  }
+  else if (s == _("SHORT_DASH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxSHORT_DASH );
+  }
+  else if (s == _("DOT_DASH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxDOT_DASH );
+  }
+  else if (s == _("BDIAGONAL_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxBDIAGONAL_HATCH);
+  }
+  else if (s == _("CROSSDIAG_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxCROSSDIAG_HATCH );
+  }
+  else if (s == _("FDIAGONAL_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxFDIAGONAL_HATCH );
+  }
+  else if (s == _("CROSS_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxCROSS_HATCH );
+  }
+  else if (s == _("HORIZONTAL_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxHORIZONTAL_HATCH );
+  }
+  else if (s == _("VERTICAL_HATCH"))
+  {
+    pen_ctrl->GetPen().SetStyle(wxVERTICAL_HATCH );
+  }
+    pen_ctrl->Refresh();
+}
+
+void PenSettingDialog::OnColour(wxCommandEvent& event)
+{
+  wxColour c = wxGetColourFromUser(this, pen_ctrl->GetPen().GetColour(), _("Colour Setting"));
+  if (c.IsOk())
+  {
+    pen_ctrl->GetPen().SetColour(c);
+    pen_ctrl->Refresh();
+  }
+}
 

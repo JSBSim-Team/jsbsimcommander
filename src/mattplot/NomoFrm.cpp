@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
- #pragma implementation "NomoFrame.h"
+ #pragma implementation
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -25,6 +25,7 @@
 #include <wx/xrc/xmlres.h>
 
 #include "NomoFrm.h"
+#include "MyApp.h"
 #include "mattplot/plot.h"
 
 //-----------------------------------------------------------------------------
@@ -41,6 +42,8 @@
 // when starting out with wxWidgets.
 BEGIN_EVENT_TABLE(NomographFrame, wxFrame)
   EVT_NOTEBOOK_PAGE_CHANGING(XRCID("notebook"), NomographFrame::OnPageChanging) 
+  EVT_MENU(wxID_SAVE, NomographFrame::OnSave)
+  EVT_MENU(wxID_SAVEAS, NomographFrame::OnSaveAs)
 END_EVENT_TABLE()
 
 //-----------------------------------------------------------------------------
@@ -75,7 +78,7 @@ NomographFrame::NomographFrame(wxWindow* parent, const wxString & inputfile)
   handler = new PlotHandler (this);
   PushEventHandler (handler);
 
-  canvas = new PlotCanvas(this, wxID_ANY, handler);
+  canvas = new PlotCanvas(this, wxID_ANY, handler, wxDefaultPosition, wxSize(800,600));
   wxXmlResource::Get()->AttachUnknownControl(wxT("canvas"), canvas, this);
 
   if (!inputfile.IsEmpty())
@@ -101,7 +104,6 @@ void NomographFrame::OnPageChanging(wxNotebookEvent &event)
   }
   else if (event.GetOldSelection() == 0)
   {
-    static wxString buff;
     if (buff != handler->GetFileName())
     {
       buff = handler->GetFileName();
@@ -112,5 +114,29 @@ void NomographFrame::OnPageChanging(wxNotebookEvent &event)
       }
     }
   }
+}
+
+void NomographFrame::OnSave(wxCommandEvent& event)
+{
+  buff.Empty();
+  event.Skip();
+  if (notbook->GetSelection() == 1)
+  {
+    if (!text_ctrl_xml->IsModified())
+      return;
+    if (!text_ctrl_xml->SaveFile(handler->GetFileName()))
+    {
+    }
+    if (!handler->Load(handler->GetFileName()))
+    {
+    }
+    buff = handler->GetFileName();
+  }
+}
+
+void NomographFrame::OnSaveAs(wxCommandEvent& event)
+{
+  buff.Empty();
+  event.Skip();
 }
 

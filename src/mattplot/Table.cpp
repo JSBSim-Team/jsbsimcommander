@@ -44,7 +44,6 @@ INCLUDES
 # include <iomanip>
 #endif
 using std::istringstream;
-using JSBSim::FGPropertyManager;
 namespace Matt{
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CLASS IMPLEMENTATION

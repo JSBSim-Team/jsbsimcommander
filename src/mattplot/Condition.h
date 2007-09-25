@@ -81,7 +81,6 @@ public:
   bool Evaluate(void);
   void PrintCondition(void);
 
-private:
   enum eComparison {ecUndef=0, eEQ, eNE, eGT, eGE, eLT, eLE, eMOD};
   enum eLogic {elUndef=0, eAND, eOR};
   map <string, eComparison> mComparison;
@@ -89,6 +88,7 @@ private:
 
   FGPropertyManager *TestParam1, *TestParam2, *PropertyManager;
   //Matt's change here
+  string property1, property2;
   float sign1, sign2;
   double TestValue1, TestValue2;
   eComparison Comparison;

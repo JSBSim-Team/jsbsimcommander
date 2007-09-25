@@ -22,7 +22,12 @@ using std::map;
 #include "input_output/FGXMLElement.h"
 #include "input_output/FGPropertyManager.h"
 using JSBSim::Element;
-using JSBSim::FGPropertyManager;
+
+namespace JSBSim
+{
+  class FGFunction;
+};
+using JSBSim::FGFunction;
 
 #include "Condition.h"
 using Matt::Condition;
@@ -100,7 +105,6 @@ class Curve : public Matt::BSplineD
       CURVE_POLYLINE
     };
 
-    //TODO
     enum CURVE_TEXT{
       CURVE_NO_TEXT,
       CURVE_LEFT_UP,
@@ -109,7 +113,6 @@ class Curve : public Matt::BSplineD
       CURVE_RIGHT_DOWN
     };
 
-    //TODO
     enum CURVE_LABEL{
       CURVE_LABEL_NONE,
       CURVE_LABEL_PREFIX,
@@ -177,10 +180,8 @@ class Curve : public Matt::BSplineD
      */
     void DrawPoints(wxDC& dc, wxCoord x, wxCoord y, wxCoord w, wxCoord h, double minx, double maxx, double miny, double maxy, AXISDIR axis_dir);
 
-    //TODO
     void DrawText(wxDC& dc, const wxPoint * list, int s);
 
-    //TODO
     wxFont GetFont() const { return fnt; }
     void   SetFont(const wxFont & f) { fnt = f; }
 
@@ -220,7 +221,6 @@ class Curve : public Matt::BSplineD
     /// Set the text drawed on the curve
     void     SetLabel(const wxString & t) { label = t; }
 
-    //TODO
     CURVE_TEXT GetTextPos() const { return text_pos; }
     void     SetTextPos(const CURVE_TEXT & t) { text_pos = t; }
 
@@ -244,6 +244,11 @@ class Curve : public Matt::BSplineD
 
     /// Load the info from XML file.
     void Load(Element * element);
+
+    /// Export the info from XML file.
+    void Export(wxTextOutputStream & tstream, const wxString & prefix, const unsigned & n, bool reverse=false) const;
+
+    bool operator != (const Curve & c) const;
 
     /** Init the symbol points.
      * 
@@ -291,6 +296,11 @@ public :
   /// Load info from XML file.
   bool Load(Element * element);
 
+  /** Save graph from file.
+   * @param filename The XML file of the graph.
+   */
+  void Export(wxTextOutputStream & tstream, const wxString & prefix) const;
+
   /** Get the area to draw based on.
    *
    * @param r The number in the row, start from 0.
@@ -330,7 +340,6 @@ public :
   /// Expire the cache.
   void ExpireCache(void);
 
-  //TODO
   /** Draw the grid on the 'paper'.
    *
    * @param dc The DC to draw the grid.
@@ -362,16 +371,22 @@ public :
   unsigned GetGridWidth() const { return grid_width; }
   unsigned GetGridW() const { return width; }
 
-  /// Set the width of each grid.
-  void   SetGridWidth(const unsigned & s) { grid_width = s; ExpireCache();} 
-
   /// Get the height of each grid.
   unsigned GetGridHeight() const { return grid_height; }
   unsigned GetGridH() const { return height; }
 
-  /// Set the height of each grid.
-  void   SetGridHeight(const unsigned & s) { grid_height = s; ExpireCache();} 
+  /// Get how many pic to div the width in x dir.
+  unsigned GetGridX() const { return grid_x; }
   
+  /// Get how many pic to div the width in x dir.
+  void   SetGridX(const unsigned & s) { grid_x = s; ExpireCache(); } 
+  
+  /// Get how many pic to div the height in y dir.
+  unsigned GetGridY() const { return grid_y; }
+  
+  /// Get how many pic to div the height in y dir.
+  void   SetGridY(const unsigned & s) { grid_y = s; ExpireCache(); } 
+
   /// Get how many pic to div the grid in x dir.
   unsigned GetSubGridX() const { return sub_grid_x; }
   
@@ -386,13 +401,13 @@ public :
 
   /// div info
   struct PosMap{
-    vector<size_t> row_list;
-    vector<size_t> col_list;
+    vector<wxUint32> row_list;
+    vector<wxUint32> col_list;
     bool cached;
-    vector<wxCoord> row_pos;
-    vector<wxCoord> col_pos;  
-    vector<size_t> row_size;
-    vector<size_t> col_size;
+    vector<wxUint32> row_pos;
+    vector<wxUint32> col_pos;  
+    vector<wxUint32> row_size;
+    vector<wxUint32> col_size;
   };
 
   /// Get the Div.
@@ -414,6 +429,8 @@ protected :
   unsigned int grid_height;
   unsigned int sub_grid_x;
   unsigned int sub_grid_y;
+  unsigned int grid_x;
+  unsigned int grid_y;
   wxCoord width;
   wxCoord height;
   wxPen  pen_grid;
@@ -422,7 +439,25 @@ protected :
 
 
 class PlotHandler;
+class PlotWindow;
 
+struct Focus{
+  PlotWindow * window;
+  enum Type {
+    WINDOW = 0x01,
+    LEGEND = 0x02,
+    AXISX  = 0x04,
+    AXISY  = 0x08,
+    CURVE  = 0x10,
+    TITLE  = 0x20,
+    GRID   = 0x40,
+  } type;
+  unsigned iter;
+};
+
+typedef vector<Focus> FocusList;
+typedef FocusList::const_iterator FocusListCIter;
+typedef FocusList::iterator FocusListIter;
 
 /** The window to draw the curves.
   * Draw curves in the window.
@@ -472,6 +507,11 @@ class PlotWindow
     /// Load from the XML file after being constructed.
     bool Load(Element * element);
 
+    /** Save graph from file.
+      * @param filename The XML file of the graph.
+      */
+    void Export(wxTextOutputStream & tstream, const wxString & prefix) const;
+
     /** Draw the plot window.
      *
      * @param dc The DC to be drawed on.
@@ -487,6 +527,15 @@ class PlotWindow
      * @param ypos The y pos of the mouse.
      */
     void DrawIndicator(wxDC& dc, PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos);
+
+    /** Draw the focus zone
+     *
+     * @param dc The DC to be drawed on.
+     * @param pos_mgr The positon manager to support pos info.
+     * @param xpos The x pos of the mouse.
+     * @param ypos The y pos of the mouse.
+     */
+    void DrawFocus(wxDC& dc, PosMgr& pos_mgr, wxCoord &xpos, wxCoord &ypos, int mask=-1);
 
     /** Set the position of the legend
      *
@@ -588,40 +637,40 @@ class PlotWindow
     void   SetAxisPen(const wxPen & p) { pen_axis = p; }
    
     /// Whether show the legend.
-    bool   IsShowLegend(const int & no=0) const { return show_legend[no]; }
+    bool   IsShowLegend(const int & no=0) const { return legend_list[no].show; }
    
     /// Set whether show the legend.
-    void   ShowLegend(bool b=true, const int & no=0) { show_legend[no] = b; }
+    void   ShowLegend(bool b=true, const int & no=0) { legend_list[no].show = b; }
     
     /// Get the font to draw the legend.
-    wxFont GetLegendFont(const int & no=0) const { return fnt_legend[no]; }
+    wxFont GetLegendFont(const int & no=0) const { return legend_list[no].fnt; }
     
     /// Set the font to draw the legend.
-    void   SetLegendFont(const wxFont & f, const int & no=0) { fnt_legend[no] = f; }
+    void   SetLegendFont(const wxFont & f, const int & no=0) { legend_list[no].fnt = f; }
     
     /// Get the pen to draw the legend.
-    wxPen  GetLegendPen(const int & no=0) const { return pen_legend[no]; }
+    wxPen  GetLegendPen(const int & no=0) const { return legend_list[no].pen; }
     
     /// Set the pen to draw the legend.
-    void   SetLegendPen(const wxPen & p, const int & no=0) { pen_legend[no] = p; }
+    void   SetLegendPen(const wxPen & p, const int & no=0) { legend_list[no].pen = p; }
     
     /// Get the X pos of the legend.
-    double GetLegendPosX(const int & no=0) const { return pos_x_legend[no]; }
+    double GetLegendPosX(const int & no=0) const { return legend_list[no].pos_x; }
     
     /// Set the X pos of the legend in the range of [0,1].
-    void   SetLegendPosX(const double & x, const int & no=0) { pos_x_legend[no] = x; }
+    void   SetLegendPosX(const double & x, const int & no=0) { legend_list[no].pos_x = x; }
     
     /// Get the Y pos of the legend.
-    double GetLegendPosY(const int & no=0) const { return pos_y_legend[no]; }
+    double GetLegendPosY(const int & no=0) const { return legend_list[no].pos_y; }
     
     /// Set the Y pos of the legend in the range of [0,1].
-    void   SetLegendPosY(const double & y, const int & no=0) { pos_y_legend[no] = y; }
+    void   SetLegendPosY(const double & y, const int & no=0) { legend_list[no].pos_y = y; }
     
     /// Set the pos of the legend lines out.
-    double GetLegendValueX(const int & no=0) const { return value_x_legend[no]; }
+    double GetLegendValueX(const int & no=0) const { return legend_list[no].value_x; }
     
     /// Set the pos of the legend lines out in the range of [0,1].
-    void   SetLegendValueX(const double & x, const int & no=0) { value_x_legend[no] = x; }
+    void   SetLegendValueX(const double & x, const int & no=0) { legend_list[no].value_x = x; }
 
     /* Axis info */
     
@@ -675,7 +724,6 @@ class PlotWindow
     /// Set the min X value, if not auto-range.
     void   SetMinX(const double & min) { min_cx = min; }
     
-    //TODO
     /// Get the X axis mark mode  0: auto; 1:base on interval value; 2: base on list
     int    GetXMarkMode() const { return x_mark_mode; }
     
@@ -789,6 +837,24 @@ class PlotWindow
     void     SetYLabel(const wxString & s) { str_y_label = s; }
 
     void  GetAxisLabelExtent(wxDC &dc, wxCoord &lw, wxCoord &lh);
+
+    struct Legend{
+      bool show;
+      double value_x;
+      double pos_x;
+      double pos_y;
+      wxFont fnt;
+      wxPen  pen;
+      bool align_left;
+      bool indicate_left;
+      wxRect rect;
+    };
+    typedef vector<Legend> LegendList;
+    typedef LegendList::iterator LegendListIter;
+    typedef LegendList::const_iterator LegendListCIter;
+
+    LegendList & GetLegendList() {return legend_list;}
+
   protected :
     /*
      * get the boundary
@@ -798,8 +864,8 @@ class PlotWindow
     double getMaxX();
     double getMinX();
 
-    size_t row_pos;
-    size_t col_pos;
+    wxCoord row_pos;
+    wxCoord col_pos;
     unsigned mgr_pos;
     AXISDIR axis_dir;
 
@@ -811,6 +877,30 @@ class PlotWindow
      */
     Curve * cur_curve;
     vector<Curve *> curve_list;
+    bool is_combine_curves;
+    double combine_curves_distance;
+    
+    struct CurvesTag{
+      unsigned ns;
+      FGPropertyManager * property;
+      vector <FGFunction *> func_list;
+      Condition * data_condition;
+      wxString data_full_name;
+      wxString table_type;
+      unsigned ne;
+      wxString xcr; // 2D
+      wxString base_name; //3D
+      int from;
+      bool nofilter;
+      unsigned dest_num;
+      wxString coord; //4D
+      bool strange;
+    };
+    typedef vector<CurvesTag> CurvesTagList;
+    typedef CurvesTagList::const_iterator CurvesTagListCIter;
+    typedef CurvesTagList::iterator CurvesTagListIter;
+
+    CurvesTagList curve_tag_list;
 
     double distance(Curve * c1, Curve * c2);
     bool min_distance(Curve *, const double &);
@@ -830,6 +920,7 @@ class PlotWindow
     int x_info_from;
     vector< double > x_mark_list;
     wxString str_x_label;
+    wxRect rect_axis_x;
 
     /*
      * y axis setting
@@ -845,18 +936,12 @@ class PlotWindow
     double y_mark_interval;
     vector< double > y_mark_list;
     wxString str_y_label;
+    wxRect rect_axis_y;
 
     /*
      * legend setting
      */
-    vector< bool > show_legend;
-    vector< double > value_x_legend;
-    vector< double > pos_x_legend;
-    vector< double > pos_y_legend;
-    vector< wxFont > fnt_legend;
-    vector< wxPen >  pen_legend;
-    vector< bool > align_left_legend;
-    vector< bool > indicate_left_legend;
+    LegendList legend_list;
 
     vector<PlotWindow *> children;
   
@@ -869,13 +954,14 @@ class PlotWindow
     void Draw(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const unsigned & gw, const unsigned & gh);
     bool GetIndicatePos(const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, wxCoord &xpos, wxCoord &ypos, double &xvalue, double &yvalue, Curve *curve);
     void DrawIndicator(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const wxCoord &xpos, const wxCoord &ypos, const double &xvalue, const double &yvalue);
+    void DrawFocus(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const wxCoord &xpos, const wxCoord &ypos, int mask=-1);
     bool SelectCurrentCurve(const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const wxCoord &xpos, const wxCoord &ypos);
     void draw_y_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h);
     void draw_x_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h);
     void draw_curve(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h);
-    void draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, const int & no);
-    static void draw_vertical_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &yh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &right);
-    static void draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &xh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &bottom);
+    void draw_legend(wxDC& dc, const wxCoord &x, const wxCoord &y, const size_t &w, const size_t &h, LegendListIter & iter);
+    static wxRect draw_vertical_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &yh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &right);
+    static wxRect draw_horizon_axis(wxDC& dc, const wxCoord &x, const wxCoord &y, const wxCoord &xh, const double &min, const double &max, vector<double> &mark_list, const wxString & text, const bool &bottom);
     static void get_interval(double & min, double & max, unsigned int num, double & mark_interval, vector< double > & mark_list);
     static bool pitch_col(vector<double> &x, vector<double> &y, double &key,  vector <unsigned> & list, Table * table, Condition *data_condition, FGPropertyManager *property);
 };
@@ -913,6 +999,11 @@ class PlotHandler: public wxEvtHandler
      *  it will draw the indicate .
      */
     void DrawIndicator(wxDC &dc, wxCoord x, wxCoord y);
+    
+    /** 
+     *  it will draw the focus zone .
+     */
+    void DrawFocus(wxDC &dc, wxCoord x, wxCoord y, int mask=-1);
     
     /** 
      *  it will reset the position of the legend.
@@ -977,8 +1068,15 @@ class PlotHandler: public wxEvtHandler
       */
     bool Load(const wxString & filename);
 
-    // TODO
-    void Save();
+    /** Save graph from file.
+      * @param filename The XML file of the graph.
+      */
+    bool Save(const wxString & filename=wxEmptyString);
+
+    /** Save graph from file.
+      * @param filename The XML file of the graph.
+      */
+    void Export(wxTextOutputStream & tstream, const wxString & prefix) const;
 
     bool IsDrawIndicator(void) const {return isDrawIndicator;}
     void DrawIndicator(bool b=true) 
@@ -1010,6 +1108,9 @@ class PlotHandler: public wxEvtHandler
      */
     PosMgr & GetPosMgr() {return pos_mgr;}
 
+    void AddFocus(const Focus & f) { focus_list.push_back(f); }
+    void ClearFocus() { focus_list.clear(); }
+
   protected :
     
     /** 
@@ -1036,6 +1137,7 @@ class PlotHandler: public wxEvtHandler
     wxFont fnt_title;
     wxString str_title;
     wxPen  pen_title;
+    wxRect rect_title;
 
     /**
      * plot windows
@@ -1043,6 +1145,8 @@ class PlotHandler: public wxEvtHandler
     vector<PlotWindow *> windows_list;
 
     map<wxString, Table> table_map;
+    vector<TableList> table_list_list;
+    vector<TableList> table_list_clist;
 
     /**
      * manage positions of windows
@@ -1069,7 +1173,9 @@ class PlotHandler: public wxEvtHandler
     bool Load(Element * element);
 
     void get_paper_size(int &w, int &h);
-    
+
+    FocusList focus_list;
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -1091,16 +1197,27 @@ class PlotCanvas: public wxScrolledWindow
     /// Destructor
     ~PlotCanvas(void){};
 
+    enum {
+      FOCUS_START = 10000,
+      FONT_START  = 10100,
+      PEN_START = 10200,
+      SUB_PEN_START = 10300,
+    };
+
     // Event Handler Functions.
     void OnPaint(wxPaintEvent& event);
     void OnKey(wxKeyEvent& event);
     void OnMotion(wxMouseEvent& event);
     void OnMouseLeftDown(wxMouseEvent& event);
     void OnMouseRightDown(wxMouseEvent& event);
+    void mkMenu(wxMenu &menu);
+    void OnFont(wxCommandEvent& event);
+    void OnPen(wxCommandEvent& event);
 
   protected:
     PlotHandler *handler;
     int mode;
+    int mask;
     int no;
 DECLARE_EVENT_TABLE()
 };
@@ -1175,5 +1292,38 @@ void LoadPainter(Element * element, wxPen *pen, wxFont *fnt=NULL);
   */
 template <class T>
 void readNumsfromString(vector<T> &list, const wxString & str);
+
+
+class PenSampleCtrl: public wxWindow {
+public :
+    PenSampleCtrl(const wxPen& pen, wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxPanelNameStr);
+    void SetPen(const wxPen& pen) {m_pen = pen;}
+    wxPen GetPen() const {return m_pen;}
+    wxPen& GetPen() {return m_pen;}
+
+    void OnPaint(wxPaintEvent& event);
+protected :
+    wxPen m_pen;
+
+    DECLARE_EVENT_TABLE();
+};
+
+class PenSettingDialog: public wxDialog {
+public:
+    /// Constructor
+    PenSettingDialog(wxWindow* parent, const wxPen & pen);
+
+    wxPen GetPen() const {return pen_ctrl->GetPen();}
+    void OnWidth(wxCommandEvent& event);
+    void OnStyle(wxCommandEvent& event);
+    void OnColour(wxCommandEvent& event);
+
+protected:
+    PenSampleCtrl* pen_ctrl;
+    wxComboBox* combo_box_width;
+    wxChoice* choice_style;
+
+    DECLARE_EVENT_TABLE();
+};
 
 

@@ -54,6 +54,7 @@ FORWARD DECLARATIONS
 using std::vector;
 using std::stringstream;
 using JSBSim::Element;
+using JSBSim::FGPropertyManager;
 
 namespace Matt{
 
@@ -62,6 +63,7 @@ struct TablePair;
 
 typedef vector<Table> TableList;
 typedef TableList::iterator TableListIter;
+typedef TableList::const_iterator TableListCIter;
 
 typedef vector<double> DoubleList;
 typedef DoubleList::iterator DoubleListIter;
@@ -98,7 +100,7 @@ class Table
 public:
 	
   /// Constructor
-  Table(JSBSim::FGPropertyManager* prop=NULL):
+  Table(FGPropertyManager* prop=NULL):
 	  dimension(0u), 
 	  lookupProperty(NULL),
 	  lastIndex(1),
@@ -113,7 +115,7 @@ public:
   //Table(const Table& table);
 
   /// The constructor for tables
-  static TableList Load(Element* el, JSBSim::FGPropertyManager * prop=NULL);
+  static TableList Load(Element* el, FGPropertyManager * prop=NULL);
   
   double GetValue(DoubleList keys, bool *flag=NULL);
 
@@ -125,6 +127,16 @@ public:
   string GetName() const {return name;}
 
   string GetNameLabel() const {return label;}
+
+  const ValuePairList &GetData() const 
+  {
+     return Data;
+  }
+
+  const TablePairList &GetTables() const 
+  {
+     return Tables;
+  }
 
   size_t GetSize() const 
   {
@@ -166,7 +178,7 @@ private:
 
   string indepVar;
   string indepVarLabel;
-  JSBSim::FGPropertyManager *lookupProperty;
+  FGPropertyManager *lookupProperty;
 
   TablePairList Tables;
   TableList avg_table;
@@ -176,7 +188,7 @@ private:
 
   unsigned lastIndex;
 
-  JSBSim::FGPropertyManager* PropertyManager;
+  FGPropertyManager* PropertyManager;
 };
 
   struct TablePair{

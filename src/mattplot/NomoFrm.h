@@ -31,7 +31,7 @@ SENTRY
 #define NOMOFRM_H
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
- #pragma interface "NomographFrm.h"
+ #pragma interface
 #endif
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,9 +77,12 @@ protected:
     
     wxTextCtrl* text_ctrl_xml;
     wxNotebook* notbook;
+    wxString buff;
 
 public:
     void OnPageChanging(wxNotebookEvent &event);
+    void OnSave(wxCommandEvent& event);
+    void OnSaveAs(wxCommandEvent& event);
     DECLARE_EVENT_TABLE()
 };
 

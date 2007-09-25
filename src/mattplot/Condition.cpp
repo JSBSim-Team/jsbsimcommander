@@ -88,7 +88,6 @@ Condition::Condition(Element* element, FGPropertyManager* PropertyManager) :
 Condition::Condition(string test, FGPropertyManager* PropertyManager) :
   PropertyManager(PropertyManager), isGroup(false)
 {
-  string property1, property2, compare_string;
   Element* condition_element;
 
   InitializeConditionals();
