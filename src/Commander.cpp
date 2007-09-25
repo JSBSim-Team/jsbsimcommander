@@ -276,11 +276,11 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
         << _("\"comment\"") << wxT("\n");
       for (int i=0; i < all_property.GetCount(); ++i)
       {
-        out << "\"" << all_property[i] << "\"" << wxT(",") 
-          << "\"" << all_desc[i] << "\"" << wxT(",")
-          << "\"" << all_unit[i] << "\"" << wxT(",")
-          << "\"" << all_access[i] << "\"" << wxT(",")
-          << "\"" << all_comment[i] << "\"" << wxT("\n");
+        out << wxT("\"") << all_property[i] << wxT("\"") << wxT(",") 
+          << wxT("\"") << all_desc[i] << wxT("\"") << wxT(",")
+          << wxT("\"") << all_unit[i] << wxT("\"") << wxT(",")
+          << wxT("\"") << all_access[i] << wxT("\"") << wxT(",")
+          << wxT("\"") << all_comment[i] << wxT("\"") << wxT("\n");
       }
     }
     size_t count = parser.GetParamCount();
