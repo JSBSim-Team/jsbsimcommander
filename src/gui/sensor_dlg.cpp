@@ -381,15 +381,15 @@ void SensorComponentEditor::GetDataIn(Sensor * g)
   text_ctrl_1->SetValue(g->GetDescription());
   
   radio_box_noise_type->SetSelection(g->GetNoiseType());
-  text_ctrl_2->SetValue("");   *text_ctrl_2 << g->GetNoise();
-  text_ctrl_lag->SetValue(""); *text_ctrl_lag << g->GetLag();
-  text_ctrl_4->SetValue("");   *text_ctrl_4 << g->GetDriftRate();
-  text_ctrl_4_1->SetValue(""); *text_ctrl_4_1 << g->GetBias();
-  text_ctrl_7->SetValue("");   *text_ctrl_7 << g->GetMax();
-  text_ctrl_6->SetValue("");   *text_ctrl_6 << g->GetMin();
+  text_ctrl_2->SetValue(wxT(""));   *text_ctrl_2 << g->GetNoise();
+  text_ctrl_lag->SetValue(wxT("")); *text_ctrl_lag << g->GetLag();
+  text_ctrl_4->SetValue(wxT(""));   *text_ctrl_4 << g->GetDriftRate();
+  text_ctrl_4_1->SetValue(wxT("")); *text_ctrl_4_1 << g->GetBias();
+  text_ctrl_7->SetValue(wxT(""));   *text_ctrl_7 << g->GetMax();
+  text_ctrl_6->SetValue(wxT(""));   *text_ctrl_6 << g->GetMin();
   slider_1->SetValue(g->GetBits());
   //g->GetQuantized();
-  text_ctrl_5->SetValue("");   *text_ctrl_5 << g->GetQuantProperty();
+  text_ctrl_5->SetValue(wxT(""));   *text_ctrl_5 << g->GetQuantProperty();
 }
 
 /**

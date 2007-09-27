@@ -59,7 +59,7 @@ Sensor::Sensor (double w, double h, const wxString & Name )
   NoiseType = 0;
   bits = 0;
   quantized = 0;
-  quant_property = "";
+  quant_property = wxEmptyString;
   max=0;
   min=0;
   bias=0;
@@ -194,9 +194,9 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
     } else {
       stream << Pre << wxT("<quantization>") << endl;
     }
-    stream << Pre << wxT("  <bits>") << bits << "</bits>" << endl;
-    stream << Pre << wxT("  <min>") << min << "</min>" << endl;
-    stream << Pre << wxT("  <max>") << min << "</max>" << endl;
+    stream << Pre << wxT("  <bits>") << bits << wxT("</bits>") << endl;
+    stream << Pre << wxT("  <min>") << min << wxT("</min>") << endl;
+    stream << Pre << wxT("  <max>") << min << wxT("</max>") << endl;
     if (!quant_property.empty()) {
       stream << Pre << wxT("</quantization>") << endl;
     }
@@ -223,10 +223,10 @@ void Sensor::ExportXML(wxTextOutputStream & stream, const wxString & prefix)
 /**
 * ImportXML ====================================================================
 
-<sensor name=”name” rate_group=”name”>
+<sensor name=?name? rate_group=?name?>
   <input> property </input>
   <lag> number </lag>
-  <noise variation=”PERCENT|ABSOLUTE”> number </noise>
+  <noise variation=?PERCENT|ABSOLUTE?> number </noise>
   <quantization name="name">
     <bits> number </bits>
     <min> number </min>
@@ -244,7 +244,7 @@ wxArrayString Sensor::ImportXML(JSBSim::Element * element)
 
   JSBSim::Element* quantization_element = element->FindElement("quantization");
   if ( quantization_element) {
-    quant_property = quantization_element->GetAttributeValue("name");
+    quant_property = std2wxstr(quantization_element->GetAttributeValue("name"));
     if ( quantization_element->FindElement("bits") ) {
       bits = (int)quantization_element->FindElementValueAsNumber("bits");
     }

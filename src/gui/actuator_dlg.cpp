@@ -276,10 +276,10 @@ void ActuatorComponentEditor::GetDataIn(Actuator * g)
 
   txtEd_OutputProperty->SetValue(g->GetOutputName());
 
-  txtEd_Lag->SetValue("");        *txtEd_Lag << g->GetLag();
-  txtEd_RateLimit->SetValue("");  *txtEd_RateLimit << g->GetRate_Limit();
-  txtEd_Hysteresis->SetValue(""); *txtEd_Hysteresis << g->GetHysteresis_Width();
-  txtEd_Bias->SetValue("");       *txtEd_Bias << g->GetBias();
+  txtEd_Lag->SetValue(wxT(""));        *txtEd_Lag << g->GetLag();
+  txtEd_RateLimit->SetValue(wxT(""));  *txtEd_RateLimit << g->GetRate_Limit();
+  txtEd_Hysteresis->SetValue(wxT("")); *txtEd_Hysteresis << g->GetHysteresis_Width();
+  txtEd_Bias->SetValue(wxT(""));       *txtEd_Bias << g->GetBias();
 
   if (inputs.GetCount() > 0) {
     if (inputs[0] != wxT("NULL"))

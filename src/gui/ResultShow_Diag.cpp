@@ -27,13 +27,14 @@
 
 #include <wx/wfstream.h>
 #include <wx/mstream.h>
+#include <wx/sstream.h>
 #include <wx/txtstrm.h>
 
 #include "ResultShow_Diag.h"
 
 wxArrayString readStrsfromString(const wxString & str)
 {
-  wxMemoryInputStream mis(str, str.Length());
+  wxStringInputStream mis(str);
   wxTextInputStream tis(mis);
   tis.SetStringSeparators(wxT("\t,"));
 
@@ -56,7 +57,7 @@ wxArrayString readStrsfromString(const wxString & str)
 
 void readNumsfromString(std::vector<double> &list, const wxString & str)
 {
-  wxMemoryInputStream mis(str, str.Length());
+  wxStringInputStream mis(str);
   wxTextInputStream tis(mis);
   tis.SetStringSeparators(wxT("\t, "));
 
