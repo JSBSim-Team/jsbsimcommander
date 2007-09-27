@@ -138,8 +138,9 @@ void make_order(vector<double> &x, vector<double> &y, size_t num)
 void LoadColour(Element * element, wxColour &colour)
 {
     wxString c = std2wxstr(element->GetDataLine());
+#if wxCHECK_VERSION(2, 7, 0)
     colour.Set(c);
-    /*
+#else
     if (c.Length() == 7 && c[0] == wxChar('#'))
     {
       unsigned long r,g,b;
@@ -149,7 +150,7 @@ void LoadColour(Element * element, wxColour &colour)
       c.Mid(5, 2).ToULong(&b, 16);
       colour.Set((unsigned char)r, (unsigned char)g, (unsigned char)b);
     }
-    */
+#endif
 }
 
 void LoadPen(Element * element, wxPen &pen)
@@ -235,6 +236,7 @@ void LoadPen(Element * element, wxPen &pen)
 
 void LoadFont(Element * element, wxFont &fnt)
 {
+#if wxCHECK_VERSION(2, 7, 0)
   {
    wxString info = std2wxstr(element->FindElementValue("NativeFontInfo"));
    if (!info.IsEmpty() && fnt.SetNativeFontInfo(info))
@@ -249,7 +251,7 @@ void LoadFont(Element * element, wxFont &fnt)
      return;
    }
   }
-
+#endif
    double size = element->FindElementValueAsNumber("size");
    if (size < 9999 && size > 0 )
    {
@@ -354,7 +356,11 @@ void LoadPainter(Element * element, wxPen *pen, wxFont *fnt)
 void ExportColour(wxTextOutputStream & tstream, const wxString & prefix, const wxColour &color, const wxString &tag=wxT("colour"))
 {
   tstream << prefix << _("<!-- Colour Setting. Initial with '#', followd with RGB Hex number. -->\n");
+#if wxCHECK_VERSION(2, 7, 0)
   tstream << prefix << wxT("<") << tag << wxT(">") << color.GetAsString(wxC2S_HTML_SYNTAX) << wxT("</") << tag << wxT(">\n");
+#else
+  tstream << prefix << wxT("<") << tag << wxT(">") << wxString::Format(wxT("#%.2X%.2X%.2X"), (unsigned int)color.Red(), (unsigned int)color.Green(), (unsigned int)color.Blue()) << wxT("</") << tag << wxT(">\n");
+#endif
 }
 
 void ExportPen(wxTextOutputStream & tstream, const wxString & prefix, const wxPen &pen, const wxString &tag=wxT("pen"))
@@ -7282,7 +7288,11 @@ void PlotCanvas::mkMenu(wxMenu & main)
         sub->Append(SUB_PEN_START+n, _("Select &Pen for subgrid..."));
         break;
     }
+#if wxCHECK_VERSION(2, 7, 0)
     main.AppendSubMenu(sub, item);
+#else
+    main.Append(wxID_ANY, item, sub);
+#endif
   }
 }
 
@@ -7331,8 +7341,13 @@ void PlotCanvas::OnFont(wxCommandEvent& event)
       break;
     case Focus::LEGEND :
       {
+#if wxCHECK_VERSION(2, 7, 0)
         wxFont font = wxGetFontFromUser(this, f.window->GetLegendList()[f.iter].fnt, _("Choose the font for legend drawing."));
         if (font.IsOk())
+#else
+        wxFont font = wxGetFontFromUser(this, f.window->GetLegendList()[f.iter].fnt);
+        if (font.Ok())
+#endif
         {
           f.window->GetLegendList()[f.iter].fnt = font;
 	  Refresh();
@@ -7342,8 +7357,13 @@ void PlotCanvas::OnFont(wxCommandEvent& event)
     case Focus::AXISX :
     case Focus::AXISY :
       {
+#if wxCHECK_VERSION(2, 7, 0)
         wxFont font = wxGetFontFromUser(this, f.window->GetAxisFont(), _("Choose the font for axis drawing."));
         if (font.IsOk())
+#else
+        wxFont font = wxGetFontFromUser(this, f.window->GetAxisFont());
+        if (font.Ok())
+#endif
         {
           f.window->SetAxisFont(font);
 	  Refresh();
@@ -7357,8 +7377,13 @@ void PlotCanvas::OnFont(wxCommandEvent& event)
       break;
     case Focus::TITLE :
       {
+#if wxCHECK_VERSION(2, 7, 0)
         wxFont font = wxGetFontFromUser(this, handler->GetTitleFont(), _("Choose the font for title drawing."));
         if (font.IsOk())
+#else
+        wxFont font = wxGetFontFromUser(this, handler->GetTitleFont());
+        if (font.Ok())
+#endif
         {
           handler->SetTitleFont(font);
 	  Refresh();
@@ -7423,8 +7448,13 @@ void PlotCanvas::OnPen(wxCommandEvent& event)
       break;
     case Focus::TITLE :
       {
+#if wxCHECK_VERSION(2, 7, 0)
           wxColour c = wxGetColourFromUser(this, handler->GetTitlePen().GetColour(), _("Colour Setting"));
           if (c.IsOk())
+#else
+          wxColour c = wxGetColourFromUser(this, handler->GetTitlePen().GetColour());
+          if (c.Ok())
+#endif
           {
 	    wxPen p(c);
             handler->SetTitlePen(p);
@@ -7859,8 +7889,13 @@ void PenSettingDialog::OnStyle(wxCommandEvent& event)
 
 void PenSettingDialog::OnColour(wxCommandEvent& event)
 {
+#if wxCHECK_VERSION(2, 7, 0)
   wxColour c = wxGetColourFromUser(this, pen_ctrl->GetPen().GetColour(), _("Colour Setting"));
   if (c.IsOk())
+#else
+  wxColour c = wxGetColourFromUser(this, pen_ctrl->GetPen().GetColour());
+  if (c.Ok())
+#endif
   {
     pen_ctrl->GetPen().SetColour(c);
     pen_ctrl->Refresh();

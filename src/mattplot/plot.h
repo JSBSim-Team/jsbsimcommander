@@ -13,6 +13,7 @@
 #endif
 
 #include <wx/print.h>
+#include <wx/txtstrm.h>
 
 #include <vector>
 #include <map>
