@@ -65,13 +65,15 @@ class FGPropertyValue : public FGParameter
 {
 public:
 
-  FGPropertyValue(FGPropertyManager* propNode);
+  FGPropertyValue(FGPropertyManager* propNode, const string & name="");
   ~FGPropertyValue() {};
 
   double GetValue(void) const;
+  string GetName(void) const;
 
 private:
   FGPropertyManager* PropertyManager;
+  string PropertyName;
 };
 
 } // namespace JSBSim

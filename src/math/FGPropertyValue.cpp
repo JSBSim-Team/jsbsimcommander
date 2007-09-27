@@ -39,7 +39,7 @@ static const char *IdHdr = ID_PROPERTYVALUE;
 CLASS IMPLEMENTATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-FGPropertyValue::FGPropertyValue(FGPropertyManager* propNode) : PropertyManager(propNode)
+FGPropertyValue::FGPropertyValue(FGPropertyManager* propNode, const string & name) : PropertyManager(propNode), PropertyName(name)
 {
 }
 
@@ -48,6 +48,17 @@ FGPropertyValue::FGPropertyValue(FGPropertyManager* propNode) : PropertyManager(
 double FGPropertyValue::GetValue(void) const
 {
   return PropertyManager->getDoubleValue();
+}
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+string FGPropertyValue::GetName(void) const
+{
+  if (PropertyName.empty())
+  {
+    return PropertyManager->GetFullyQualifiedName();
+  }
+  return PropertyName;
 }
 
 }

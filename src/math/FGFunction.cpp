@@ -126,12 +126,13 @@ FGFunction::FGFunction(FGPropertyManager* propMan, Element* el, string prefix)
     // data types
     if (operation == string("property")) {
       property_name = element->GetDataLine();
-      FGPropertyManager* newNode = PropertyManager->GetNode(property_name);
+      // Matt's change here
+      FGPropertyManager* newNode = PropertyManager->GetNode(property_name, true);
       if (newNode == 0) {
         cerr << "The property " << property_name << " is undefined." << endl;
         exit(-1);
       } else {
-        Parameters.push_back(new FGPropertyValue( newNode ));
+        Parameters.push_back(new FGPropertyValue( newNode, property_name));
       }
     } else if (operation == string("value")) {
       Parameters.push_back(new FGRealValue(element->GetDataAsNumber()));
@@ -169,7 +170,9 @@ FGFunction::FGFunction(FGPropertyManager* propMan, Element* el, string prefix)
                operation == string("atan2"))
     {
       Parameters.push_back(new FGFunction(PropertyManager, element));
-    } else if (operation != string("description")) {
+    } else if (operation == string("description")) {
+      description = element->GetDataLine();
+    } else {
       cerr << "Bad operation " << operation << " detected in configuration file" << endl;
     }
     element = el->GetNextElement();

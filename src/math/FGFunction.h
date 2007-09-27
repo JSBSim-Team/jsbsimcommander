@@ -181,6 +181,7 @@ public:
 
   //Matt's change start:
   FGParameter* GetParameter(size_t i) {return Parameters[i];}
+  const FGParameter* GetParameter(size_t i) const {return Parameters[i];}
   size_t GetParaCount() const {return Parameters.size();}
   enum functionType {eTopLevel=0, eProduct, eDifference, eSum, eQuotient, ePow,
                      eExp, eAbs, eSin, eCos, eTan, eASin, eACos, eATan, eATan2, 
@@ -190,6 +191,7 @@ public:
                      eIFTHEN
   };
   functionType GetType() const {return Type;}
+  string GetDescription() const {return description;}
   //Matt's change end.
 
 private:
@@ -206,6 +208,7 @@ private:
   mutable double current_value;
   mutable double old_time;
   mutable double old_value;
+  string description;
   //Matt's change end.
   string Name;
   void bind(void);
