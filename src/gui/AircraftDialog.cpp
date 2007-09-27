@@ -2060,6 +2060,7 @@ bool AircraftDialog::Load(const wxString &fn)
     combo_box_info_level->SetValue(wxT("ALPHA"));
   }
 
+#if 0
   {
     double d;
     if ( text_ctrl_info_cfgver->GetValue().ToDouble(&d) )
@@ -2070,6 +2071,7 @@ bool AircraftDialog::Load(const wxString &fn)
     else
       return false;
   }
+#endif
 
   if (flag && (tmp = document->FindElement("fileheader")))
   {
