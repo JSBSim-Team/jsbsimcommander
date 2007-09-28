@@ -6354,7 +6354,8 @@ PlotHandler::PlotHandler(wxWindow * parent) :
   owner(parent),
   WYSWYG(false),
   FileName(wxEmptyString),
-  hasLoaded(false)
+  hasLoaded(false),
+  bitmap_updated(false)
 {
   pos_title = TITLE_UP;
   fnt_title = wxFont(15, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -6762,10 +6763,12 @@ void PlotHandler::Draw(wxDC& dc, wxCoord w, wxCoord h)
         draw(mdc, w, h);
 	mdc.SelectObject(wxNullBitmap); 
         dc.DrawBitmap(bitmap, 0, 0, false);
+        bitmap_updated = true;
       }
       else
       {
         draw(dc, w, h);
+        bitmap_updated = false;
       }
     }
 }
@@ -6774,7 +6777,7 @@ void PlotHandler::DrawIndicator(wxDC &dc, wxCoord x, wxCoord y)
 {
  if (isDrawIndicator)
  {
-  if (bitmap.Ok())
+  if (bitmap_updated)
   {
     dc.DrawBitmap(bitmap, 0, 0, false);
   }

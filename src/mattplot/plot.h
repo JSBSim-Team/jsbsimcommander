@@ -1125,6 +1125,8 @@ class PlotHandler: public wxEvtHandler
      * picture buffer.
      */
     wxBitmap bitmap;
+    
+    bool bitmap_updated;
 
     /**
      * owner of the handle
