@@ -4771,9 +4771,9 @@ void PlotWindow::get_interval(double & min, double & max, unsigned int num, doub
     for (int i = 0; i < -int_log_range; ++i)
       base /= 10;
   }
-  double delta[] = {1, 2, 2.5, 5, 7.5, 10};
+  double delta[] = {1, 2, 2.5, 5, 7.5, 10, 12.5, 20, 25, 50};
   double tmin, tmax, tmark_interval;
-  for (int i =0; delta[i] <= 10; ++i)
+  for (int i =0; i < 10; ++i)
   {
       tmark_interval = base*delta[i];
       tmin = floor(min / tmark_interval) * tmark_interval;
@@ -4784,7 +4784,7 @@ void PlotWindow::get_interval(double & min, double & max, unsigned int num, doub
       }
   }
   double smin, smax, smark_interval;
-  for (int i =0; delta[i] <= 10; ++i)
+  for (int i =0; i < 10; ++i)
   {
       smark_interval = base*delta[i];
       smax = ceil(max / smark_interval) * smark_interval;
