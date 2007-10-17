@@ -485,10 +485,13 @@ void TreeItemData_aerodynamics::Init(wxTreeCtrl* t)
 void TreeItemData_aerodynamics::Load(JSBSim::Element * el)
 {
   JSBSim::Element * temp_element;
+  string scratch_unit="";
   if (temp_element = el->FindElement("alphalimits")) {
     has_alphalimits = true;
-    alphaclmin = temp_element->FindElementValueAsNumberConvertTo("min", "DEG");
-    alphaclmax = temp_element->FindElementValueAsNumberConvertTo("max", "DEG");
+    scratch_unit = temp_element->GetAttributeValue("unit");
+    if (scratch_unit.empty()) scratch_unit = "DEG";
+    alphaclmin = temp_element->FindElementValueAsNumberConvertFromTo("min", scratch_unit, "DEG");
+    alphaclmax = temp_element->FindElementValueAsNumberConvertFromTo("max", scratch_unit, "DEG");
   }
   else {
     has_alphalimits = false;
@@ -496,8 +499,10 @@ void TreeItemData_aerodynamics::Load(JSBSim::Element * el)
 
   if (temp_element = el->FindElement("hysteresis_limits")) {
     has_hysteresis_limits = true;
-    alphahystmin = temp_element->FindElementValueAsNumberConvertTo("min", "DEG");
-    alphahystmax = temp_element->FindElementValueAsNumberConvertTo("max", "DEG");
+    scratch_unit = temp_element->GetAttributeValue("unit");
+    if (scratch_unit.empty()) scratch_unit = "DEG";
+    alphahystmin = temp_element->FindElementValueAsNumberConvertFromTo("min", scratch_unit, "DEG");
+    alphahystmax = temp_element->FindElementValueAsNumberConvertFromTo("max", scratch_unit, "DEG");
   }
   else {
     has_hysteresis_limits = false;
@@ -535,16 +540,16 @@ void TreeItemData_aerodynamics::Save(wxTextOutputStream & out, const wxString & 
   wxString pre = prefix + wxT("    ");
   if (has_alphalimits)
   {
-    out << pre << wxT("<alphalimits>\n");
-    out << pre << wxT("    <min unit=\"DEG\"> ") << alphaclmin << wxT("</min>\n");
-    out << pre << wxT("    <max unit=\"DEG\"> ") << alphaclmax << wxT("</max>\n");
+    out << pre << wxT("<alphalimits unit=\"DEG\">\n");
+    out << pre << wxT("    <min> ") << alphaclmin << wxT("</min>\n");
+    out << pre << wxT("    <max> ") << alphaclmax << wxT("</max>\n");
     out << pre << wxT("</alphalimits>\n");
   }
   if (has_hysteresis_limits)
   {
-    out << pre << wxT("<hysteresis_limits>\n");
-    out << pre << wxT("    <min unit=\"DEG\"> ") << alphahystmin << wxT("</min>\n");
-    out << pre << wxT("    <max unit=\"DEG\"> ") << alphahystmax << wxT("</min>\n");
+    out << pre << wxT("<hysteresis_limits unit=\"DEG\">\n");
+    out << pre << wxT("    <min> ") << alphahystmin << wxT("</min>\n");
+    out << pre << wxT("    <max> ") << alphahystmax << wxT("</max>\n");
     out << pre << wxT("</hysteresis_limits>\n");  
   }
   
