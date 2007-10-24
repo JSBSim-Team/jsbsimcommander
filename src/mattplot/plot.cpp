@@ -66,6 +66,10 @@ using JSBSim::FGRealValue;
 using JSBSim::FGPropertyValue;
 using JSBSim::FGTable;
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 static double ppi_x = 96.0;
 static double ppi_y = 96.0;
 static wxSize ppi(96, 96);

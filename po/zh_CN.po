@@ -1,0 +1,2726 @@
+# Chinese translations for JSBSimCommander package
+# JSBSimCommander 软件包的简体中文翻译.
+# Copyright (C) 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the JSBSimCommander package.
+# Matthew Gong <matthewzhenggong@gmail.com>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: JSBSimCommander 0.1.2\n"
+"Report-Msgid-Bugs-To: matthewzhenggong@gmail.com\n"
+"POT-Creation-Date: 2007-10-23 10:29+0800\n"
+"PO-Revision-Date: 2007-10-23 14:22+0800\n"
+"Last-Translator: matt <matthewzhenggong@gmail.com>\n"
+"Language-Team: Chinese (simplified)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/gui/AircraftDialog.cpp:507 src/gui/AircraftDialog.cpp:729
+#: src/gui/AircraftDialog.cpp:739
+msgid "New"
+msgstr "新建"
+
+#: src/gui/AircraftDialog.cpp:509
+msgid "Open"
+msgstr "打开"
+
+#: src/gui/AircraftDialog.cpp:510
+msgid "Save"
+msgstr "保存"
+
+#: src/gui/AircraftDialog.cpp:511
+msgid "Save As"
+msgstr "另存为"
+
+#: src/gui/AircraftDialog.cpp:513
+msgid "Close"
+msgstr "关闭"
+
+#: src/gui/AircraftDialog.cpp:522
+msgid "Aerodynamic Reference Point(*)"
+msgstr "气动参考点(ARP)*"
+
+#: src/gui/AircraftDialog.cpp:523
+msgid "Eye Point"
+msgstr "视点"
+
+#: src/gui/AircraftDialog.cpp:524
+msgid "Visual Reference Point"
+msgstr "参考点(前缘点)"
+
+#: src/gui/AircraftDialog.cpp:525
+msgid "location(*)"
+msgstr "质心位置*"
+
+#: src/gui/AircraftDialog.cpp:526 src/initprops.h:283 src/initprops.h:289
+msgid "mass"
+msgstr "质量"
+
+#: src/gui/AircraftDialog.cpp:527
+msgid "moment of the inertia(*)"
+msgstr "本体惯矩(体轴系)*"
+
+#: src/gui/AircraftDialog.cpp:528
+msgid "Point Mass"
+msgstr "外挂质点"
+
+#: src/gui/AircraftDialog.cpp:530
+msgid "Aircraft Name"
+msgstr "飞行器名称"
+
+#: src/gui/AircraftDialog.cpp:532
+msgid "File Name"
+msgstr "文件名"
+
+#: src/gui/AircraftDialog.cpp:534
+msgid "Release Level"
+msgstr "发布等级"
+
+#: src/gui/AircraftDialog.cpp:541
+msgid "Configuration Version"
+msgstr "配置文件格式版本"
+
+#: src/gui/AircraftDialog.cpp:543
+msgid "Flight Model Version"
+msgstr "飞行器气动模型版本"
+
+#: src/gui/AircraftDialog.cpp:545 src/gui/AircraftDialog.cpp:1510
+msgid "Author"
+msgstr "作者"
+
+#: src/gui/AircraftDialog.cpp:547
+msgid "Email"
+msgstr "电子邮件地址"
+
+#: src/gui/AircraftDialog.cpp:549
+msgid "Organization"
+msgstr "机构"
+
+#: src/gui/AircraftDialog.cpp:551
+msgid "File Date"
+msgstr "时间"
+
+#: src/gui/AircraftDialog.cpp:553 src/gui/EngineMgr_Diag.cpp:281
+msgid "Description"
+msgstr "描述"
+
+#: src/gui/AircraftDialog.cpp:555 src/gui/AircraftDialog.cpp:1516
+msgid "References"
+msgstr "参考"
+
+#: src/gui/AircraftDialog.cpp:557
+msgid "Limitations"
+msgstr "限制"
+
+#: src/gui/AircraftDialog.cpp:559
+msgid "Notes"
+msgstr "注解"
+
+#: src/gui/AircraftDialog.cpp:561
+msgid "wingarea(*) ="
+msgstr "机翼面积* ＝"
+
+#: src/gui/AircraftDialog.cpp:568
+msgid "htailarea ="
+msgstr "水平尾翼面积 ＝"
+
+#: src/gui/AircraftDialog.cpp:575
+msgid "wingspan(*) ="
+msgstr "机翼展长* ＝"
+
+#: src/gui/AircraftDialog.cpp:582
+msgid "htailarm ="
+msgstr "水平尾翼力臂 ＝"
+
+#: src/gui/AircraftDialog.cpp:589
+msgid "chord(*) ="
+msgstr "平均气动弦长* ＝"
+
+#: src/gui/AircraftDialog.cpp:596
+msgid "vtailarea ="
+msgstr "垂直尾翼面积 ＝"
+
+#: src/gui/AircraftDialog.cpp:603
+msgid "wing incidence ="
+msgstr "机翼安装角 ＝"
+
+#: src/gui/AircraftDialog.cpp:609
+msgid "vtailarm ="
+msgstr "垂直尾翼力臂 ＝"
+
+#: src/gui/AircraftDialog.cpp:616 src/gui/AircraftDialog.cpp:629
+#: src/gui/AircraftDialog.cpp:642 src/gui/AircraftDialog.cpp:663
+#: src/gui/Propulsion_Diag.cpp:218 src/gui/Propulsion_Diag.cpp:244
+#: src/gui/Propulsion_Diag.cpp:477 src/gui/LGear_Diag.cpp:171
+msgid "x ="
+msgstr "x ="
+
+#: src/gui/AircraftDialog.cpp:618 src/gui/AircraftDialog.cpp:631
+#: src/gui/AircraftDialog.cpp:644 src/gui/AircraftDialog.cpp:665
+#: src/gui/Propulsion_Diag.cpp:220 src/gui/Propulsion_Diag.cpp:246
+#: src/gui/Propulsion_Diag.cpp:479 src/gui/LGear_Diag.cpp:173
+msgid "y ="
+msgstr "y ="
+
+#: src/gui/AircraftDialog.cpp:620 src/gui/AircraftDialog.cpp:633
+#: src/gui/AircraftDialog.cpp:646 src/gui/AircraftDialog.cpp:667
+#: src/gui/Propulsion_Diag.cpp:222 src/gui/Propulsion_Diag.cpp:248
+#: src/gui/Propulsion_Diag.cpp:481 src/gui/LGear_Diag.cpp:175
+msgid "z ="
+msgstr "z ="
+
+#: src/gui/AircraftDialog.cpp:622 src/gui/AircraftDialog.cpp:635
+#: src/gui/AircraftDialog.cpp:648
+msgid "unit :"
+msgstr "单位："
+
+#: src/gui/AircraftDialog.cpp:655
+msgid "Empty Weight(*) ="
+msgstr "本体重量* ＝"
+
+#: src/gui/AircraftDialog.cpp:675
+msgid "Ixx ="
+msgstr "Ixx ="
+
+#: src/gui/AircraftDialog.cpp:682
+msgid "Ixz ="
+msgstr "Ixz ="
+
+#: src/gui/AircraftDialog.cpp:689
+msgid "Iyy ="
+msgstr "Iyy ="
+
+#: src/gui/AircraftDialog.cpp:696
+msgid "Iyz ="
+msgstr "Iyz ="
+
+#: src/gui/AircraftDialog.cpp:703
+msgid "Izz ="
+msgstr "Izz ="
+
+#: src/gui/AircraftDialog.cpp:710
+msgid "Ixy ="
+msgstr "Ixy ="
+
+#: src/gui/AircraftDialog.cpp:721
+msgid "Add a new point mass"
+msgstr "添加新质点"
+
+#: src/gui/AircraftDialog.cpp:722
+msgid "Delete the selected point mass"
+msgstr "删除被选择的质点"
+
+#: src/gui/AircraftDialog.cpp:724 src/gui/AircraftDialog.cpp:779
+#: src/gui/fcsprop_dlg.cpp:57 src/gui/func_dlg.cpp:135
+#: src/gui/Table_Diag.cpp:1344 src/gui/switch_dlg.cpp:107
+msgid "Add"
+msgstr "添加"
+
+#: src/gui/AircraftDialog.cpp:725 src/gui/AircraftDialog.cpp:780
+#: src/gui/When_Diag.cpp:281 src/gui/When_Diag.cpp:301
+#: src/gui/Table_Diag.cpp:1346
+msgid "Delete"
+msgstr "删除"
+
+#: src/gui/AircraftDialog.cpp:726 src/gui/EngineMgr_Diag.cpp:81
+msgid "Detail"
+msgstr "详情"
+
+#: src/gui/AircraftDialog.cpp:727
+msgid "Available Engines"
+msgstr "可用发动机"
+
+#: src/gui/AircraftDialog.cpp:732
+msgid "Subscribed Engine(s)(*)"
+msgstr "已安装的发动机"
+
+#: src/gui/AircraftDialog.cpp:734
+msgid "New Pair"
+msgstr "安装新发动机"
+
+#: src/gui/AircraftDialog.cpp:735
+msgid "Delete Pair"
+msgstr "删除已安装发动机"
+
+#: src/gui/AircraftDialog.cpp:736
+msgid "Detail Pair"
+msgstr "显示发动机安装详情"
+
+#: src/gui/AircraftDialog.cpp:737
+msgid "Available Thrusters"
+msgstr "可用推进器"
+
+#: src/gui/AircraftDialog.cpp:742
+msgid "Tanks"
+msgstr "油箱"
+
+#: src/gui/AircraftDialog.cpp:744
+msgid "New Tank"
+msgstr "安装新油箱"
+
+#: src/gui/AircraftDialog.cpp:745
+msgid "Delete Tank"
+msgstr "删除已安装油箱"
+
+#: src/gui/AircraftDialog.cpp:746
+msgid "Detail Tank"
+msgstr "显示油箱安装详情"
+
+#: src/gui/AircraftDialog.cpp:747
+msgid "tips: double clicked to show detail, press delete key to delete item."
+msgstr "提示：双击条目显示详情，按DEL键删除条目"
+
+#: src/gui/AircraftDialog.cpp:750
+msgid "Name(*) :"
+msgstr "名称*："
+
+#: src/gui/AircraftDialog.cpp:752
+msgid "Type(*) :"
+msgstr "类型*："
+
+#: src/gui/AircraftDialog.cpp:758
+msgid "Rate(*) :"
+msgstr "频率*："
+
+#: src/gui/AircraftDialog.cpp:760
+msgid "simulation"
+msgstr "基本信息"
+
+#: src/gui/AircraftDialog.cpp:761
+msgid "atmosphere"
+msgstr "环境变量"
+
+#: src/gui/AircraftDialog.cpp:762
+msgid "massprops"
+msgstr "质量管理"
+
+#: src/gui/AircraftDialog.cpp:763
+msgid "aerosurfaces"
+msgstr "气动舵面"
+
+#: src/gui/AircraftDialog.cpp:764
+msgid "rates"
+msgstr "角速率"
+
+#: src/gui/AircraftDialog.cpp:765
+msgid "velocities"
+msgstr "速率"
+
+#: src/gui/AircraftDialog.cpp:766
+msgid "forces"
+msgstr "力"
+
+#: src/gui/AircraftDialog.cpp:767
+msgid "moments"
+msgstr "力矩"
+
+#: src/gui/AircraftDialog.cpp:768 src/gui/kinemat_dlg.cpp:84
+msgid "position"
+msgstr "位置"
+
+#: src/gui/AircraftDialog.cpp:769
+msgid "coefficients"
+msgstr "气动系数"
+
+#: src/gui/AircraftDialog.cpp:770
+msgid "ground reactions"
+msgstr "起落架"
+
+#: src/gui/AircraftDialog.cpp:771
+msgid "FCS"
+msgstr "飞控系统"
+
+#: src/gui/AircraftDialog.cpp:772
+msgid "propulsion"
+msgstr "推力系统"
+
+#: src/gui/AircraftDialog.cpp:778
+msgid "Choose"
+msgstr "选择"
+
+#: src/gui/AircraftDialog.cpp:885 src/gui/AircraftDialog.cpp:919
+#: src/gui/AircraftDialog.cpp:1155 src/gui/EngineMgr_Diag.cpp:473
+msgid "Do you really want to delete it?"
+msgstr "确认要删除吗？"
+
+#: src/gui/AircraftDialog.cpp:885 src/gui/AircraftDialog.cpp:919
+#: src/gui/AircraftDialog.cpp:1155 src/gui/AircraftDialog.cpp:1172
+#: src/gui/AircraftDialog.cpp:1195 src/gui/AircraftDialog.cpp:1233
+#: src/gui/AircraftDialog.cpp:1260 src/gui/AircraftDialog.cpp:1285
+#: src/gui/AircraftDialog.cpp:1431 src/gui/AircraftDialog.cpp:1462
+#: src/gui/When_Diag.cpp:391 src/gui/When_Diag.cpp:439 src/gui/TreeItem.cpp:98
+#: src/gui/doc.cpp:164 src/gui/Table_Diag.cpp:716 src/gui/Table_Diag.cpp:759
+#: src/gui/Table_Diag.cpp:829 src/gui/Table_Diag.cpp:926
+#: src/gui/Table_Diag.cpp:980 src/gui/Table_Diag.cpp:1454
+#: src/gui/EngineMgr_Diag.cpp:473
+msgid "Confirm"
+msgstr "确认"
+
+#: src/gui/AircraftDialog.cpp:1172 src/gui/AircraftDialog.cpp:1195
+msgid "Do you want to save the file before closing the dialog?"
+msgstr "确定要在关闭对话框前保存文件吗？"
+
+#: src/gui/AircraftDialog.cpp:1233
+msgid "Do you want to save the FDM configure file before creating another one?"
+msgstr "确定要在新建文件前先保存当前FDM文件吗？"
+
+#: src/gui/AircraftDialog.cpp:1244
+msgid "Create FDM configure file"
+msgstr "新建FDM配置文件"
+
+#: src/gui/AircraftDialog.cpp:1260
+msgid "Do you want to save the FDM configure file before opening another one?"
+msgstr "确定要在打开其他文件前先保存当前FDM文件吗？"
+
+#: src/gui/AircraftDialog.cpp:1271
+msgid "Load FDM configure file"
+msgstr "载入FDM配置文件"
+
+#: src/gui/AircraftDialog.cpp:1285
+msgid "Do you want to save the FDM configure file?"
+msgstr "确定要保存当前FDM文件吗？"
+
+#: src/gui/AircraftDialog.cpp:1298
+msgid "Save FDM configure file as"
+msgstr "将当前FDM文件另存为"
+
+#: src/gui/AircraftDialog.cpp:1431
+msgid "Do you really want to delete the tank?"
+msgstr "确定删除选定的油箱吗？"
+
+#: src/gui/AircraftDialog.cpp:1462
+msgid "Do you really want to delete the engine/thruster pair?"
+msgstr "确定删除选定的发动机吗？"
+
+#: src/gui/AircraftDialog.cpp:1485
+msgid "the aircraft name"
+msgstr "飞行器名称"
+
+#: src/gui/AircraftDialog.cpp:1486
+msgid "the path of the aircraft model file"
+msgstr "飞行器气动模型文件路径"
+
+#: src/gui/AircraftDialog.cpp:1488
+msgid "the release level"
+msgstr "发布等级"
+
+#: src/gui/AircraftDialog.cpp:1490
+msgid "the file format standard"
+msgstr "气动模型文件格式标准"
+
+#: src/gui/AircraftDialog.cpp:1491
+msgid "the flight model version"
+msgstr "当前气动模型的版本号"
+
+#: src/gui/AircraftDialog.cpp:1494
+msgid "the author name"
+msgstr "作者"
+
+#: src/gui/AircraftDialog.cpp:1496
+msgid "the author's email address"
+msgstr "作者的电邮地址"
+
+#: src/gui/AircraftDialog.cpp:1499
+msgid "the organization name"
+msgstr "机构名称"
+
+#: src/gui/AircraftDialog.cpp:1502
+msgid "the date when the file is created or modified"
+msgstr "建立或修改的日期"
+
+#: src/gui/AircraftDialog.cpp:1508
+msgid "Ref ID."
+msgstr "参考文件ID"
+
+#: src/gui/AircraftDialog.cpp:1512
+msgid "Title"
+msgstr "名称"
+
+#: src/gui/AircraftDialog.cpp:1514
+msgid "Date"
+msgstr "日期"
+
+#: src/gui/AircraftDialog.cpp:1520
+msgid "the wing area (metrics/Sm*)"
+msgstr "机翼面积(metrics/Sm*)"
+
+#: src/gui/AircraftDialog.cpp:1524
+msgid "the horizonal tail area (metrics/Sh-*)"
+msgstr "水平尾翼面积(metrics/Sh-*)"
+
+#: src/gui/AircraftDialog.cpp:1528
+msgid "the wing span (metrics/bw-*)"
+msgstr "机翼展长(metrics/bw-*)"
+
+#: src/gui/AircraftDialog.cpp:1532
+msgid "the horizonal tail arm (metrics/lh-*)"
+msgstr "水平尾翼尾力臂(metrics/lh-*)"
+
+#: src/gui/AircraftDialog.cpp:1536
+msgid "the chord (metrics/cbarw-*)"
+msgstr "平均气动弦长(metrics/cbarw-*)"
+
+#: src/gui/AircraftDialog.cpp:1540
+msgid "the vertical tail area (metrics/Sv-*)"
+msgstr "垂直尾翼面积(metrics/Sv-*)"
+
+#: src/gui/AircraftDialog.cpp:1544
+msgid "the wing incidence (metrics/iw-deg)"
+msgstr "机翼安装角(metrics/iw-deg)"
+
+#: src/gui/AircraftDialog.cpp:1548
+msgid "the vertical tail arm (metrics/lv-*)"
+msgstr "垂直尾翼尾力臂(metrics/lv-*)"
+
+#: src/gui/AircraftDialog.cpp:1551
+msgid "the ARP along the structural x axis"
+msgstr "气动参考点的X坐标"
+
+#: src/gui/AircraftDialog.cpp:1552
+msgid "the ARP along the structural y axis"
+msgstr "气动参考点的Y坐标"
+
+#: src/gui/AircraftDialog.cpp:1553
+msgid "the ARP along the structural z axis"
+msgstr "气动参考点的Z坐标"
+
+#: src/gui/AircraftDialog.cpp:1556
+msgid "the EP along the structural x axis"
+msgstr "视点的X坐标"
+
+#: src/gui/AircraftDialog.cpp:1557
+msgid "the EP along the structural y axis"
+msgstr "视点的Y坐标"
+
+#: src/gui/AircraftDialog.cpp:1558
+msgid "the EP along the structural z axis"
+msgstr "视点的Z坐标"
+
+#: src/gui/AircraftDialog.cpp:1561
+msgid "the VRP along the structural x axis"
+msgstr "参考点的X坐标"
+
+#: src/gui/AircraftDialog.cpp:1562
+msgid "the VRP along the structural y axis"
+msgstr "参考点的Y坐标"
+
+#: src/gui/AircraftDialog.cpp:1563
+msgid "the VRP along the structural z axis"
+msgstr "参考点的Z坐标"
+
+#: src/gui/AircraftDialog.cpp:1567
+msgid "the empty weight of the aircraft"
+msgstr "空机重量"
+
+#: src/gui/AircraftDialog.cpp:1572
+msgid "the CG pos along the structural x axis"
+msgstr "空机重心的X坐标"
+
+#: src/gui/AircraftDialog.cpp:1575
+msgid "the CG pos along the structural y axis"
+msgstr "空机重心的Y坐标"
+
+#: src/gui/AircraftDialog.cpp:1577
+msgid "the CG pos along the structural z axis"
+msgstr "空机重心的Z坐标"
+
+#: src/gui/AircraftDialog.cpp:1603
+msgid "double click on me to show detail"
+msgstr "双击以显示详情"
+
+#: src/gui/AircraftDialog.cpp:1604
+msgid ""
+"double clicked on me to show detail, \n"
+"press delete key to delete a subscribed engine"
+msgstr ""
+"双击以显示详情\n"
+"按DEL键删除选定的发动机"
+
+#: src/gui/AircraftDialog.cpp:1605
+msgid ""
+"choose an available engine and an available thruster, \n"
+"then click on me to subscribe a new engine for the aircraft"
+msgstr ""
+"分别选择可以的发动机与推进器，\n"
+"再点击以安装新发动机"
+
+#: src/gui/AircraftDialog.cpp:1606
+msgid "choose a subscribed engine, then click on me to delete it"
+msgstr "选择已安装发动机，再点击删除"
+
+#: src/gui/AircraftDialog.cpp:1607
+msgid "choose a subscribed engine, then click on me to show the detail"
+msgstr "选择已安装发动机，再点击显示详情"
+
+#: src/gui/AircraftDialog.cpp:1608
+msgid ""
+"double clicked on me to show detail, \n"
+"press delete key to delete a tank"
+msgstr ""
+"双击以显示详情，\n"
+"按DEL键删除选定的油箱"
+
+#: src/gui/AircraftDialog.cpp:1609
+msgid "click on me to add a new tank for the aircraft"
+msgstr "点击以添加新油箱"
+
+#: src/gui/AircraftDialog.cpp:1610
+msgid "click on me to delete a tank"
+msgstr "点击以删除油箱"
+
+#: src/gui/AircraftDialog.cpp:1611
+msgid "click on me to show the detail of the tank"
+msgstr "点击以显示油箱详情"
+
+#: src/gui/AircraftDialog.cpp:1619
+msgid "addition properties which will be outputed."
+msgstr "额外的变量将被输出"
+
+#: src/gui/AircraftDialog.cpp:1874
+msgid "General Information"
+msgstr "一般信息"
+
+#: src/gui/AircraftDialog.cpp:1875
+msgid "Metrics"
+msgstr "构造信息"
+
+#: src/gui/AircraftDialog.cpp:1876
+msgid "Mass & Balance"
+msgstr "质量管理"
+
+#: src/gui/AircraftDialog.cpp:1877
+msgid "Ground Reactions"
+msgstr "起落架模块"
+
+#: src/gui/AircraftDialog.cpp:1878
+msgid "Propulsion"
+msgstr "推进模块"
+
+#: src/gui/AircraftDialog.cpp:1879
+msgid "Flight Control"
+msgstr "飞控模块"
+
+#: src/gui/AircraftDialog.cpp:1880
+msgid "Aerodynamics"
+msgstr "气动模块"
+
+#: src/gui/AircraftDialog.cpp:1881
+msgid "Output"
+msgstr "输出模块"
+
+#: src/gui/AircraftDialog.cpp:1957
+msgid "Tank"
+msgstr "油箱"
+
+#: src/gui/AircraftDialog.cpp:1960 src/gui/Propulsion_Diag.cpp:210
+msgid "Engine"
+msgstr "发动机"
+
+#: src/gui/AircraftDialog.cpp:1964 src/gui/Propulsion_Diag.cpp:214
+msgid "Thruster"
+msgstr "推进器"
+
+#: src/gui/AircraftDialog.cpp:2975
+msgid "socket type is not surported right now. I will use CSV instead."
+msgstr "套接字未被支持。将使用CSV格式代替。"
+
+#: src/gui/AircraftDialog.h:68
+msgid "Aircraft Commander"
+msgstr "飞行器模型管理"
+
+#: src/gui/When_Diag.cpp:280 src/gui/When_Diag.cpp:300
+msgid "Append"
+msgstr "添加"
+
+#: src/gui/When_Diag.cpp:282 src/gui/When_Diag.cpp:302
+#: src/gui/Table_Diag.cpp:182 src/gui/EngineMgr_Diag.cpp:82
+#: src/gui/switch_dlg.cpp:116 src/gui/switch_dlg.cpp:130
+msgid "Apply"
+msgstr "应用"
+
+#: src/gui/When_Diag.cpp:311
+msgid "Type :"
+msgstr "类型："
+
+#: src/gui/When_Diag.cpp:317
+msgid "Action :"
+msgstr "动作："
+
+#: src/gui/When_Diag.cpp:324
+msgid "TC = "
+msgstr "时间常数＝"
+
+#: src/gui/When_Diag.cpp:327
+msgid "persistent"
+msgstr "持续测试"
+
+#: src/gui/When_Diag.cpp:328 src/gui/Turbine_Diag.cpp:159
+#: src/gui/ResultShow_Diag.cpp:179 src/gui/kinemat_dlg.cpp:65
+#: src/gui/AeroDynamics_Diag.cpp:51 src/gui/Propulsion_Diag.cpp:267
+#: src/gui/Propulsion_Diag.cpp:489 src/gui/Axis_Diag.cpp:55
+#: src/gui/deadband_dlg.cpp:68 src/gui/filter_dlg.cpp:94
+#: src/gui/Function_Diag.cpp:72 src/gui/fcsprop_dlg.cpp:60
+#: src/gui/LGear_Diag.cpp:221 src/gui/func_dlg.cpp:140
+#: src/gui/Table_Diag.cpp:197 src/gui/Table_Diag.cpp:1347
+#: src/gui/EngineMgr_Diag.cpp:83 src/gui/Mass_Diag.cpp:125
+#: src/gui/gain_dlg.cpp:69 src/gui/switch_dlg.cpp:132
+msgid "OK"
+msgstr "确定"
+
+#: src/gui/When_Diag.cpp:329 src/gui/Turbine_Diag.cpp:160
+#: src/gui/kinemat_dlg.cpp:66 src/gui/AeroDynamics_Diag.cpp:52
+#: src/gui/Propulsion_Diag.cpp:268 src/gui/Propulsion_Diag.cpp:490
+#: src/gui/Axis_Diag.cpp:56 src/gui/deadband_dlg.cpp:69
+#: src/gui/filter_dlg.cpp:95 src/gui/Function_Diag.cpp:73
+#: src/gui/fcsprop_dlg.cpp:61 src/gui/LGear_Diag.cpp:222
+#: src/gui/func_dlg.cpp:141 src/gui/Table_Diag.cpp:198
+#: src/gui/Table_Diag.cpp:1348 src/gui/Mass_Diag.cpp:126
+#: src/gui/gain_dlg.cpp:70 src/gui/switch_dlg.cpp:133
+msgid "Cancel"
+msgstr "取消"
+
+#: src/gui/When_Diag.cpp:391 src/gui/When_Diag.cpp:439
+msgid "Do you really want to delete the item?"
+msgstr "确定要删除吗？"
+
+#: src/gui/When_Diag.cpp:585
+msgid "Condition"
+msgstr "条件"
+
+#: src/gui/When_Diag.cpp:586
+msgid "Action"
+msgstr "动作"
+
+#: src/gui/fcsprop_dlg.h:34
+msgid "Properties defined in FCS"
+msgstr "FCS中定义的变量"
+
+#: src/gui/Turbine_Diag.cpp:135
+msgid "Name :"
+msgstr "名称："
+
+#: src/gui/Turbine_Diag.cpp:137
+msgid "Bypass Ratio :"
+msgstr "核心进气率："
+
+#: src/gui/Turbine_Diag.cpp:139
+msgid "Milthrust :"
+msgstr "军用推力："
+
+#: src/gui/Turbine_Diag.cpp:143
+msgid "Maxthrust :"
+msgstr "最大推力："
+
+#: src/gui/Turbine_Diag.cpp:146
+msgid "IdleN1 :"
+msgstr "慢车转速百分比N1："
+
+#: src/gui/Turbine_Diag.cpp:148
+msgid "IdleN2 :"
+msgstr "慢车转速百分比N2："
+
+#: src/gui/Turbine_Diag.cpp:150
+msgid "MaxN1 :"
+msgstr "最大转速百分比N1："
+
+#: src/gui/Turbine_Diag.cpp:152
+msgid "MaxN2 :"
+msgstr "最大转速百分比N2："
+
+#: src/gui/Turbine_Diag.cpp:154
+msgid "TSFC :"
+msgstr "耗油率："
+
+#: src/gui/Turbine_Diag.cpp:156
+msgid "ATSFC :"
+msgstr "加力状态耗油率："
+
+#: src/gui/Turbine_Diag.cpp:229
+msgid "basic"
+msgstr "基本"
+
+#: src/gui/Turbine_Diag.cpp:230
+msgid "advance"
+msgstr "高级"
+
+#: src/gui/Mass_Diag.h:52
+msgid "Properties of PointMass"
+msgstr "质点属性"
+
+#: src/gui/ResultShow_Diag.cpp:163
+msgid "Same Range"
+msgstr "纵坐标一致"
+
+#: src/gui/ResultShow_Diag.cpp:164 src/gui/ResultShow_Diag.cpp:178
+msgid "Update"
+msgstr "更新"
+
+#: src/gui/ResultShow_Diag.cpp:172
+msgid "curve 1"
+msgstr "曲线1"
+
+#: src/gui/ResultShow_Diag.cpp:173
+msgid "curve 2"
+msgstr "曲线2"
+
+#: src/gui/ResultShow_Diag.cpp:174
+msgid "curve 3"
+msgstr "曲线3"
+
+#: src/gui/ResultShow_Diag.cpp:175
+msgid "curve 4"
+msgstr "曲线4"
+
+#: src/gui/ResultShow_Diag.cpp:177
+msgid "Select"
+msgstr "选择"
+
+#: src/gui/ResultShow_Diag.cpp:401
+msgid "Combo"
+msgstr "组合式"
+
+#: src/gui/ResultShow_Diag.cpp:402
+msgid "Column"
+msgstr "纵列式"
+
+#: src/gui/toolbar.cpp:136 src/gui/toolbar.cpp:137
+msgid "Pointer"
+msgstr "指针"
+
+#: src/gui/toolbar.cpp:140 src/gui/toolbar.cpp:141
+msgid "Source"
+msgstr "源"
+
+#: src/gui/toolbar.cpp:143 src/gui/toolbar.cpp:145
+msgid "Destination"
+msgstr "汇"
+
+#: src/gui/toolbar.cpp:146 src/gui/toolbar.cpp:147
+msgid "Sensor"
+msgstr ""
+
+#: src/gui/toolbar.cpp:151 src/gui/toolbar.cpp:152
+msgid "Summer"
+msgstr "求和环节"
+
+#: src/gui/toolbar.cpp:154 src/gui/toolbar.cpp:155
+msgid "PID"
+msgstr ""
+
+#: src/gui/toolbar.cpp:157 src/gui/toolbar.cpp:158
+msgid "Gain"
+msgstr "增益环节"
+
+#: src/gui/toolbar.cpp:160 src/gui/toolbar.cpp:161 src/gui/filter_dlg.cpp:178
+msgid "Filter"
+msgstr "过滤"
+
+#: src/gui/toolbar.cpp:163
+msgid "DeadBand"
+msgstr "死区环节"
+
+#: src/gui/toolbar.cpp:164
+msgid "Dead Band"
+msgstr "死区环节"
+
+#: src/gui/toolbar.cpp:165 src/gui/toolbar.cpp:166
+msgid "Switch"
+msgstr "选择环节"
+
+#: src/gui/toolbar.cpp:167 src/gui/toolbar.cpp:168
+msgid "Actuator"
+msgstr ""
+
+#: src/gui/toolbar.cpp:169 src/gui/toolbar.cpp:170 src/gui/kinemat_dlg.cpp:136
+msgid "Kinemat"
+msgstr "运动环节"
+
+#: src/gui/toolbar.cpp:172 src/gui/toolbar.cpp:173
+msgid "FCSFunction"
+msgstr "函数环节"
+
+#: src/gui/toolbar.cpp:177 src/gui/toolbar.cpp:178
+msgid "node"
+msgstr "节点"
+
+#: src/gui/toolbar.cpp:209
+msgid "General Property"
+msgstr "首选项"
+
+#: src/gui/toolbar.cpp:211
+msgid "Add Channel"
+msgstr "添加通道"
+
+#: src/gui/toolbar.cpp:212
+msgid "Snap Channel"
+msgstr "当前通道快照"
+
+#: src/gui/toolbar.cpp:216
+msgid "Set the property of the Shape"
+msgstr "设置环节属性"
+
+#: src/gui/toolbar.cpp:219
+msgid "Reverse Shape"
+msgstr "翻转"
+
+#: src/gui/toolbar.cpp:224
+msgid "New line point"
+msgstr "加折线点"
+
+#: src/gui/toolbar.cpp:227
+msgid "Cut line point"
+msgstr "减折线点"
+
+#: src/gui/toolbar.cpp:230
+msgid "Straighten lines"
+msgstr "折线规则化"
+
+#: src/gui/kinemat_dlg.cpp:45 src/gui/deadband_dlg.cpp:46
+#: src/gui/filter_dlg.cpp:54 src/gui/gain_dlg.cpp:37
+msgid "inputs"
+msgstr "输入"
+
+#: src/gui/kinemat_dlg.cpp:46 src/gui/deadband_dlg.cpp:47
+#: src/gui/filter_dlg.cpp:55 src/gui/func_dlg.cpp:114 src/gui/gain_dlg.cpp:38
+#: src/gui/switch_dlg.cpp:86
+msgid "cliper"
+msgstr "裁剪"
+
+#: src/gui/kinemat_dlg.cpp:47 src/gui/TreeItem.cpp:296
+#: src/gui/Axis_Diag.cpp:34 src/gui/deadband_dlg.cpp:48
+#: src/gui/filter_dlg.cpp:56 src/gui/Function_Diag.cpp:68
+#: src/gui/fcsprop_dlg.cpp:52 src/gui/func_dlg.cpp:115
+#: src/gui/Table_Diag.cpp:153 src/gui/EngineMgr_Diag.cpp:74
+#: src/gui/Mass_Diag.cpp:104 src/gui/gain_dlg.cpp:39 src/gui/switch_dlg.cpp:87
+msgid "Name:"
+msgstr "名称："
+
+#: src/gui/kinemat_dlg.cpp:48 src/gui/Propulsion_Diag.cpp:457
+#: src/gui/TreeItem.cpp:301 src/gui/deadband_dlg.cpp:49
+#: src/gui/filter_dlg.cpp:57 src/gui/Function_Diag.cpp:39
+#: src/gui/fcsprop_dlg.cpp:45 src/gui/func_dlg.cpp:116
+#: src/gui/EngineMgr_Diag.cpp:72 src/gui/gain_dlg.cpp:40
+#: src/gui/switch_dlg.cpp:88
+msgid "Type:"
+msgstr "类型："
+
+#: src/gui/kinemat_dlg.cpp:49 src/gui/deadband_dlg.cpp:50
+#: src/gui/filter_dlg.cpp:58 src/gui/func_dlg.cpp:117 src/gui/gain_dlg.cpp:41
+#: src/gui/switch_dlg.cpp:89
+msgid "Order:"
+msgstr "序号："
+
+#: src/gui/kinemat_dlg.cpp:53 src/gui/deadband_dlg.cpp:54
+#: src/gui/filter_dlg.cpp:69 src/gui/func_dlg.cpp:121 src/gui/gain_dlg.cpp:50
+#: src/gui/switch_dlg.cpp:93
+msgid "clipable"
+msgstr "可裁剪"
+
+#: src/gui/kinemat_dlg.cpp:54 src/gui/AeroDynamics_Diag.cpp:44
+#: src/gui/AeroDynamics_Diag.cpp:49 src/gui/deadband_dlg.cpp:55
+#: src/gui/filter_dlg.cpp:70 src/gui/func_dlg.cpp:122 src/gui/gain_dlg.cpp:51
+#: src/gui/gain_dlg.cpp:62 src/gui/switch_dlg.cpp:94
+msgid "Max:"
+msgstr "最大值："
+
+#: src/gui/kinemat_dlg.cpp:56 src/gui/AeroDynamics_Diag.cpp:42
+#: src/gui/AeroDynamics_Diag.cpp:47 src/gui/deadband_dlg.cpp:57
+#: src/gui/filter_dlg.cpp:72 src/gui/func_dlg.cpp:124 src/gui/gain_dlg.cpp:53
+#: src/gui/gain_dlg.cpp:64 src/gui/switch_dlg.cpp:96
+msgid "Min:"
+msgstr "最小值："
+
+#: src/gui/kinemat_dlg.cpp:62 src/gui/deadband_dlg.cpp:63
+#: src/gui/filter_dlg.cpp:78 src/gui/gain_dlg.cpp:59
+msgid "input1"
+msgstr "输入1"
+
+#: src/gui/kinemat_dlg.cpp:64
+msgid "input scale"
+msgstr "输入自动缩放"
+
+#: src/gui/kinemat_dlg.cpp:85 src/initprops.h:7
+msgid "time"
+msgstr "时间"
+
+#: src/gui/kinemat_dlg.cpp:135 src/gui/deadband_dlg.cpp:137
+#: src/gui/filter_dlg.cpp:177 src/gui/func_dlg.cpp:265
+#: src/gui/gain_dlg.cpp:161 src/gui/switch_dlg.cpp:233
+msgid "Basic"
+msgstr "基本"
+
+#: src/gui/AeroDynamics_Diag.cpp:39
+msgid "hysteresis limits"
+msgstr "迟滞环限制"
+
+#: src/gui/AeroDynamics_Diag.cpp:40
+msgid "alpha limits"
+msgstr "迎角限制"
+
+#: src/gui/AeroDynamics_Diag.cpp:41 src/gui/AeroDynamics_Diag.cpp:46
+msgid "Enable"
+msgstr "使能"
+
+#: src/gui/Axis_Diag.h:31
+msgid "Axis Properties"
+msgstr "轴属性"
+
+#: src/gui/Propulsion_Diag.cpp:209 src/gui/Propulsion_Diag.cpp:213
+msgid "Orient"
+msgstr "安装姿态"
+
+#: src/gui/Propulsion_Diag.cpp:211
+msgid "Feed"
+msgstr "油箱供给"
+
+#: src/gui/Propulsion_Diag.cpp:212 src/gui/Propulsion_Diag.cpp:215
+#: src/gui/Propulsion_Diag.cpp:456 src/gui/LGear_Diag.cpp:166
+msgid "Location"
+msgstr "安装位置"
+
+#: src/gui/Propulsion_Diag.cpp:216
+msgid "Engine Name:"
+msgstr "发动机名称："
+
+#: src/gui/Propulsion_Diag.cpp:230 src/gui/Propulsion_Diag.cpp:256
+msgid "roll ="
+msgstr "滚转角 ＝"
+
+#: src/gui/Propulsion_Diag.cpp:232 src/gui/Propulsion_Diag.cpp:258
+msgid "pitch ="
+msgstr "俯仰角 ＝"
+
+#: src/gui/Propulsion_Diag.cpp:234 src/gui/Propulsion_Diag.cpp:260
+msgid "yaw ="
+msgstr "偏航角 ＝"
+
+#: src/gui/Propulsion_Diag.cpp:242
+msgid "Thruster Name:"
+msgstr "推进器名称："
+
+#: src/gui/Propulsion_Diag.cpp:463
+msgid "capacity ="
+msgstr "容量 ＝"
+
+#: src/gui/Propulsion_Diag.cpp:470
+msgid "contents ="
+msgstr "当前油量 ＝"
+
+#: src/gui/TreeItem.cpp:92
+msgid "Expression"
+msgstr "表达式"
+
+#: src/gui/TreeItem.cpp:98
+msgid "Are you sure to delete it?"
+msgstr "确定要删除吗？"
+
+#: src/gui/TreeItem.cpp:296
+msgid "Input Name of Table"
+msgstr "输入表名"
+
+#: src/gui/TreeItem.cpp:301
+msgid "select type of table"
+msgstr "选择表维数"
+
+#: src/gui/TreeItem.cpp:568 src/gui/TreeItem.cpp:647 src/gui/TreeItem.cpp:982
+#: src/gui/TreeItem.cpp:1215 src/gui/TreeItem.cpp:1267
+#: src/gui/TreeItem.cpp:1662
+msgid "&Properties"
+msgstr "属性设置(&P)"
+
+#: src/gui/TreeItem.cpp:568 src/gui/TreeItem.cpp:647 src/gui/TreeItem.cpp:982
+#: src/gui/TreeItem.cpp:1215 src/gui/TreeItem.cpp:1267
+#: src/gui/TreeItem.cpp:1662
+msgid "Detail of Function or operator"
+msgstr "函数或算子的详情"
+
+#: src/gui/TreeItem.cpp:570 src/gui/TreeItem.cpp:655 src/gui/TreeItem.cpp:990
+msgid "Add &Func"
+msgstr "添加函数(&F)"
+
+#: src/gui/TreeItem.cpp:570 src/gui/TreeItem.cpp:655 src/gui/TreeItem.cpp:990
+msgid "Add Function or operator"
+msgstr "添加函数或算子"
+
+#: src/gui/TreeItem.cpp:571
+msgid "Add &Axis"
+msgstr "添加轴(&A)"
+
+#: src/gui/TreeItem.cpp:571
+msgid "Add Axis"
+msgstr "添加轴"
+
+#: src/gui/TreeItem.cpp:648 src/gui/TreeItem.cpp:983
+msgid "&Expression"
+msgstr "表达式(&E)"
+
+#: src/gui/TreeItem.cpp:648 src/gui/TreeItem.cpp:983
+msgid "Expression of Function"
+msgstr "函数表达式"
+
+#: src/gui/TreeItem.cpp:650 src/gui/TreeItem.cpp:985 src/gui/TreeItem.cpp:1217
+#: src/gui/TreeItem.cpp:1269 src/gui/TreeItem.cpp:1664
+#: src/gui/switch_dlg.cpp:139
+msgid "&Delete"
+msgstr "删除(&D)"
+
+#: src/gui/TreeItem.cpp:650 src/gui/TreeItem.cpp:985 src/gui/TreeItem.cpp:1217
+#: src/gui/TreeItem.cpp:1269 src/gui/TreeItem.cpp:1664
+msgid "Delete Item"
+msgstr "删除节点"
+
+#: src/gui/TreeItem.cpp:651 src/gui/TreeItem.cpp:986 src/gui/TreeItem.cpp:1218
+#: src/gui/TreeItem.cpp:1270 src/gui/TreeItem.cpp:1665
+msgid "&Copy"
+msgstr "拷贝(&C)"
+
+#: src/gui/TreeItem.cpp:651 src/gui/TreeItem.cpp:986 src/gui/TreeItem.cpp:1218
+#: src/gui/TreeItem.cpp:1270 src/gui/TreeItem.cpp:1665
+msgid "Copy Item"
+msgstr "拷贝节点"
+
+#: src/gui/TreeItem.cpp:652 src/gui/TreeItem.cpp:987 src/gui/TreeItem.cpp:1219
+#: src/gui/TreeItem.cpp:1271 src/gui/TreeItem.cpp:1666
+msgid "Cu&t"
+msgstr "剪切(&t)"
+
+#: src/gui/TreeItem.cpp:652 src/gui/TreeItem.cpp:987 src/gui/TreeItem.cpp:1219
+#: src/gui/TreeItem.cpp:1271 src/gui/TreeItem.cpp:1666
+msgid "Cut Item"
+msgstr "剪切节点"
+
+#: src/gui/TreeItem.cpp:653 src/gui/TreeItem.cpp:988 src/gui/TreeItem.cpp:1889
+#: src/gui/TreeItem.cpp:1900
+msgid "&Paste"
+msgstr "粘贴(&P)"
+
+#: src/gui/TreeItem.cpp:653 src/gui/TreeItem.cpp:988 src/gui/TreeItem.cpp:1889
+#: src/gui/TreeItem.cpp:1900
+msgid "Paste Item"
+msgstr "粘贴节点"
+
+#: src/gui/TreeItem.cpp:991
+msgid "Add P&roperty"
+msgstr "添加变量(&r)"
+
+#: src/gui/TreeItem.cpp:991
+msgid "Add Property Node"
+msgstr "添加变量节点"
+
+#: src/gui/TreeItem.cpp:992
+msgid "Add &Value"
+msgstr "添加数值(&V)"
+
+#: src/gui/TreeItem.cpp:992
+msgid "Add Const Value"
+msgstr "添加常数值节点"
+
+#: src/gui/TreeItem.cpp:993
+msgid "Add &Table"
+msgstr "添加表(&T)"
+
+#: src/gui/TreeItem.cpp:993
+msgid "Add Table"
+msgstr "添加表节点"
+
+#: src/gui/TreeItem.cpp:1284
+msgid "Value:"
+msgstr "值："
+
+#: src/gui/TreeItem.cpp:1284
+msgid "Input Value"
+msgstr "输入值"
+
+#: src/gui/TreeItem.cpp:1888 src/gui/TreeItem.cpp:1899
+msgid "Add &Function"
+msgstr "添加函数(&F)"
+
+#: src/gui/TreeItem.cpp:1888 src/gui/TreeItem.cpp:1899
+msgid "Add Function"
+msgstr "添加函数"
+
+#: src/gui/import.cpp:129
+msgid "Unknown component("
+msgstr "未知环节("
+
+#: src/gui/import.cpp:129
+msgid ""
+")\n"
+" Please check the file."
+msgstr ""
+")\n"
+" 请检查文件"
+
+#: src/gui/import.cpp:130 src/gui/EngineMgr_Diag.cpp:495
+#: src/gui/EngineMgr_Diag.cpp:611 src/gui/EngineMgr_Diag.cpp:642
+#: src/gui/EngineMgr_Diag.cpp:774 src/gui/EngineMgr_Diag.cpp:784
+#: src/Commander.cpp:115 src/MyApp.cpp:106
+msgid "Error"
+msgstr "错误"
+
+#: src/gui/view.cpp:61
+msgid "&Property"
+msgstr "属性设置(&P)"
+
+#: src/gui/view.cpp:63
+msgid "&Reverse"
+msgstr "翻转(&R)"
+
+#: src/gui/view.cpp:64
+msgid "&Del"
+msgstr "删除(&D)"
+
+#: src/gui/doc.cpp:164
+msgid "FCS model file "
+msgstr "FCS模型文件"
+
+#: src/gui/doc.cpp:164
+msgid " seems older than aircraft model file. "
+msgstr "比飞机模型文件要早修改。"
+
+#: src/gui/doc.cpp:164
+msgid "Do you really want to load FCS model file?"
+msgstr "确实要载入FCS模型文件？"
+
+#: src/gui/doc.cpp:425 src/gui/doc.cpp:442
+msgid "Input the file name"
+msgstr "输入文件名"
+
+#: src/gui/doc.cpp:452
+msgid "Secceed in loading."
+msgstr "载人成功"
+
+#: src/gui/doc.cpp:453 src/gui/Table_Diag.cpp:1140 src/gui/Table_Diag.cpp:1156
+#: src/gui/Table_Diag.cpp:1164 src/gui/EngineMgr_Diag.cpp:232
+#: src/gui/EngineMgr_Diag.cpp:470 src/gui/EngineMgr_Diag.cpp:623
+#: src/gui/EngineMgr_Diag.cpp:757
+msgid "Info"
+msgstr "信息"
+
+#: src/gui/doc.cpp:459
+msgid "Fail to load."
+msgstr "载入失败"
+
+#: src/gui/doc.cpp:460 src/gui/MyFrame.cpp:177 src/gui/MyFrame.cpp:200
+#: src/gui/EngineMgr_Diag.cpp:762 src/gui/EngineMgr_Diag.cpp:768
+#: src/Commander.cpp:146
+msgid "Warning"
+msgstr "警告"
+
+#: src/gui/doc.cpp:565
+msgid "New Channel Name :"
+msgstr "新通道名称："
+
+#: src/gui/doc.cpp:565
+msgid "Input the new channel name"
+msgstr "输入新通道名称"
+
+#: src/gui/doc.cpp:586
+msgid "Get FCS snap picture"
+msgstr "获取FCS快照图片"
+
+#: src/gui/doc.cpp:624
+msgid "Gain Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:640
+msgid "PID Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:648
+msgid "Sensor Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:657
+msgid "Actuator Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:666
+msgid "Filter Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:674
+msgid "DeadBand Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:682
+msgid "Switch Component"
+msgstr "未知环节("
+
+#: src/gui/doc.cpp:690
+msgid "Kinemat Component"
+msgstr "未知环节("
+
+#: src/gui/Turbine_Diag.h:38
+msgid "Turbine Setup"
+msgstr "喷气发动机设置"
+
+#: src/gui/When_Diag.h:114
+msgid "Conditon/Action Setup"
+msgstr "条件/动作 设置"
+
+#: src/gui/Table_Diag.h:61
+msgid "Table Properties"
+msgstr "表格设置"
+
+#: src/gui/Axis_Diag.cpp:47
+msgid "Unit:"
+msgstr "单位："
+
+#: src/gui/EngineMgr_Diag.h:42
+msgid "Engine/Thruster Manager"
+msgstr "发动机/推进器管理"
+
+#: src/gui/deadband_dlg.cpp:64
+msgid "width:"
+msgstr "宽度："
+
+#: src/gui/deadband_dlg.cpp:66
+msgid "gain:"
+msgstr "增益："
+
+#: src/gui/deadband_dlg.cpp:138
+msgid "Deadband"
+msgstr "死区"
+
+#: src/gui/filter_dlg.cpp:80
+msgid "c1:"
+msgstr "c1:"
+
+#: src/gui/filter_dlg.cpp:81
+msgid "c2:"
+msgstr "c2:"
+
+#: src/gui/filter_dlg.cpp:82
+msgid "c3:"
+msgstr "c3:"
+
+#: src/gui/filter_dlg.cpp:83
+msgid "c4:"
+msgstr "c4:"
+
+#: src/gui/filter_dlg.cpp:84
+msgid "c5:"
+msgstr "c5:"
+
+#: src/gui/filter_dlg.cpp:85
+msgid "c6:"
+msgstr "c6:"
+
+#: src/gui/filter_dlg.cpp:86
+msgid "trigger:"
+msgstr "trigger:"
+
+#: src/gui/ResultShow_Diag.h:50
+msgid "Result Shower"
+msgstr "结果管理"
+
+#: src/gui/Function_Diag.h:34
+msgid "Function or Operator"
+msgstr "函数或算子"
+
+#: src/gui/Propulsion_Diag.h:95
+msgid "Engine/Thruster Setup"
+msgstr "发动机安装"
+
+#: src/gui/Propulsion_Diag.h:162
+msgid "Tank Setup"
+msgstr "油箱安装"
+
+#: src/gui/shape.cpp:1456
+msgid "NULL"
+msgstr ""
+
+#: src/gui/shape.cpp:1484
+msgid "Multiple Outputs"
+msgstr ""
+
+#: src/gui/Function_Diag.cpp:70 src/gui/EngineMgr_Diag.cpp:76
+msgid "Description:"
+msgstr "描述："
+
+#: src/gui/Function_Diag.cpp:85 src/gui/LGear_Diag.cpp:169
+#: src/gui/EngineMgr_Diag.cpp:278
+msgid "Type"
+msgstr "类型"
+
+#: src/gui/MyFrame.cpp:164 src/gui/MyFrame.cpp:190
+msgid "Choose a file to open"
+msgstr "无法打开文件dat_mark.dat"
+
+#: src/gui/MyFrame.cpp:164
+msgid "XML files (*.xml)|*.xml"
+msgstr ""
+
+#: src/gui/MyFrame.cpp:177 src/gui/MyFrame.cpp:200
+#: src/gui/EngineMgr_Diag.cpp:768 src/Commander.cpp:146
+msgid "Something is wrong! I can not load proper file("
+msgstr "错误！无法载人文件("
+
+#: src/gui/MyFrame.cpp:190
+msgid "CSV files (*.csv)|*.csv"
+msgstr ""
+
+#: src/gui/fcsprop_dlg.cpp:58
+msgid "Modify"
+msgstr "修改"
+
+#: src/gui/fcsprop_dlg.cpp:59 src/gui/func_dlg.cpp:136
+#: src/gui/switch_dlg.cpp:108
+msgid "Remove"
+msgstr "删除"
+
+#: src/gui/Property_Diag.cpp:260
+#, c-format
+msgid "show %d, hide %d"
+msgstr "显示 %d, 隐藏 %d"
+
+#: src/gui/LGear_Diag.cpp:167 src/gui/EngineMgr_Diag.cpp:275
+msgid "Name"
+msgstr "名称"
+
+#: src/gui/LGear_Diag.cpp:183
+msgid "spring coefficient ="
+msgstr "弹性系数 ＝"
+
+#: src/gui/LGear_Diag.cpp:190
+msgid "damping coefficient ="
+msgstr "阻尼系数 ＝"
+
+#: src/gui/LGear_Diag.cpp:197
+msgid "static friction ="
+msgstr "静摩擦系数 ＝"
+
+#: src/gui/LGear_Diag.cpp:199
+msgid "dynamic friction ="
+msgstr "动摩擦系数 ＝"
+
+#: src/gui/LGear_Diag.cpp:201
+msgid "rolling friction ="
+msgstr "滚动摩阻 ＝"
+
+#: src/gui/LGear_Diag.cpp:203
+msgid "max stear ="
+msgstr "最大转动角度 ＝"
+
+#: src/gui/LGear_Diag.cpp:209
+msgid "brake_group ="
+msgstr "刹车组 ＝"
+
+#: src/gui/LGear_Diag.cpp:219
+msgid "retractable"
+msgstr "可缩回的"
+
+#: src/gui/func_dlg.cpp:134 src/gui/switch_dlg.cpp:106
+msgid "set"
+msgstr "设置"
+
+#: src/gui/func_dlg.cpp:266 src/gui/switch_dlg.cpp:234
+msgid "Input"
+msgstr "输入"
+
+#: src/gui/func_dlg.cpp:267 src/gui/switch_dlg.cpp:235
+msgid "Tree"
+msgstr "树状结构"
+
+#: src/gui/AeroDynamics_Diag.h:35
+msgid "AeroDynamics Properties"
+msgstr "气动力模块设置"
+
+#: src/gui/Table_Diag.cpp:152
+msgid "choice"
+msgstr "选择"
+
+#: src/gui/Table_Diag.cpp:155
+msgid "row property:"
+msgstr "行属性："
+
+#: src/gui/Table_Diag.cpp:158
+msgid "row detail"
+msgstr "行详细"
+
+#: src/gui/Table_Diag.cpp:159
+msgid "column property:"
+msgstr "列属性："
+
+#: src/gui/Table_Diag.cpp:162
+msgid "column detail"
+msgstr "列详细"
+
+#: src/gui/Table_Diag.cpp:163
+msgid "table property:"
+msgstr "表属性："
+
+#: src/gui/Table_Diag.cpp:166
+msgid "table detail"
+msgstr "表详细"
+
+#: src/gui/Table_Diag.cpp:167
+msgid "frame property:"
+msgstr "层属性："
+
+#: src/gui/Table_Diag.cpp:170
+msgid "frame detail"
+msgstr "层详细"
+
+#: src/gui/Table_Diag.cpp:171
+msgid "table ="
+msgstr "表 ＝"
+
+#: src/gui/Table_Diag.cpp:176
+msgid "frame ="
+msgstr "层 ＝"
+
+#: src/gui/Table_Diag.cpp:183
+msgid "fill table"
+msgstr "填写表"
+
+#: src/gui/Table_Diag.cpp:184
+msgid "rebuild table"
+msgstr "重建2D表"
+
+#: src/gui/Table_Diag.cpp:185
+msgid "rebuild frame"
+msgstr "重建3D表"
+
+#: src/gui/Table_Diag.cpp:291
+msgid "value"
+msgstr "值"
+
+#: src/gui/Table_Diag.cpp:292
+msgid "curve"
+msgstr "曲线1"
+
+#: src/gui/Table_Diag.cpp:299
+msgid "content"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:490 src/gui/Table_Diag.cpp:700
+msgid "Error table type"
+msgstr "错误的表类型"
+
+#: src/gui/Table_Diag.cpp:555 src/gui/gain_dlg.cpp:89
+msgid "Value"
+msgstr "变量值"
+
+#: src/gui/Table_Diag.cpp:716
+msgid "Do you want to add "
+msgstr "你想从剪贴板中添加"
+
+#: src/gui/Table_Diag.cpp:716
+msgid " numbers from clipboard to grid from row="
+msgstr "个数自行＝"
+
+#: src/gui/Table_Diag.cpp:716
+msgid ", col="
+msgstr ", 列＝"
+
+#: src/gui/Table_Diag.cpp:759
+msgid "Do you want to rebuild the current 2D table "
+msgstr "确实要重建2D表"
+
+#: src/gui/Table_Diag.cpp:759 src/gui/Table_Diag.cpp:829
+msgid " numbers from clipboard"
+msgstr "个数从剪贴板"
+
+#: src/gui/Table_Diag.cpp:816 src/gui/Table_Diag.cpp:882
+msgid "fail to parse data format from clipboard"
+msgstr "无法从剪贴板中解析数据（格式错误）"
+
+#: src/gui/Table_Diag.cpp:829
+msgid "Do you want to rebuild the 3D table "
+msgstr "确实要重建3D表"
+
+#: src/gui/Table_Diag.cpp:914
+msgid "Show the list of Row"
+msgstr "显示行值列表"
+
+#: src/gui/Table_Diag.cpp:926 src/gui/Table_Diag.cpp:980
+msgid "All the data in the table will be set to zero. Do you want to continue?"
+msgstr "表格中所有的数据将被置零。确定要继续吗？"
+
+#: src/gui/Table_Diag.cpp:934 src/gui/Table_Diag.cpp:988
+msgid "All the data in the table has been set to zero."
+msgstr "表格中所有的数据已被置零。"
+
+#: src/gui/Table_Diag.cpp:968
+msgid "Show the list of Column"
+msgstr "显示列值列表"
+
+#: src/gui/Table_Diag.cpp:1033
+msgid "Show the list of Table"
+msgstr "显示表值列表"
+
+#: src/gui/Table_Diag.cpp:1066
+msgid "Show the list of Frame"
+msgstr "显示层值列表"
+
+#: src/gui/Table_Diag.cpp:1140
+msgid "Fail to save file tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1156
+msgid "Fail to parse file tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1164
+msgid "Fail to find <table> tag in tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1203
+msgid "Frame : "
+msgstr "层："
+
+#: src/gui/Table_Diag.cpp:1207
+msgid "Table : "
+msgstr "表："
+
+#: src/gui/Table_Diag.cpp:1345
+msgid ""
+"Add from\n"
+"ClipBoard"
+msgstr ""
+"自剪贴板中\n"
+"添加"
+
+#: src/gui/Table_Diag.cpp:1429
+msgid "Value ="
+msgstr "值＝"
+
+#: src/gui/Table_Diag.cpp:1429
+msgid "Input numbers"
+msgstr "输入数"
+
+#: src/gui/Table_Diag.cpp:1454
+msgid "Do you really want to delete the item(s)?"
+msgstr "确定要删除这些项？"
+
+#: src/gui/EngineMgr_Diag.cpp:70
+msgid "Symbol:"
+msgstr "代号："
+
+#: src/gui/EngineMgr_Diag.cpp:135
+msgid "Add new one"
+msgstr "添加"
+
+#: src/gui/EngineMgr_Diag.cpp:136
+msgid "Delete the selected one"
+msgstr "删除选定项"
+
+#: src/gui/EngineMgr_Diag.cpp:137
+msgid "Copy from the selected one"
+msgstr "拷贝选定项"
+
+#: src/gui/EngineMgr_Diag.cpp:138
+msgid "Show the detail"
+msgstr "显示详情"
+
+#: src/gui/EngineMgr_Diag.cpp:232
+msgid "Can not parse file "
+msgstr "无法解析文件"
+
+#: src/gui/EngineMgr_Diag.cpp:272
+msgid "Symbol"
+msgstr "代号"
+
+#: src/gui/EngineMgr_Diag.cpp:470 src/gui/EngineMgr_Diag.cpp:623
+msgid "Please select one engine first."
+msgstr "请先选择发动机"
+
+#: src/gui/EngineMgr_Diag.cpp:495
+msgid ""
+"Something is wrong! I can not delete it.\n"
+"Please delete the directory by hand."
+msgstr ""
+"错误！无法删除\n"
+"请手动删除"
+
+#: src/gui/EngineMgr_Diag.cpp:509
+msgid "Choose one kind of engines/thrusters"
+msgstr "选择发动机/推进器"
+
+#: src/gui/EngineMgr_Diag.cpp:509
+msgid "Which kind of engines/thrusters do you want to create?"
+msgstr "创建何种发动机/推进器？"
+
+#: src/gui/EngineMgr_Diag.cpp:513
+msgid "Please give me the symbol of new engine."
+msgstr "输入新发动机代号"
+
+#: src/gui/EngineMgr_Diag.cpp:513
+msgid "Input new engine symbol"
+msgstr "输入新发动机代号"
+
+#: src/gui/EngineMgr_Diag.cpp:611
+msgid "Something is wrong! I can not create the file. Please check it."
+msgstr "错误！无法创建文件。请检查。"
+
+#: src/gui/EngineMgr_Diag.cpp:634
+msgid "Copy from "
+msgstr "拷贝于"
+
+#: src/gui/EngineMgr_Diag.cpp:635
+msgid "Please give me the symbol of the clone."
+msgstr "输入拷贝件的代号"
+
+#: src/gui/EngineMgr_Diag.cpp:642
+msgid "Something is wrong! I can not copy the file. Please check it."
+msgstr "错误！无法拷贝文件。请检查。"
+
+#: src/gui/EngineMgr_Diag.cpp:753
+msgid "Turbine Engine Setup"
+msgstr "喷气发动机设置"
+
+#: src/gui/EngineMgr_Diag.cpp:757
+msgid "Do not need to setup this kind of thruster."
+msgstr "无需设置该类发动机"
+
+#: src/gui/EngineMgr_Diag.cpp:762
+msgid "Can not setup this kind of engine/thruster in GUI yet."
+msgstr "尚未实现该类发动机的GUI设置界面。"
+
+#: src/gui/EngineMgr_Diag.cpp:774
+msgid "Something is wrong! I can not save proper file("
+msgstr "错误！无法保存文件("
+
+#: src/gui/EngineMgr_Diag.cpp:774 src/gui/EngineMgr_Diag.cpp:784
+msgid "). Please check it."
+msgstr ")。请检查。"
+
+#: src/gui/EngineMgr_Diag.cpp:784
+msgid "Something is wrong! I can not find proper file("
+msgstr "错误！无法找到文件("
+
+#: src/gui/Mass_Diag.cpp:103
+msgid "location"
+msgstr "位置"
+
+#: src/gui/Mass_Diag.cpp:106
+msgid "Weight="
+msgstr "重量＝"
+
+#: src/gui/Mass_Diag.cpp:113
+msgid "x="
+msgstr "x="
+
+#: src/gui/Mass_Diag.cpp:115
+msgid "y="
+msgstr "y="
+
+#: src/gui/Mass_Diag.cpp:117
+msgid "z="
+msgstr "z="
+
+#: src/gui/gain_dlg.cpp:60
+msgid "Gain:"
+msgstr "增益："
+
+#: src/gui/gain_dlg.cpp:66
+msgid "independentVar:"
+msgstr "自变量："
+
+#: src/gui/gain_dlg.cpp:87
+msgid "independentVar"
+msgstr "自变量"
+
+#: src/gui/gain_dlg.cpp:162
+msgid "AeroSurface"
+msgstr "气动舵面"
+
+#: src/gui/gain_dlg.cpp:163
+msgid "Scheduled"
+msgstr "预定映射"
+
+#: src/gui/switch_dlg.cpp:113
+msgid "Output:"
+msgstr "输出："
+
+#: src/gui/switch_dlg.cpp:141
+msgid "Add &Simple Condition"
+msgstr "添加单个条件(&S)"
+
+#: src/gui/switch_dlg.cpp:142
+msgid "Add Compound Condition(&AND)"
+msgstr "添加复合条件(&AND)"
+
+#: src/gui/switch_dlg.cpp:143
+msgid "Add Compound Condition(&OR)"
+msgstr "添加复合条件(&OR)"
+
+#: src/gui/switch_dlg.cpp:144
+msgid "Add Test(&AND)"
+msgstr "添加测试(&AND)"
+
+#: src/gui/switch_dlg.cpp:145
+msgid "Add Test(&OR)"
+msgstr "添加测试(&OR)"
+
+#: src/Commander.cpp:115 src/MyApp.cpp:106
+msgid ""
+"Fail to load XRC files. Please use --resource=<str> or -r <str> to specify "
+"the resource directory."
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid "Fail to load property table "
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid ". "
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid "Use option -p  to specify the file to load."
+msgstr ""
+
+#: src/Commander.cpp:272 src/MyApp.cpp:242
+msgid "\"property name\""
+msgstr "变量名"
+
+#: src/Commander.cpp:273 src/MyApp.cpp:243
+msgid "\"description\""
+msgstr "描述"
+
+#: src/Commander.cpp:274 src/MyApp.cpp:244
+msgid "\"unit\""
+msgstr "单位："
+
+#: src/Commander.cpp:275 src/MyApp.cpp:245
+msgid "\"access\""
+msgstr "存取方式"
+
+#: src/Commander.cpp:276 src/MyApp.cpp:246
+msgid "\"comment\""
+msgstr "备注"
+
+#: src/initprops.h:13
+msgid "go on output after optimize"
+msgstr "优化后的延长输出倍数"
+
+#: src/initprops.h:16
+msgid "default value is zero"
+msgstr "默认值是零。表示不延长输出。1.5表示延长输出1.5倍优化时间。"
+
+#: src/initprops.h:19
+msgid "dat file output rate"
+msgstr "DAT文件的输出频率设置"
+
+#: src/initprops.h:22
+msgid "output a record every X times. default value is 5."
+msgstr ""
+"多少次主循环推进后输出一个DAT记录。默认值是5，表示每5次主循环推进输出一次，也"
+"意味着DAT记录输出频率是主循环频率的1/5。"
+
+#: src/initprops.h:25
+msgid "aeroelasticity"
+msgstr "气动弹性修正"
+
+#: src/initprops.h:28
+msgid "aeroelastic enable signal(0-false, 1-true)"
+msgstr "气动弹性修正开关（0为关，1为开）"
+
+#: src/initprops.h:31
+msgid "custom signal 1"
+msgstr "自定义开关1"
+
+#: src/initprops.h:34 src/initprops.h:40 src/initprops.h:46 src/initprops.h:52
+#: src/initprops.h:58
+msgid "custom enable signal(0-false, 1-true)"
+msgstr "自定义开关（0为关，1为开）"
+
+#: src/initprops.h:37
+msgid "custom signal 2"
+msgstr "自定义开关2"
+
+#: src/initprops.h:43
+msgid "custom signal 3"
+msgstr "自定义开关3"
+
+#: src/initprops.h:49
+msgid "custom signal 4"
+msgstr "自定义开关4"
+
+#: src/initprops.h:55
+msgid "custom signal 5"
+msgstr "自定义开关5"
+
+#: src/initprops.h:61 src/initprops.h:67
+msgid "wing area"
+msgstr "机翼面积"
+
+#: src/initprops.h:73 src/initprops.h:79
+msgid "wing span"
+msgstr "机翼展长"
+
+#: src/initprops.h:85 src/initprops.h:91
+msgid "chord bar"
+msgstr "平均气动弦长"
+
+#: src/initprops.h:97
+msgid "wing incidence angle"
+msgstr "机翼安装角"
+
+#: src/initprops.h:100
+msgid "aero/alpha-wing-rad = aero/alpha-rad + metrics/iw-deg * deg2rad"
+msgstr "aero/alpha-wing-rad = aero/alpha-rad + metrics/iw-deg * deg2rad"
+
+#: src/initprops.h:103
+msgid "Horizontal Tail Area"
+msgstr "水平尾翼面积"
+
+#: src/initprops.h:106 src/initprops.h:112 src/initprops.h:118
+#: src/initprops.h:124 src/initprops.h:142 src/initprops.h:148
+#: src/initprops.h:154 src/initprops.h:160
+msgid "deprecated"
+msgstr "deprecated"
+
+#: src/initprops.h:109
+msgid "horizontal tail area"
+msgstr "水平尾翼面积"
+
+#: src/initprops.h:115 src/initprops.h:121 src/initprops.h:127
+msgid "horizontal tail arm"
+msgstr "水平尾翼尾力臂"
+
+#: src/initprops.h:130
+msgid "deprecated, HTailArm / cbar"
+msgstr "deprecated, HTailArm / cbar"
+
+#: src/initprops.h:133
+msgid "H. Tail Volume"
+msgstr "水平尾翼尾容量"
+
+#: src/initprops.h:136
+msgid "vbarh = HTailArm*HTailArea / (cbar*WingArea)"
+msgstr "vbarh = HTailArm*HTailArea / (cbar*WingArea)"
+
+#: src/initprops.h:139 src/initprops.h:145
+msgid "vertical tail area"
+msgstr "垂直尾翼面积"
+
+#: src/initprops.h:151 src/initprops.h:157 src/initprops.h:163
+msgid "vertical tail arm"
+msgstr "垂直尾翼尾力臂"
+
+#: src/initprops.h:166
+msgid "deprecated, VTailArm / cbar"
+msgstr "deprecated, VTailArm / cbar"
+
+#: src/initprops.h:169
+msgid "V. Tail Volume"
+msgstr "垂直尾翼尾容量"
+
+#: src/initprops.h:172
+msgid "vbarv = VTailArm*VTailArea / (cbar*WingArea)"
+msgstr "vbarv = VTailArm*VTailArea / (cbar*WingArea)"
+
+#: src/initprops.h:175 src/initprops.h:181
+msgid "X coordinate for ARP"
+msgstr "ARP的X坐标值"
+
+#: src/initprops.h:178 src/initprops.h:184 src/initprops.h:190
+#: src/initprops.h:196 src/initprops.h:202 src/initprops.h:208
+msgid "Aero Referece Point in the structural frame"
+msgstr "结构坐标系下的气动参考点(ARP)位置"
+
+#: src/initprops.h:187 src/initprops.h:193
+msgid "Y coordinate for ARP"
+msgstr "ARP的Y坐标值"
+
+#: src/initprops.h:199 src/initprops.h:205
+msgid "Z coordinate for ARP"
+msgstr "ARP的Z坐标值"
+
+#: src/initprops.h:211 src/initprops.h:217
+msgid "X coordinate for EP"
+msgstr "EP的X坐标值"
+
+#: src/initprops.h:214 src/initprops.h:220 src/initprops.h:226
+#: src/initprops.h:232 src/initprops.h:238 src/initprops.h:244
+msgid "Eye Point in the structural frame"
+msgstr "结构坐标系下的视点(Eye Point)位置"
+
+#: src/initprops.h:223 src/initprops.h:229
+msgid "Y coordinate for EP"
+msgstr "EP的Y坐标值"
+
+#: src/initprops.h:235 src/initprops.h:241
+msgid "Z coordinate for EP"
+msgstr "EP的Z坐标值"
+
+#: src/initprops.h:247 src/initprops.h:253
+msgid "X coordinate for VRP"
+msgstr "VRP的X坐标值"
+
+#: src/initprops.h:250 src/initprops.h:256 src/initprops.h:262
+#: src/initprops.h:268 src/initprops.h:274 src/initprops.h:280
+msgid "Visual Reference Point in the structural frame"
+msgstr "结构坐标系下的参考点(VRP)位置"
+
+#: src/initprops.h:259 src/initprops.h:265
+msgid "Y coordinate for VRP"
+msgstr "VRP的Y坐标值"
+
+#: src/initprops.h:271 src/initprops.h:277
+msgid "Z coordinate for VRP"
+msgstr "VRP的Z坐标值"
+
+#: src/initprops.h:295 src/initprops.h:301
+msgid "weight"
+msgstr "重量"
+
+#: src/initprops.h:307 src/initprops.h:313
+msgid "CG pos along the X axis"
+msgstr "重心的X坐标"
+
+#: src/initprops.h:310 src/initprops.h:316 src/initprops.h:322
+#: src/initprops.h:328 src/initprops.h:334 src/initprops.h:340
+msgid "CG pos in the structural frame"
+msgstr "结构坐标系中的重心位置"
+
+#: src/initprops.h:319 src/initprops.h:325
+msgid "CG pos along the Y axis"
+msgstr "重心的Y坐标"
+
+#: src/initprops.h:331 src/initprops.h:337
+msgid "CG pos along the Z axis"
+msgstr "重心的Z坐标"
+
+#: src/initprops.h:343 src/initprops.h:349 src/initprops.h:355
+#: src/initprops.h:379
+msgid "aero temperature"
+msgstr "气温"
+
+#: src/initprops.h:346
+msgid "the temperature in degrees Rankine"
+msgstr "兰金氏度温度"
+
+#: src/initprops.h:352
+msgid "the temperature in degrees Celsius"
+msgstr "摄氏度温度"
+
+#: src/initprops.h:358
+msgid "the temperature in degrees Kelvin"
+msgstr "开氏度温度"
+
+#: src/initprops.h:361 src/initprops.h:367
+msgid "temperature at sea level"
+msgstr "海平面温度"
+
+#: src/initprops.h:364
+msgid "sea level temperature in degrees Rankine"
+msgstr "海平面兰金氏度温度"
+
+#: src/initprops.h:370
+msgid "sea level temperature in degrees Celsius"
+msgstr "海平面摄氏度温度"
+
+#: src/initprops.h:373
+msgid "aero temperature at sea level"
+msgstr "海平面温度"
+
+#: src/initprops.h:376
+msgid "sea level temperature in degrees Kelvin"
+msgstr "海平面开氏度温度"
+
+#: src/initprops.h:382
+msgid "the ratio of at-altitude temperature over the sea level value"
+msgstr "与海平面温度的温度比值"
+
+#: src/initprops.h:385 src/initprops.h:391 src/initprops.h:409
+msgid "aero density"
+msgstr "空气密度"
+
+#: src/initprops.h:397 src/initprops.h:403
+msgid "aero density at sea level"
+msgstr "海平面空气密度"
+
+#: src/initprops.h:412
+msgid "the ratio of at-altitude density over the sea level value"
+msgstr "与海平面空气密度的密度比值"
+
+#: src/initprops.h:415 src/initprops.h:421 src/initprops.h:439
+msgid "aero pressure"
+msgstr "气压"
+
+#: src/initprops.h:427 src/initprops.h:433
+msgid "aero pressure at sea level"
+msgstr "海平面气压"
+
+#: src/initprops.h:442
+msgid "the ratio of at-altitude pressure over the sea level value"
+msgstr "与海平面气压的气压比值"
+
+#: src/initprops.h:445 src/initprops.h:451 src/initprops.h:469
+msgid "sound speed"
+msgstr "音速"
+
+#: src/initprops.h:457
+msgid "speed of sound  at sea level"
+msgstr "海平面音速"
+
+#: src/initprops.h:463
+msgid "sound speed at sea level"
+msgstr "海平面音速"
+
+#: src/initprops.h:472
+msgid "the ratio of at-altitude sound speed over the sea level value"
+msgstr "与海平面音速的音速比值"
+
+#: src/initprops.h:475
+msgid "wind direction"
+msgstr "风向"
+
+#: src/initprops.h:478
+msgid "0 <= psiw < 2*pi"
+msgstr "风向范围从0到2PI"
+
+#: src/initprops.h:495
+msgid "density altitude in feet"
+msgstr "相对密度高度（英尺）"
+
+#: src/initprops.h:501
+msgid "density altitude in meters"
+msgstr "相对密度高度（米）"
+
+#: src/initprops.h:507
+msgid "aero turbulence moment along the X axis"
+msgstr "绕X轴的气流扰动力矩分量"
+
+#: src/initprops.h:510 src/initprops.h:516 src/initprops.h:522
+msgid "aero turbulence moment in the body frame"
+msgstr "机体轴系下的气流扰动力矩"
+
+#: src/initprops.h:513
+msgid "aero turbulence moment along the Y axis"
+msgstr "绕Y轴的气流扰动力矩分量"
+
+#: src/initprops.h:519
+msgid "aero turbulence moment along the Z axis"
+msgstr "绕Z轴的气流扰动力矩分量"
+
+#: src/initprops.h:525 src/initprops.h:531
+msgid "aero turbulence force for the north axis"
+msgstr "气流扰动力的北向分量"
+
+#: src/initprops.h:528 src/initprops.h:534 src/initprops.h:540
+#: src/initprops.h:546 src/initprops.h:552 src/initprops.h:558
+msgid "aero turbulence force in the local frame"
+msgstr "机体轴系下的气流扰动力"
+
+#: src/initprops.h:537 src/initprops.h:543
+msgid "aero turbulence force for the east axis"
+msgstr "气流扰动力的东向分量"
+
+#: src/initprops.h:549 src/initprops.h:555
+msgid "aero turbulence force for the down axis"
+msgstr "气流扰动力的向下分量"
+
+#: src/initprops.h:561
+msgid "square coefficient of lift"
+msgstr "升力系数的平方值"
+
+#: src/initprops.h:564
+msgid "aerodynamic lift force divided by (qbar * WingArea)"
+msgstr "气动升力除以气动头与机翼面积的积"
+
+#: src/initprops.h:567 src/initprops.h:573
+msgid "qbar * WingArea"
+msgstr "气动头与机翼面积的积"
+
+#: src/initprops.h:570 src/initprops.h:576
+msgid "qbar multiplied by WingArea"
+msgstr "气动头与机翼面积的积"
+
+#: src/initprops.h:579
+msgid "accessible max alpha angle"
+msgstr "最大可用迎角"
+
+#: src/initprops.h:585
+msgid "accessible min alpha angle"
+msgstr "最小可用迎角"
+
+#: src/initprops.h:591
+msgid "WingSpan divided by double velocity"
+msgstr "机翼展长除以两倍的速度"
+
+#: src/initprops.h:594
+msgid "velocities/p-rad_sec * aero/bi2vel = p-norm"
+msgstr "velocities/p-rad_sec * aero/bi2vel = 无量纲滚转角速度"
+
+#: src/initprops.h:597
+msgid "chord divided by double velocity"
+msgstr "机翼平均气动弦长除以两倍的速度"
+
+#: src/initprops.h:600
+msgid "velocities/q-rad_sec * aero/ci2vel = q-norm"
+msgstr "velocities/q-rad_sec * aero/ci2vel = 无量纲俯仰角速度"
+
+#: src/initprops.h:603
+msgid "alpha angle for the wing"
+msgstr "机翼的迎角（考虑机翼安装角）"
+
+#: src/initprops.h:606
+msgid "aero/alpha-rad + metrics/iw-deg * deg2rad"
+msgstr "aero/alpha-rad + metrics/iw-deg * deg2rad"
+
+#: src/initprops.h:609
+msgid "stall warn signal"
+msgstr "失速警告信号"
+
+#: src/initprops.h:612
+msgid "10*(alpha/alphaclmax - 0.85)"
+msgstr "10*(alpha/alphaclmax - 0.85)"
+
+#: src/initprops.h:615
+msgid "stall hysteresis flag"
+msgstr "失速迟滞环现象出现信号"
+
+#: src/initprops.h:618
+msgid "if (alpha > alphahystmax) stall_hyst = 1; else stall_hyst = 0"
+msgstr "if (alpha > alphahystmax) stall_hyst = 1; else stall_hyst = 0"
+
+#: src/initprops.h:621 src/initprops.h:627
+msgid "alpha angle"
+msgstr "迎角"
+
+#: src/initprops.h:633 src/initprops.h:639 src/initprops.h:645
+#: src/initprops.h:651
+msgid "beta angle"
+msgstr "侧滑角"
+
+#: src/initprops.h:648 src/initprops.h:654
+msgid "absolute magnitude of beta angle"
+msgstr "侧滑角绝对值"
+
+#: src/initprops.h:657 src/initprops.h:663
+msgid "Q bar"
+msgstr "气动头"
+
+#: src/initprops.h:683 src/initprops.h:689
+msgid "alpha dot"
+msgstr "迎角导数"
+
+#: src/initprops.h:686 src/initprops.h:692
+msgid "d(alpha) / dt"
+msgstr "d(alpha) / dt"
+
+#: src/initprops.h:695 src/initprops.h:701
+msgid "beta dot"
+msgstr "侧滑角导数"
+
+#: src/initprops.h:698 src/initprops.h:704
+msgid "d(beta) / dt"
+msgstr "d(beta) / dt"
+
+#: src/initprops.h:721 src/initprops.h:727 src/initprops.h:757
+#: src/initprops.h:763
+msgid "aerodynamic force along the X axis"
+msgstr "沿X轴的气动力分量"
+
+#: src/initprops.h:724 src/initprops.h:730 src/initprops.h:736
+#: src/initprops.h:742 src/initprops.h:748 src/initprops.h:754
+msgid "aerodynamic force only in the body frame"
+msgstr "体轴系下的气动力"
+
+#: src/initprops.h:733 src/initprops.h:739 src/initprops.h:769
+#: src/initprops.h:775
+msgid "aerodynamic force along the Y axis"
+msgstr "沿Y轴的气动力分量"
+
+#: src/initprops.h:745 src/initprops.h:751 src/initprops.h:781
+#: src/initprops.h:787
+msgid "aerodynamic force along the Z axis"
+msgstr "沿Z轴的气动力分量"
+
+#: src/initprops.h:760 src/initprops.h:766 src/initprops.h:772
+#: src/initprops.h:778 src/initprops.h:784 src/initprops.h:790
+msgid "aerodynamic force only in the wind frame"
+msgstr "风轴系下的气动力"
+
+#: src/initprops.h:793
+msgid "aerodynamic force load ratio"
+msgstr "升阻比"
+
+#: src/initprops.h:796
+msgid "aerodynamic lift force divided by aerodynamic drag force"
+msgstr "升阻比"
+
+#: src/initprops.h:799
+msgid "longitude force load"
+msgstr "纵向过载"
+
+#: src/initprops.h:802
+msgid "longitude force divided by gravity, it is 1 normally."
+msgstr "纵向合外力除以重力，定直平飞是接近1。"
+
+#: src/initprops.h:805
+msgid "absolute magnitude of all force load"
+msgstr "合外力过载的绝对值"
+
+#: src/initprops.h:808
+msgid "total force divided by gravity, it is 1 normally."
+msgstr "合外力除以重力, 定直平飞时为1"
+
+#: src/initprops.h:811 src/initprops.h:817
+msgid "total force along the X axis"
+msgstr "沿X轴的合外力分量"
+
+#: src/initprops.h:814 src/initprops.h:820 src/initprops.h:826
+#: src/initprops.h:832 src/initprops.h:838 src/initprops.h:844
+msgid "total force in the body frame"
+msgstr "体轴系下的合外力"
+
+#: src/initprops.h:823 src/initprops.h:829
+msgid "total force along the Y axis"
+msgstr "沿Y轴的合外力分量"
+
+#: src/initprops.h:835 src/initprops.h:841
+msgid "total force along the Z axis"
+msgstr "沿Z轴的合外力分量"
+
+#: src/initprops.h:847
+msgid "total load along the X axis"
+msgstr "沿X轴的合外力过载分量"
+
+#: src/initprops.h:850 src/initprops.h:856
+msgid "total load in the body frame"
+msgstr "体轴系下的合外力过载"
+
+#: src/initprops.h:853
+msgid "total load along the Y axis"
+msgstr "沿Y轴的合外力过载分量"
+
+#: src/initprops.h:859
+msgid "total load along the Z axis"
+msgstr "沿Z轴的合外力过载分量"
+
+#: src/initprops.h:862
+msgid "total load in the body frame, it is -1 normally."
+msgstr "体轴系下的总过载，定直平飞时为－1"
+
+#: src/initprops.h:903 src/initprops.h:909
+msgid "aerodynamic moment along the X axis"
+msgstr "沿X轴的气动力矩分量"
+
+#: src/initprops.h:906 src/initprops.h:912 src/initprops.h:918
+#: src/initprops.h:924 src/initprops.h:930 src/initprops.h:936
+msgid "aerodynamic moment in the body frame at ARP"
+msgstr "体轴系下在ARP点的气动力矩"
+
+#: src/initprops.h:915 src/initprops.h:921
+msgid "aerodynamic moment along the Y axis"
+msgstr "沿Y轴的气动力矩分量"
+
+#: src/initprops.h:927 src/initprops.h:933
+msgid "aerodynamic moment along the Z axis"
+msgstr "沿Z轴的气动力矩分量"
+
+#: src/initprops.h:939 src/initprops.h:945
+msgid "total moment along the X axis"
+msgstr "沿X轴的合力矩分量"
+
+#: src/initprops.h:942 src/initprops.h:948 src/initprops.h:954
+#: src/initprops.h:960 src/initprops.h:966 src/initprops.h:972
+msgid "total moment in the body frame at ARP"
+msgstr "体轴系下在ARP点的合力矩"
+
+#: src/initprops.h:951 src/initprops.h:957
+msgid "total moment along the Y axis"
+msgstr "沿Y轴的合力矩分量"
+
+#: src/initprops.h:963 src/initprops.h:969
+msgid "total moment along the Z axis"
+msgstr "沿Z轴的合力矩分量"
+
+#: src/initprops.h:995 src/initprops.h:1001
+msgid "acceleration at pilot along the X axis"
+msgstr "沿X轴的飞行员处加速度分量"
+
+#: src/initprops.h:998 src/initprops.h:1004 src/initprops.h:1010
+#: src/initprops.h:1016 src/initprops.h:1022 src/initprops.h:1028
+#: src/initprops.h:1088 src/initprops.h:1094 src/initprops.h:1100
+#: src/initprops.h:1106 src/initprops.h:1112 src/initprops.h:1118
+msgid "acceleration in the body frame"
+msgstr "体轴系下的加速度"
+
+#: src/initprops.h:1007 src/initprops.h:1013
+msgid "acceleration at pilot along the Y axis"
+msgstr "沿Y轴的飞行员处加速度分量"
+
+#: src/initprops.h:1019 src/initprops.h:1025
+msgid "acceleration at pilot along the Z axis"
+msgstr "沿Z轴的飞行员处加速度分量"
+
+#: src/initprops.h:1031
+msgid "load at pilot along the X axis"
+msgstr "沿X轴的飞行员处过载分量"
+
+#: src/initprops.h:1034 src/initprops.h:1040 src/initprops.h:1046
+msgid "load in the body frame"
+msgstr "体轴系下的过载"
+
+#: src/initprops.h:1037
+msgid "load at pilot along the Y axis"
+msgstr "沿Y轴的飞行员处过载分量"
+
+#: src/initprops.h:1043
+msgid "load at pilot along the Z axis"
+msgstr "沿Z轴的飞行员处过载分量"
+
+#: src/initprops.h:1049 src/initprops.h:1055
+msgid "angular acceleration along the X axis"
+msgstr "绕X轴的角加速度分量"
+
+#: src/initprops.h:1052 src/initprops.h:1058 src/initprops.h:1064
+#: src/initprops.h:1070 src/initprops.h:1076 src/initprops.h:1082
+msgid "angular acceleration in the body frame"
+msgstr "体轴系下的角加速度"
+
+#: src/initprops.h:1061 src/initprops.h:1067
+msgid "angular acceleration along the Y axis"
+msgstr "绕Y轴的角加速度分量"
+
+#: src/initprops.h:1073 src/initprops.h:1079
+msgid "angular acceleration along the Z axis"
+msgstr "绕Z轴的角加速度分量"
+
+#: src/initprops.h:1085 src/initprops.h:1091
+msgid "acceleration along the X axis"
+msgstr "沿X轴的加速度分量"
+
+#: src/initprops.h:1097 src/initprops.h:1103
+msgid "acceleration along the Y axis"
+msgstr "沿Y轴的加速度分量"
+
+#: src/initprops.h:1109 src/initprops.h:1115
+msgid "acceleration along the Z axis"
+msgstr "沿Z轴的加速度分量"
+
+#: src/initprops.h:1121 src/initprops.h:1127 src/initprops.h:1133
+msgid "calibrated speed"
+msgstr "校准速度"
+
+#: src/initprops.h:1139 src/initprops.h:1145 src/initprops.h:1151
+msgid "equivalent speed"
+msgstr "当量速度"
+
+#: src/initprops.h:1165 src/initprops.h:1171
+msgid "total temperature"
+msgstr "总温"
+
+#: src/initprops.h:1168
+msgid "total temperature in degrees Rankine"
+msgstr "兰金氏度总温"
+
+#: src/initprops.h:1174
+msgid "total temperature in degrees Celsius"
+msgstr "摄氏度总温"
+
+#: src/initprops.h:1177 src/initprops.h:1183
+msgid "total pressure"
+msgstr "总压"
+
+#: src/initprops.h:1189 src/initprops.h:1195 src/initprops.h:1411
+#: src/initprops.h:1417
+msgid "angular velocity along the X axis"
+msgstr "绕X轴的角速度分量"
+
+#: src/initprops.h:1192 src/initprops.h:1198 src/initprops.h:1204
+#: src/initprops.h:1210 src/initprops.h:1216 src/initprops.h:1222
+msgid "angular velocity in the body frame"
+msgstr "体轴系下的角速度"
+
+#: src/initprops.h:1201 src/initprops.h:1207 src/initprops.h:1423
+#: src/initprops.h:1429
+msgid "angular velocity along the Y axis"
+msgstr "绕Y轴的角速度分量"
+
+#: src/initprops.h:1213 src/initprops.h:1219 src/initprops.h:1435
+#: src/initprops.h:1441
+msgid "angular velocity along the Z axis"
+msgstr "绕Z轴的角速度分量"
+
+#: src/initprops.h:1225 src/initprops.h:1231
+msgid "angular speed for the phi angle"
+msgstr "滚转角速度"
+
+#: src/initprops.h:1237 src/initprops.h:1243
+msgid "angular speed for the theta angle"
+msgstr "俯仰角速度"
+
+#: src/initprops.h:1249 src/initprops.h:1255
+msgid "angular speed for the psi angle"
+msgstr "偏航角速度"
+
+#: src/initprops.h:1261 src/initprops.h:1267 src/initprops.h:1375
+#: src/initprops.h:1381
+msgid "velocity along the X axis"
+msgstr "沿X轴的速度分量"
+
+#: src/initprops.h:1264 src/initprops.h:1270 src/initprops.h:1276
+#: src/initprops.h:1282 src/initprops.h:1288 src/initprops.h:1294
+msgid "aero velocity in the body frame, the wind is considered"
+msgstr "体轴系下的空速（考虑风速）"
+
+#: src/initprops.h:1273 src/initprops.h:1279 src/initprops.h:1387
+#: src/initprops.h:1393
+msgid "velocity along the Y axis"
+msgstr "沿Y轴的速度分量"
+
+#: src/initprops.h:1285 src/initprops.h:1291 src/initprops.h:1399
+#: src/initprops.h:1405
+msgid "velocity along the Z axis"
+msgstr "沿Z轴的速度分量"
+
+#: src/initprops.h:1297 src/initprops.h:1303
+msgid "the true aero speed"
+msgstr "空速"
+
+#: src/initprops.h:1300 src/initprops.h:1306 src/initprops.h:1312
+msgid "the wind is considered"
+msgstr "考虑了风速"
+
+#: src/initprops.h:1309
+msgid "the mach number"
+msgstr "马赫数"
+
+#: src/initprops.h:1315 src/initprops.h:1321
+msgid "the ground speed"
+msgstr "地速"
+
+#: src/initprops.h:1318 src/initprops.h:1324
+msgid "refer to the ground"
+msgstr "相对于地面"
+
+#: src/initprops.h:1327 src/initprops.h:1333
+msgid "vertical speed"
+msgstr "垂直速率"
+
+#: src/initprops.h:1339 src/initprops.h:1345
+msgid "northward speed"
+msgstr "北向速率"
+
+#: src/initprops.h:1342 src/initprops.h:1348 src/initprops.h:1354
+#: src/initprops.h:1360 src/initprops.h:1366 src/initprops.h:1372
+msgid "speed in the local frame"
+msgstr "在当地坐标系下的速率"
+
+#: src/initprops.h:1351 src/initprops.h:1357
+msgid "eastward speed"
+msgstr "东向速率"
+
+#: src/initprops.h:1363 src/initprops.h:1369
+msgid "downward speed"
+msgstr "下行速率"
+
+#: src/initprops.h:1378 src/initprops.h:1384 src/initprops.h:1390
+#: src/initprops.h:1396 src/initprops.h:1402 src/initprops.h:1408
+msgid "speed in the body frame"
+msgstr "体轴系下的速率"
+
+#: src/initprops.h:1414 src/initprops.h:1420 src/initprops.h:1426
+#: src/initprops.h:1432 src/initprops.h:1438 src/initprops.h:1444
+msgid "angular speed in the body frame"
+msgstr "体轴系下的角速率"
+
+#: src/initprops.h:1447 src/initprops.h:1453 src/initprops.h:1459
+#: src/initprops.h:1465
+msgid "roll angle"
+msgstr "滚转角"
+
+#: src/initprops.h:1450 src/initprops.h:1456 src/initprops.h:1462
+#: src/initprops.h:1468 src/initprops.h:1474 src/initprops.h:1480
+#: src/initprops.h:1486 src/initprops.h:1492 src/initprops.h:1498
+#: src/initprops.h:1504 src/initprops.h:1510 src/initprops.h:1516
+msgid "the Euler angle"
+msgstr "欧拉角"
+
+#: src/initprops.h:1471 src/initprops.h:1477 src/initprops.h:1483
+#: src/initprops.h:1489
+msgid "pitch angle"
+msgstr "俯仰角"
+
+#: src/initprops.h:1495 src/initprops.h:1501 src/initprops.h:1507
+#: src/initprops.h:1513
+msgid "heading angle"
+msgstr "航向角"
+
+#: src/initprops.h:1519
+msgid "earch position angle"
+msgstr "地球转角"
+
+#: src/initprops.h:1522
+msgid "earthPosAngle += State->Getdt()*Inertial->omega();"
+msgstr "地球转角是地球自转角速率的积分"
+
+#: src/initprops.h:1525 src/initprops.h:1531
+msgid "height from sea level"
+msgstr "相对海平面高度"
+
+#: src/initprops.h:1537
+msgid "latitude"
+msgstr "纬度"
+
+#: src/initprops.h:1543
+msgid "longitude"
+msgstr "经度"
+
+#: src/initprops.h:1549 src/initprops.h:1555
+msgid "height from runway"
+msgstr "相对跑道高度"
+
+#: src/initprops.h:1575
+msgid "gamma angle"
+msgstr "航迹倾角"
+
+#: src/initprops.h:1578
+msgid "vertical flight path angle, from -pi/2 ~ pi/2"
+msgstr "纵向飞行航迹角，从-PI/2到PI/2"
+
+#: src/initprops.h:1581
+msgid "psi angle"
+msgstr "航向角"
+
+#: src/initprops.h:1584
+msgid "horizontal flight path angle, from 0 ~ 2pi"
+msgstr "水平飞行航迹角，从0到2PI"
+
+#: src/initprops.h:1587
+msgid "aileron command"
+msgstr "副翼命令"
+
+#: src/initprops.h:1590 src/initprops.h:1608 src/initprops.h:1614
+#: src/initprops.h:1620 src/initprops.h:1626 src/initprops.h:1650
+msgid "range from 0 to 1"
+msgstr "从0到1"
+
+#: src/initprops.h:1593
+msgid "elevator command"
+msgstr "升降舵命令"
+
+#: src/initprops.h:1596 src/initprops.h:1602 src/initprops.h:1632
+#: src/initprops.h:1638 src/initprops.h:1644
+msgid "range from 0 to 1, must appear in FCS modal"
+msgstr "从0到1，必须在FCS定义"
+
+#: src/initprops.h:1599
+msgid "rudder command"
+msgstr "方向舵命令"
+
+#: src/initprops.h:1605
+msgid "steer command"
+msgstr "驾驶指示"
+
+#: src/initprops.h:1611
+msgid "flap command"
+msgstr "襟翼命令"
+
+#: src/initprops.h:1617
+msgid "speedbrake"
+msgstr "气动刹车"
+
+#: src/initprops.h:1623
+msgid "spoiler command"
+msgstr "扰流器命令"
+
+#: src/initprops.h:1629
+msgid "pitch trim command"
+msgstr "俯仰配平命令"
+
+#: src/initprops.h:1635
+msgid "roll trim command"
+msgstr "滚转配平命令"
+
+#: src/initprops.h:1641
+msgid "yaw trim command"
+msgstr "偏航配平命令"
+
+#: src/initprops.h:1647
+msgid "gear command"
+msgstr "起落架命令"
+
+#: src/initprops.h:1683
+msgid "active engine"
+msgstr "当前控制的发动机"
+
+#: src/initprops.h:1686
+msgid "-1 means that all engines are running"
+msgstr "-1表示所有发动机"
+
+#: src/initprops.h:1689
+msgid "throttle command"
+msgstr "油门命令"
+
+#: src/initprops.h:1692
+msgid "from 0 to 1, it must appear in the FCS modal"
+msgstr "从0到1，必须在FCS定义"
+
+#: src/initprops.h:1696 src/initprops.h:1702
+msgid "left aileron positon"
+msgstr "左副翼位置"
+
+#: src/initprops.h:1699 src/initprops.h:1705 src/initprops.h:1711
+#: src/initprops.h:1717 src/initprops.h:1723 src/initprops.h:1729
+#: src/initprops.h:1735 src/initprops.h:1741
+msgid "it must appear in the FCS modal"
+msgstr "必须在FCS定义"
+
+#: src/initprops.h:1708 src/initprops.h:1714
+msgid "right aileron position"
+msgstr "右副翼位置"
+
+#: src/initprops.h:1720 src/initprops.h:1726
+msgid "elevator position"
+msgstr "升降舵位置"
+
+#: src/initprops.h:1732 src/initprops.h:1738
+msgid "rudder position"
+msgstr "方向舵位置"
+
+#: src/initprops.h:1744
+msgid "throttle position"
+msgstr "油门位置"
+
+#: src/initprops.h:1747
+msgid "from 0 to 2, it must appear in the FCS modal"
+msgstr "从0到2，必须在FCS定义"
+
+#: src/initprops.h:1750 src/initprops.h:1756
+msgid "throttle attitude"
+msgstr "油门位置"
+
+#: src/initprops.h:1753
+msgid "use propulsion/pitch-deg[1] for the second engine"
+msgstr "用propulsion/pitch-deg[1]控制第二个发动机"
+
+#: src/initprops.h:1759
+msgid "use propulsion/yaw-deg[1] for the second engine"
+msgstr "用propulsion/yaw-deg[1]控制第二个发动机"
+
+#: src/initprops.h:1762
+msgid "gear position"
+msgstr "起落架位置"
+
+#: src/initprops.h:1768
+msgid "flap position norm"
+msgstr "俯仰归一化位置"
+
+#: src/initprops.h:1771 src/initprops.h:1777 src/initprops.h:1783
+#: src/initprops.h:1789 src/initprops.h:1795 src/initprops.h:1801
+#: src/initprops.h:1807 src/initprops.h:1813
+msgid "do not use the other one together"
+msgstr "不要同时混用同组其他变量"
+
+#: src/initprops.h:1774
+msgid "flap position"
+msgstr "襟翼位置"
+
+#: src/initprops.h:1780 src/initprops.h:1786 src/initprops.h:1792
+msgid "speedbrake position"
+msgstr "气动刹车位置"
+
+#: src/initprops.h:1798 src/initprops.h:1804 src/initprops.h:1810
+msgid "spoiler position"
+msgstr "扰流器位置"

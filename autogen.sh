@@ -18,10 +18,13 @@ echo " ($AUTO_MAKE_VERSION)"
 echo ""
 
 echo "Running aclocal"
-aclocal
+aclocal -I m4
 
 echo "Running libtoolize"
 libtoolize --automake --force --copy
+
+echo "Running autoheader"
+autoheader
 
 echo "Running automake --add-missing"
 automake --add-missing --copy

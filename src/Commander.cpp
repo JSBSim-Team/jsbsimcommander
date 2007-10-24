@@ -74,7 +74,7 @@ bool MyApp::OnInit (void)
   m_locale.AddCatalogLookupPathPrefix(wxString(argv[0]).BeforeLast(wxFileName::GetPathSeparator()));
   m_locale.Init(wxLANGUAGE_DEFAULT);
   // Initialize the catalogs we'll be using
-  m_locale.AddCatalog(wxT("JSBSimCommander"));
+  m_locale.AddCatalog(wxT("jsbsimcommander"));
 
   Delimited = wxFileName::GetPathSeparator();
   if (!wxApp::OnInit ())

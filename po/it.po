@@ -1,0 +1,2712 @@
+# Italian translations for JSBSimCommander package.
+# Copyright (C) 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the JSBSimCommander package.
+# Automatically generated, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: JSBSimCommander 0.1.2\n"
+"Report-Msgid-Bugs-To: matthewzhenggong@gmail.com\n"
+"POT-Creation-Date: 2007-10-23 10:29+0800\n"
+"PO-Revision-Date: 2007-10-23 10:29+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/gui/AircraftDialog.cpp:507 src/gui/AircraftDialog.cpp:729
+#: src/gui/AircraftDialog.cpp:739
+msgid "New"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:509
+msgid "Open"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:510
+msgid "Save"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:511
+msgid "Save As"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:513
+msgid "Close"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:522
+msgid "Aerodynamic Reference Point(*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:523
+msgid "Eye Point"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:524
+msgid "Visual Reference Point"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:525
+msgid "location(*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:526 src/initprops.h:283 src/initprops.h:289
+msgid "mass"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:527
+msgid "moment of the inertia(*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:528
+msgid "Point Mass"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:530
+msgid "Aircraft Name"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:532
+msgid "File Name"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:534
+msgid "Release Level"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:541
+msgid "Configuration Version"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:543
+msgid "Flight Model Version"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:545 src/gui/AircraftDialog.cpp:1510
+msgid "Author"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:547
+msgid "Email"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:549
+msgid "Organization"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:551
+msgid "File Date"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:553 src/gui/EngineMgr_Diag.cpp:281
+msgid "Description"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:555 src/gui/AircraftDialog.cpp:1516
+msgid "References"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:557
+msgid "Limitations"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:559
+msgid "Notes"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:561
+msgid "wingarea(*) ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:568
+msgid "htailarea ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:575
+msgid "wingspan(*) ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:582
+msgid "htailarm ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:589
+msgid "chord(*) ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:596
+msgid "vtailarea ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:603
+msgid "wing incidence ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:609
+msgid "vtailarm ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:616 src/gui/AircraftDialog.cpp:629
+#: src/gui/AircraftDialog.cpp:642 src/gui/AircraftDialog.cpp:663
+#: src/gui/Propulsion_Diag.cpp:218 src/gui/Propulsion_Diag.cpp:244
+#: src/gui/Propulsion_Diag.cpp:477 src/gui/LGear_Diag.cpp:171
+msgid "x ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:618 src/gui/AircraftDialog.cpp:631
+#: src/gui/AircraftDialog.cpp:644 src/gui/AircraftDialog.cpp:665
+#: src/gui/Propulsion_Diag.cpp:220 src/gui/Propulsion_Diag.cpp:246
+#: src/gui/Propulsion_Diag.cpp:479 src/gui/LGear_Diag.cpp:173
+msgid "y ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:620 src/gui/AircraftDialog.cpp:633
+#: src/gui/AircraftDialog.cpp:646 src/gui/AircraftDialog.cpp:667
+#: src/gui/Propulsion_Diag.cpp:222 src/gui/Propulsion_Diag.cpp:248
+#: src/gui/Propulsion_Diag.cpp:481 src/gui/LGear_Diag.cpp:175
+msgid "z ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:622 src/gui/AircraftDialog.cpp:635
+#: src/gui/AircraftDialog.cpp:648
+msgid "unit :"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:655
+msgid "Empty Weight(*) ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:675
+msgid "Ixx ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:682
+msgid "Ixz ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:689
+msgid "Iyy ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:696
+msgid "Iyz ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:703
+msgid "Izz ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:710
+msgid "Ixy ="
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:721
+msgid "Add a new point mass"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:722
+msgid "Delete the selected point mass"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:724 src/gui/AircraftDialog.cpp:779
+#: src/gui/fcsprop_dlg.cpp:57 src/gui/func_dlg.cpp:135
+#: src/gui/Table_Diag.cpp:1344 src/gui/switch_dlg.cpp:107
+msgid "Add"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:725 src/gui/AircraftDialog.cpp:780
+#: src/gui/When_Diag.cpp:281 src/gui/When_Diag.cpp:301
+#: src/gui/Table_Diag.cpp:1346
+msgid "Delete"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:726 src/gui/EngineMgr_Diag.cpp:81
+msgid "Detail"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:727
+msgid "Available Engines"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:732
+msgid "Subscribed Engine(s)(*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:734
+msgid "New Pair"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:735
+msgid "Delete Pair"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:736
+msgid "Detail Pair"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:737
+msgid "Available Thrusters"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:742
+msgid "Tanks"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:744
+msgid "New Tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:745
+msgid "Delete Tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:746
+msgid "Detail Tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:747
+msgid "tips: double clicked to show detail, press delete key to delete item."
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:750
+msgid "Name(*) :"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:752
+msgid "Type(*) :"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:758
+msgid "Rate(*) :"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:760
+msgid "simulation"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:761
+msgid "atmosphere"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:762
+msgid "massprops"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:763
+msgid "aerosurfaces"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:764
+msgid "rates"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:765
+msgid "velocities"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:766
+msgid "forces"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:767
+msgid "moments"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:768 src/gui/kinemat_dlg.cpp:84
+msgid "position"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:769
+msgid "coefficients"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:770
+msgid "ground reactions"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:771
+msgid "FCS"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:772
+msgid "propulsion"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:778
+msgid "Choose"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:885 src/gui/AircraftDialog.cpp:919
+#: src/gui/AircraftDialog.cpp:1155 src/gui/EngineMgr_Diag.cpp:473
+msgid "Do you really want to delete it?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:885 src/gui/AircraftDialog.cpp:919
+#: src/gui/AircraftDialog.cpp:1155 src/gui/AircraftDialog.cpp:1172
+#: src/gui/AircraftDialog.cpp:1195 src/gui/AircraftDialog.cpp:1233
+#: src/gui/AircraftDialog.cpp:1260 src/gui/AircraftDialog.cpp:1285
+#: src/gui/AircraftDialog.cpp:1431 src/gui/AircraftDialog.cpp:1462
+#: src/gui/When_Diag.cpp:391 src/gui/When_Diag.cpp:439 src/gui/TreeItem.cpp:98
+#: src/gui/doc.cpp:164 src/gui/Table_Diag.cpp:716 src/gui/Table_Diag.cpp:759
+#: src/gui/Table_Diag.cpp:829 src/gui/Table_Diag.cpp:926
+#: src/gui/Table_Diag.cpp:980 src/gui/Table_Diag.cpp:1454
+#: src/gui/EngineMgr_Diag.cpp:473
+msgid "Confirm"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1172 src/gui/AircraftDialog.cpp:1195
+msgid "Do you want to save the file before closing the dialog?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1233
+msgid "Do you want to save the FDM configure file before creating another one?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1244
+msgid "Create FDM configure file"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1260
+msgid "Do you want to save the FDM configure file before opening another one?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1271
+msgid "Load FDM configure file"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1285
+msgid "Do you want to save the FDM configure file?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1298
+msgid "Save FDM configure file as"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1431
+msgid "Do you really want to delete the tank?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1462
+msgid "Do you really want to delete the engine/thruster pair?"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1485
+msgid "the aircraft name"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1486
+msgid "the path of the aircraft model file"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1488
+msgid "the release level"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1490
+msgid "the file format standard"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1491
+msgid "the flight model version"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1494
+msgid "the author name"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1496
+msgid "the author's email address"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1499
+msgid "the organization name"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1502
+msgid "the date when the file is created or modified"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1508
+msgid "Ref ID."
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1512
+msgid "Title"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1514
+msgid "Date"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1520
+msgid "the wing area (metrics/Sm*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1524
+msgid "the horizonal tail area (metrics/Sh-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1528
+msgid "the wing span (metrics/bw-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1532
+msgid "the horizonal tail arm (metrics/lh-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1536
+msgid "the chord (metrics/cbarw-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1540
+msgid "the vertical tail area (metrics/Sv-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1544
+msgid "the wing incidence (metrics/iw-deg)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1548
+msgid "the vertical tail arm (metrics/lv-*)"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1551
+msgid "the ARP along the structural x axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1552
+msgid "the ARP along the structural y axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1553
+msgid "the ARP along the structural z axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1556
+msgid "the EP along the structural x axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1557
+msgid "the EP along the structural y axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1558
+msgid "the EP along the structural z axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1561
+msgid "the VRP along the structural x axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1562
+msgid "the VRP along the structural y axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1563
+msgid "the VRP along the structural z axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1567
+msgid "the empty weight of the aircraft"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1572
+msgid "the CG pos along the structural x axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1575
+msgid "the CG pos along the structural y axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1577
+msgid "the CG pos along the structural z axis"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1603
+msgid "double click on me to show detail"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1604
+msgid ""
+"double clicked on me to show detail, \n"
+"press delete key to delete a subscribed engine"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1605
+msgid ""
+"choose an available engine and an available thruster, \n"
+"then click on me to subscribe a new engine for the aircraft"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1606
+msgid "choose a subscribed engine, then click on me to delete it"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1607
+msgid "choose a subscribed engine, then click on me to show the detail"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1608
+msgid ""
+"double clicked on me to show detail, \n"
+"press delete key to delete a tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1609
+msgid "click on me to add a new tank for the aircraft"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1610
+msgid "click on me to delete a tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1611
+msgid "click on me to show the detail of the tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1619
+msgid "addition properties which will be outputed."
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1874
+msgid "General Information"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1875
+msgid "Metrics"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1876
+msgid "Mass & Balance"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1877
+msgid "Ground Reactions"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1878
+msgid "Propulsion"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1879
+msgid "Flight Control"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1880
+msgid "Aerodynamics"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1881
+msgid "Output"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1957
+msgid "Tank"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1960 src/gui/Propulsion_Diag.cpp:210
+msgid "Engine"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:1964 src/gui/Propulsion_Diag.cpp:214
+msgid "Thruster"
+msgstr ""
+
+#: src/gui/AircraftDialog.cpp:2975
+msgid "socket type is not surported right now. I will use CSV instead."
+msgstr ""
+
+#: src/gui/AircraftDialog.h:68
+msgid "Aircraft Commander"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:280 src/gui/When_Diag.cpp:300
+msgid "Append"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:282 src/gui/When_Diag.cpp:302
+#: src/gui/Table_Diag.cpp:182 src/gui/EngineMgr_Diag.cpp:82
+#: src/gui/switch_dlg.cpp:116 src/gui/switch_dlg.cpp:130
+msgid "Apply"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:311
+msgid "Type :"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:317
+msgid "Action :"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:324
+msgid "TC = "
+msgstr ""
+
+#: src/gui/When_Diag.cpp:327
+msgid "persistent"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:328 src/gui/Turbine_Diag.cpp:159
+#: src/gui/ResultShow_Diag.cpp:179 src/gui/kinemat_dlg.cpp:65
+#: src/gui/AeroDynamics_Diag.cpp:51 src/gui/Propulsion_Diag.cpp:267
+#: src/gui/Propulsion_Diag.cpp:489 src/gui/Axis_Diag.cpp:55
+#: src/gui/deadband_dlg.cpp:68 src/gui/filter_dlg.cpp:94
+#: src/gui/Function_Diag.cpp:72 src/gui/fcsprop_dlg.cpp:60
+#: src/gui/LGear_Diag.cpp:221 src/gui/func_dlg.cpp:140
+#: src/gui/Table_Diag.cpp:197 src/gui/Table_Diag.cpp:1347
+#: src/gui/EngineMgr_Diag.cpp:83 src/gui/Mass_Diag.cpp:125
+#: src/gui/gain_dlg.cpp:69 src/gui/switch_dlg.cpp:132
+msgid "OK"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:329 src/gui/Turbine_Diag.cpp:160
+#: src/gui/kinemat_dlg.cpp:66 src/gui/AeroDynamics_Diag.cpp:52
+#: src/gui/Propulsion_Diag.cpp:268 src/gui/Propulsion_Diag.cpp:490
+#: src/gui/Axis_Diag.cpp:56 src/gui/deadband_dlg.cpp:69
+#: src/gui/filter_dlg.cpp:95 src/gui/Function_Diag.cpp:73
+#: src/gui/fcsprop_dlg.cpp:61 src/gui/LGear_Diag.cpp:222
+#: src/gui/func_dlg.cpp:141 src/gui/Table_Diag.cpp:198
+#: src/gui/Table_Diag.cpp:1348 src/gui/Mass_Diag.cpp:126
+#: src/gui/gain_dlg.cpp:70 src/gui/switch_dlg.cpp:133
+msgid "Cancel"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:391 src/gui/When_Diag.cpp:439
+msgid "Do you really want to delete the item?"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:585
+msgid "Condition"
+msgstr ""
+
+#: src/gui/When_Diag.cpp:586
+msgid "Action"
+msgstr ""
+
+#: src/gui/fcsprop_dlg.h:34
+msgid "Properties defined in FCS"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:135
+msgid "Name :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:137
+msgid "Bypass Ratio :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:139
+msgid "Milthrust :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:143
+msgid "Maxthrust :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:146
+msgid "IdleN1 :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:148
+msgid "IdleN2 :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:150
+msgid "MaxN1 :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:152
+msgid "MaxN2 :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:154
+msgid "TSFC :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:156
+msgid "ATSFC :"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:229
+msgid "basic"
+msgstr ""
+
+#: src/gui/Turbine_Diag.cpp:230
+msgid "advance"
+msgstr ""
+
+#: src/gui/Mass_Diag.h:52
+msgid "Properties of PointMass"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:163
+msgid "Same Range"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:164 src/gui/ResultShow_Diag.cpp:178
+msgid "Update"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:172
+msgid "curve 1"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:173
+msgid "curve 2"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:174
+msgid "curve 3"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:175
+msgid "curve 4"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:177
+msgid "Select"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:401
+msgid "Combo"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.cpp:402
+msgid "Column"
+msgstr ""
+
+#: src/gui/toolbar.cpp:136 src/gui/toolbar.cpp:137
+msgid "Pointer"
+msgstr ""
+
+#: src/gui/toolbar.cpp:140 src/gui/toolbar.cpp:141
+msgid "Source"
+msgstr ""
+
+#: src/gui/toolbar.cpp:143 src/gui/toolbar.cpp:145
+msgid "Destination"
+msgstr ""
+
+#: src/gui/toolbar.cpp:146 src/gui/toolbar.cpp:147
+msgid "Sensor"
+msgstr ""
+
+#: src/gui/toolbar.cpp:151 src/gui/toolbar.cpp:152
+msgid "Summer"
+msgstr ""
+
+#: src/gui/toolbar.cpp:154 src/gui/toolbar.cpp:155
+msgid "PID"
+msgstr ""
+
+#: src/gui/toolbar.cpp:157 src/gui/toolbar.cpp:158
+msgid "Gain"
+msgstr ""
+
+#: src/gui/toolbar.cpp:160 src/gui/toolbar.cpp:161 src/gui/filter_dlg.cpp:178
+msgid "Filter"
+msgstr ""
+
+#: src/gui/toolbar.cpp:163
+msgid "DeadBand"
+msgstr ""
+
+#: src/gui/toolbar.cpp:164
+msgid "Dead Band"
+msgstr ""
+
+#: src/gui/toolbar.cpp:165 src/gui/toolbar.cpp:166
+msgid "Switch"
+msgstr ""
+
+#: src/gui/toolbar.cpp:167 src/gui/toolbar.cpp:168
+msgid "Actuator"
+msgstr ""
+
+#: src/gui/toolbar.cpp:169 src/gui/toolbar.cpp:170 src/gui/kinemat_dlg.cpp:136
+msgid "Kinemat"
+msgstr ""
+
+#: src/gui/toolbar.cpp:172 src/gui/toolbar.cpp:173
+msgid "FCSFunction"
+msgstr ""
+
+#: src/gui/toolbar.cpp:177 src/gui/toolbar.cpp:178
+msgid "node"
+msgstr ""
+
+#: src/gui/toolbar.cpp:209
+msgid "General Property"
+msgstr ""
+
+#: src/gui/toolbar.cpp:211
+msgid "Add Channel"
+msgstr ""
+
+#: src/gui/toolbar.cpp:212
+msgid "Snap Channel"
+msgstr ""
+
+#: src/gui/toolbar.cpp:216
+msgid "Set the property of the Shape"
+msgstr ""
+
+#: src/gui/toolbar.cpp:219
+msgid "Reverse Shape"
+msgstr ""
+
+#: src/gui/toolbar.cpp:224
+msgid "New line point"
+msgstr ""
+
+#: src/gui/toolbar.cpp:227
+msgid "Cut line point"
+msgstr ""
+
+#: src/gui/toolbar.cpp:230
+msgid "Straighten lines"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:45 src/gui/deadband_dlg.cpp:46
+#: src/gui/filter_dlg.cpp:54 src/gui/gain_dlg.cpp:37
+msgid "inputs"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:46 src/gui/deadband_dlg.cpp:47
+#: src/gui/filter_dlg.cpp:55 src/gui/func_dlg.cpp:114 src/gui/gain_dlg.cpp:38
+#: src/gui/switch_dlg.cpp:86
+msgid "cliper"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:47 src/gui/TreeItem.cpp:296
+#: src/gui/Axis_Diag.cpp:34 src/gui/deadband_dlg.cpp:48
+#: src/gui/filter_dlg.cpp:56 src/gui/Function_Diag.cpp:68
+#: src/gui/fcsprop_dlg.cpp:52 src/gui/func_dlg.cpp:115
+#: src/gui/Table_Diag.cpp:153 src/gui/EngineMgr_Diag.cpp:74
+#: src/gui/Mass_Diag.cpp:104 src/gui/gain_dlg.cpp:39 src/gui/switch_dlg.cpp:87
+msgid "Name:"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:48 src/gui/Propulsion_Diag.cpp:457
+#: src/gui/TreeItem.cpp:301 src/gui/deadband_dlg.cpp:49
+#: src/gui/filter_dlg.cpp:57 src/gui/Function_Diag.cpp:39
+#: src/gui/fcsprop_dlg.cpp:45 src/gui/func_dlg.cpp:116
+#: src/gui/EngineMgr_Diag.cpp:72 src/gui/gain_dlg.cpp:40
+#: src/gui/switch_dlg.cpp:88
+msgid "Type:"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:49 src/gui/deadband_dlg.cpp:50
+#: src/gui/filter_dlg.cpp:58 src/gui/func_dlg.cpp:117 src/gui/gain_dlg.cpp:41
+#: src/gui/switch_dlg.cpp:89
+msgid "Order:"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:53 src/gui/deadband_dlg.cpp:54
+#: src/gui/filter_dlg.cpp:69 src/gui/func_dlg.cpp:121 src/gui/gain_dlg.cpp:50
+#: src/gui/switch_dlg.cpp:93
+msgid "clipable"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:54 src/gui/AeroDynamics_Diag.cpp:44
+#: src/gui/AeroDynamics_Diag.cpp:49 src/gui/deadband_dlg.cpp:55
+#: src/gui/filter_dlg.cpp:70 src/gui/func_dlg.cpp:122 src/gui/gain_dlg.cpp:51
+#: src/gui/gain_dlg.cpp:62 src/gui/switch_dlg.cpp:94
+msgid "Max:"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:56 src/gui/AeroDynamics_Diag.cpp:42
+#: src/gui/AeroDynamics_Diag.cpp:47 src/gui/deadband_dlg.cpp:57
+#: src/gui/filter_dlg.cpp:72 src/gui/func_dlg.cpp:124 src/gui/gain_dlg.cpp:53
+#: src/gui/gain_dlg.cpp:64 src/gui/switch_dlg.cpp:96
+msgid "Min:"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:62 src/gui/deadband_dlg.cpp:63
+#: src/gui/filter_dlg.cpp:78 src/gui/gain_dlg.cpp:59
+msgid "input1"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:64
+msgid "input scale"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:85 src/initprops.h:7
+msgid "time"
+msgstr ""
+
+#: src/gui/kinemat_dlg.cpp:135 src/gui/deadband_dlg.cpp:137
+#: src/gui/filter_dlg.cpp:177 src/gui/func_dlg.cpp:265
+#: src/gui/gain_dlg.cpp:161 src/gui/switch_dlg.cpp:233
+msgid "Basic"
+msgstr ""
+
+#: src/gui/AeroDynamics_Diag.cpp:39
+msgid "hysteresis limits"
+msgstr ""
+
+#: src/gui/AeroDynamics_Diag.cpp:40
+msgid "alpha limits"
+msgstr ""
+
+#: src/gui/AeroDynamics_Diag.cpp:41 src/gui/AeroDynamics_Diag.cpp:46
+msgid "Enable"
+msgstr ""
+
+#: src/gui/Axis_Diag.h:31
+msgid "Axis Properties"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:209 src/gui/Propulsion_Diag.cpp:213
+msgid "Orient"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:211
+msgid "Feed"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:212 src/gui/Propulsion_Diag.cpp:215
+#: src/gui/Propulsion_Diag.cpp:456 src/gui/LGear_Diag.cpp:166
+msgid "Location"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:216
+msgid "Engine Name:"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:230 src/gui/Propulsion_Diag.cpp:256
+msgid "roll ="
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:232 src/gui/Propulsion_Diag.cpp:258
+msgid "pitch ="
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:234 src/gui/Propulsion_Diag.cpp:260
+msgid "yaw ="
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:242
+msgid "Thruster Name:"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:463
+msgid "capacity ="
+msgstr ""
+
+#: src/gui/Propulsion_Diag.cpp:470
+msgid "contents ="
+msgstr ""
+
+#: src/gui/TreeItem.cpp:92
+msgid "Expression"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:98
+msgid "Are you sure to delete it?"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:296
+msgid "Input Name of Table"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:301
+msgid "select type of table"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:568 src/gui/TreeItem.cpp:647 src/gui/TreeItem.cpp:982
+#: src/gui/TreeItem.cpp:1215 src/gui/TreeItem.cpp:1267
+#: src/gui/TreeItem.cpp:1662
+msgid "&Properties"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:568 src/gui/TreeItem.cpp:647 src/gui/TreeItem.cpp:982
+#: src/gui/TreeItem.cpp:1215 src/gui/TreeItem.cpp:1267
+#: src/gui/TreeItem.cpp:1662
+msgid "Detail of Function or operator"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:570 src/gui/TreeItem.cpp:655 src/gui/TreeItem.cpp:990
+msgid "Add &Func"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:570 src/gui/TreeItem.cpp:655 src/gui/TreeItem.cpp:990
+msgid "Add Function or operator"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:571
+msgid "Add &Axis"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:571
+msgid "Add Axis"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:648 src/gui/TreeItem.cpp:983
+msgid "&Expression"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:648 src/gui/TreeItem.cpp:983
+msgid "Expression of Function"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:650 src/gui/TreeItem.cpp:985 src/gui/TreeItem.cpp:1217
+#: src/gui/TreeItem.cpp:1269 src/gui/TreeItem.cpp:1664
+#: src/gui/switch_dlg.cpp:139
+msgid "&Delete"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:650 src/gui/TreeItem.cpp:985 src/gui/TreeItem.cpp:1217
+#: src/gui/TreeItem.cpp:1269 src/gui/TreeItem.cpp:1664
+msgid "Delete Item"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:651 src/gui/TreeItem.cpp:986 src/gui/TreeItem.cpp:1218
+#: src/gui/TreeItem.cpp:1270 src/gui/TreeItem.cpp:1665
+msgid "&Copy"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:651 src/gui/TreeItem.cpp:986 src/gui/TreeItem.cpp:1218
+#: src/gui/TreeItem.cpp:1270 src/gui/TreeItem.cpp:1665
+msgid "Copy Item"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:652 src/gui/TreeItem.cpp:987 src/gui/TreeItem.cpp:1219
+#: src/gui/TreeItem.cpp:1271 src/gui/TreeItem.cpp:1666
+msgid "Cu&t"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:652 src/gui/TreeItem.cpp:987 src/gui/TreeItem.cpp:1219
+#: src/gui/TreeItem.cpp:1271 src/gui/TreeItem.cpp:1666
+msgid "Cut Item"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:653 src/gui/TreeItem.cpp:988 src/gui/TreeItem.cpp:1889
+#: src/gui/TreeItem.cpp:1900
+msgid "&Paste"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:653 src/gui/TreeItem.cpp:988 src/gui/TreeItem.cpp:1889
+#: src/gui/TreeItem.cpp:1900
+msgid "Paste Item"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:991
+msgid "Add P&roperty"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:991
+msgid "Add Property Node"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:992
+msgid "Add &Value"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:992
+msgid "Add Const Value"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:993
+msgid "Add &Table"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:993
+msgid "Add Table"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:1284
+msgid "Value:"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:1284
+msgid "Input Value"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:1888 src/gui/TreeItem.cpp:1899
+msgid "Add &Function"
+msgstr ""
+
+#: src/gui/TreeItem.cpp:1888 src/gui/TreeItem.cpp:1899
+msgid "Add Function"
+msgstr ""
+
+#: src/gui/import.cpp:129
+msgid "Unknown component("
+msgstr ""
+
+#: src/gui/import.cpp:129
+msgid ""
+")\n"
+" Please check the file."
+msgstr ""
+
+#: src/gui/import.cpp:130 src/gui/EngineMgr_Diag.cpp:495
+#: src/gui/EngineMgr_Diag.cpp:611 src/gui/EngineMgr_Diag.cpp:642
+#: src/gui/EngineMgr_Diag.cpp:774 src/gui/EngineMgr_Diag.cpp:784
+#: src/Commander.cpp:115 src/MyApp.cpp:106
+msgid "Error"
+msgstr ""
+
+#: src/gui/view.cpp:61
+msgid "&Property"
+msgstr ""
+
+#: src/gui/view.cpp:63
+msgid "&Reverse"
+msgstr ""
+
+#: src/gui/view.cpp:64
+msgid "&Del"
+msgstr ""
+
+#: src/gui/doc.cpp:164
+msgid "FCS model file "
+msgstr ""
+
+#: src/gui/doc.cpp:164
+msgid " seems older than aircraft model file. "
+msgstr ""
+
+#: src/gui/doc.cpp:164
+msgid "Do you really want to load FCS model file?"
+msgstr ""
+
+#: src/gui/doc.cpp:425 src/gui/doc.cpp:442
+msgid "Input the file name"
+msgstr ""
+
+#: src/gui/doc.cpp:452
+msgid "Secceed in loading."
+msgstr ""
+
+#: src/gui/doc.cpp:453 src/gui/Table_Diag.cpp:1140 src/gui/Table_Diag.cpp:1156
+#: src/gui/Table_Diag.cpp:1164 src/gui/EngineMgr_Diag.cpp:232
+#: src/gui/EngineMgr_Diag.cpp:470 src/gui/EngineMgr_Diag.cpp:623
+#: src/gui/EngineMgr_Diag.cpp:757
+msgid "Info"
+msgstr ""
+
+#: src/gui/doc.cpp:459
+msgid "Fail to load."
+msgstr ""
+
+#: src/gui/doc.cpp:460 src/gui/MyFrame.cpp:177 src/gui/MyFrame.cpp:200
+#: src/gui/EngineMgr_Diag.cpp:762 src/gui/EngineMgr_Diag.cpp:768
+#: src/Commander.cpp:146
+msgid "Warning"
+msgstr ""
+
+#: src/gui/doc.cpp:565
+msgid "New Channel Name :"
+msgstr ""
+
+#: src/gui/doc.cpp:565
+msgid "Input the new channel name"
+msgstr ""
+
+#: src/gui/doc.cpp:586
+msgid "Get FCS snap picture"
+msgstr ""
+
+#: src/gui/doc.cpp:624
+msgid "Gain Component"
+msgstr ""
+
+#: src/gui/doc.cpp:640
+msgid "PID Component"
+msgstr ""
+
+#: src/gui/doc.cpp:648
+msgid "Sensor Component"
+msgstr ""
+
+#: src/gui/doc.cpp:657
+msgid "Actuator Component"
+msgstr ""
+
+#: src/gui/doc.cpp:666
+msgid "Filter Component"
+msgstr ""
+
+#: src/gui/doc.cpp:674
+msgid "DeadBand Component"
+msgstr ""
+
+#: src/gui/doc.cpp:682
+msgid "Switch Component"
+msgstr ""
+
+#: src/gui/doc.cpp:690
+msgid "Kinemat Component"
+msgstr ""
+
+#: src/gui/Turbine_Diag.h:38
+msgid "Turbine Setup"
+msgstr ""
+
+#: src/gui/When_Diag.h:114
+msgid "Conditon/Action Setup"
+msgstr ""
+
+#: src/gui/Table_Diag.h:61
+msgid "Table Properties"
+msgstr ""
+
+#: src/gui/Axis_Diag.cpp:47
+msgid "Unit:"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.h:42
+msgid "Engine/Thruster Manager"
+msgstr ""
+
+#: src/gui/deadband_dlg.cpp:64
+msgid "width:"
+msgstr ""
+
+#: src/gui/deadband_dlg.cpp:66
+msgid "gain:"
+msgstr ""
+
+#: src/gui/deadband_dlg.cpp:138
+msgid "Deadband"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:80
+msgid "c1:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:81
+msgid "c2:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:82
+msgid "c3:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:83
+msgid "c4:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:84
+msgid "c5:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:85
+msgid "c6:"
+msgstr ""
+
+#: src/gui/filter_dlg.cpp:86
+msgid "trigger:"
+msgstr ""
+
+#: src/gui/ResultShow_Diag.h:50
+msgid "Result Shower"
+msgstr ""
+
+#: src/gui/Function_Diag.h:34
+msgid "Function or Operator"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.h:95
+msgid "Engine/Thruster Setup"
+msgstr ""
+
+#: src/gui/Propulsion_Diag.h:162
+msgid "Tank Setup"
+msgstr ""
+
+#: src/gui/shape.cpp:1456
+msgid "NULL"
+msgstr ""
+
+#: src/gui/shape.cpp:1484
+msgid "Multiple Outputs"
+msgstr ""
+
+#: src/gui/Function_Diag.cpp:70 src/gui/EngineMgr_Diag.cpp:76
+msgid "Description:"
+msgstr ""
+
+#: src/gui/Function_Diag.cpp:85 src/gui/LGear_Diag.cpp:169
+#: src/gui/EngineMgr_Diag.cpp:278
+msgid "Type"
+msgstr ""
+
+#: src/gui/MyFrame.cpp:164 src/gui/MyFrame.cpp:190
+msgid "Choose a file to open"
+msgstr ""
+
+#: src/gui/MyFrame.cpp:164
+msgid "XML files (*.xml)|*.xml"
+msgstr ""
+
+#: src/gui/MyFrame.cpp:177 src/gui/MyFrame.cpp:200
+#: src/gui/EngineMgr_Diag.cpp:768 src/Commander.cpp:146
+msgid "Something is wrong! I can not load proper file("
+msgstr ""
+
+#: src/gui/MyFrame.cpp:190
+msgid "CSV files (*.csv)|*.csv"
+msgstr ""
+
+#: src/gui/fcsprop_dlg.cpp:58
+msgid "Modify"
+msgstr ""
+
+#: src/gui/fcsprop_dlg.cpp:59 src/gui/func_dlg.cpp:136
+#: src/gui/switch_dlg.cpp:108
+msgid "Remove"
+msgstr ""
+
+#: src/gui/Property_Diag.cpp:260
+#, c-format
+msgid "show %d, hide %d"
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:167 src/gui/EngineMgr_Diag.cpp:275
+msgid "Name"
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:183
+msgid "spring coefficient ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:190
+msgid "damping coefficient ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:197
+msgid "static friction ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:199
+msgid "dynamic friction ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:201
+msgid "rolling friction ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:203
+msgid "max stear ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:209
+msgid "brake_group ="
+msgstr ""
+
+#: src/gui/LGear_Diag.cpp:219
+msgid "retractable"
+msgstr ""
+
+#: src/gui/func_dlg.cpp:134 src/gui/switch_dlg.cpp:106
+msgid "set"
+msgstr ""
+
+#: src/gui/func_dlg.cpp:266 src/gui/switch_dlg.cpp:234
+msgid "Input"
+msgstr ""
+
+#: src/gui/func_dlg.cpp:267 src/gui/switch_dlg.cpp:235
+msgid "Tree"
+msgstr ""
+
+#: src/gui/AeroDynamics_Diag.h:35
+msgid "AeroDynamics Properties"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:152
+msgid "choice"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:155
+msgid "row property:"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:158
+msgid "row detail"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:159
+msgid "column property:"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:162
+msgid "column detail"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:163
+msgid "table property:"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:166
+msgid "table detail"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:167
+msgid "frame property:"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:170
+msgid "frame detail"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:171
+msgid "table ="
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:176
+msgid "frame ="
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:183
+msgid "fill table"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:184
+msgid "rebuild table"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:185
+msgid "rebuild frame"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:291
+msgid "value"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:292
+msgid "curve"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:299
+msgid "content"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:490 src/gui/Table_Diag.cpp:700
+msgid "Error table type"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:555 src/gui/gain_dlg.cpp:89
+msgid "Value"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:716
+msgid "Do you want to add "
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:716
+msgid " numbers from clipboard to grid from row="
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:716
+msgid ", col="
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:759
+msgid "Do you want to rebuild the current 2D table "
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:759 src/gui/Table_Diag.cpp:829
+msgid " numbers from clipboard"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:816 src/gui/Table_Diag.cpp:882
+msgid "fail to parse data format from clipboard"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:829
+msgid "Do you want to rebuild the 3D table "
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:914
+msgid "Show the list of Row"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:926 src/gui/Table_Diag.cpp:980
+msgid "All the data in the table will be set to zero. Do you want to continue?"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:934 src/gui/Table_Diag.cpp:988
+msgid "All the data in the table has been set to zero."
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:968
+msgid "Show the list of Column"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1033
+msgid "Show the list of Table"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1066
+msgid "Show the list of Frame"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1140
+msgid "Fail to save file tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1156
+msgid "Fail to parse file tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1164
+msgid "Fail to find <table> tag in tmptable.xml"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1203
+msgid "Frame : "
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1207
+msgid "Table : "
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1345
+msgid ""
+"Add from\n"
+"ClipBoard"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1429
+msgid "Value ="
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1429
+msgid "Input numbers"
+msgstr ""
+
+#: src/gui/Table_Diag.cpp:1454
+msgid "Do you really want to delete the item(s)?"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:70
+msgid "Symbol:"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:135
+msgid "Add new one"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:136
+msgid "Delete the selected one"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:137
+msgid "Copy from the selected one"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:138
+msgid "Show the detail"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:232
+msgid "Can not parse file "
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:272
+msgid "Symbol"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:470 src/gui/EngineMgr_Diag.cpp:623
+msgid "Please select one engine first."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:495
+msgid ""
+"Something is wrong! I can not delete it.\n"
+"Please delete the directory by hand."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:509
+msgid "Choose one kind of engines/thrusters"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:509
+msgid "Which kind of engines/thrusters do you want to create?"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:513
+msgid "Please give me the symbol of new engine."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:513
+msgid "Input new engine symbol"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:611
+msgid "Something is wrong! I can not create the file. Please check it."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:634
+msgid "Copy from "
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:635
+msgid "Please give me the symbol of the clone."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:642
+msgid "Something is wrong! I can not copy the file. Please check it."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:753
+msgid "Turbine Engine Setup"
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:757
+msgid "Do not need to setup this kind of thruster."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:762
+msgid "Can not setup this kind of engine/thruster in GUI yet."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:774
+msgid "Something is wrong! I can not save proper file("
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:774 src/gui/EngineMgr_Diag.cpp:784
+msgid "). Please check it."
+msgstr ""
+
+#: src/gui/EngineMgr_Diag.cpp:784
+msgid "Something is wrong! I can not find proper file("
+msgstr ""
+
+#: src/gui/Mass_Diag.cpp:103
+msgid "location"
+msgstr ""
+
+#: src/gui/Mass_Diag.cpp:106
+msgid "Weight="
+msgstr ""
+
+#: src/gui/Mass_Diag.cpp:113
+msgid "x="
+msgstr ""
+
+#: src/gui/Mass_Diag.cpp:115
+msgid "y="
+msgstr ""
+
+#: src/gui/Mass_Diag.cpp:117
+msgid "z="
+msgstr ""
+
+#: src/gui/gain_dlg.cpp:60
+msgid "Gain:"
+msgstr ""
+
+#: src/gui/gain_dlg.cpp:66
+msgid "independentVar:"
+msgstr ""
+
+#: src/gui/gain_dlg.cpp:87
+msgid "independentVar"
+msgstr ""
+
+#: src/gui/gain_dlg.cpp:162
+msgid "AeroSurface"
+msgstr ""
+
+#: src/gui/gain_dlg.cpp:163
+msgid "Scheduled"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:113
+msgid "Output:"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:141
+msgid "Add &Simple Condition"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:142
+msgid "Add Compound Condition(&AND)"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:143
+msgid "Add Compound Condition(&OR)"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:144
+msgid "Add Test(&AND)"
+msgstr ""
+
+#: src/gui/switch_dlg.cpp:145
+msgid "Add Test(&OR)"
+msgstr ""
+
+#: src/Commander.cpp:115 src/MyApp.cpp:106
+msgid ""
+"Fail to load XRC files. Please use --resource=<str> or -r <str> to specify "
+"the resource directory."
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid "Fail to load property table "
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid ". "
+msgstr ""
+
+#: src/Commander.cpp:137 src/MyApp.cpp:127
+msgid "Use option -p  to specify the file to load."
+msgstr ""
+
+#: src/Commander.cpp:272 src/MyApp.cpp:242
+msgid "\"property name\""
+msgstr ""
+
+#: src/Commander.cpp:273 src/MyApp.cpp:243
+msgid "\"description\""
+msgstr ""
+
+#: src/Commander.cpp:274 src/MyApp.cpp:244
+msgid "\"unit\""
+msgstr ""
+
+#: src/Commander.cpp:275 src/MyApp.cpp:245
+msgid "\"access\""
+msgstr ""
+
+#: src/Commander.cpp:276 src/MyApp.cpp:246
+msgid "\"comment\""
+msgstr ""
+
+#: src/initprops.h:13
+msgid "go on output after optimize"
+msgstr ""
+
+#: src/initprops.h:16
+msgid "default value is zero"
+msgstr ""
+
+#: src/initprops.h:19
+msgid "dat file output rate"
+msgstr ""
+
+#: src/initprops.h:22
+msgid "output a record every X times. default value is 5."
+msgstr ""
+
+#: src/initprops.h:25
+msgid "aeroelasticity"
+msgstr ""
+
+#: src/initprops.h:28
+msgid "aeroelastic enable signal(0-false, 1-true)"
+msgstr ""
+
+#: src/initprops.h:31
+msgid "custom signal 1"
+msgstr ""
+
+#: src/initprops.h:34 src/initprops.h:40 src/initprops.h:46 src/initprops.h:52
+#: src/initprops.h:58
+msgid "custom enable signal(0-false, 1-true)"
+msgstr ""
+
+#: src/initprops.h:37
+msgid "custom signal 2"
+msgstr ""
+
+#: src/initprops.h:43
+msgid "custom signal 3"
+msgstr ""
+
+#: src/initprops.h:49
+msgid "custom signal 4"
+msgstr ""
+
+#: src/initprops.h:55
+msgid "custom signal 5"
+msgstr ""
+
+#: src/initprops.h:61 src/initprops.h:67
+msgid "wing area"
+msgstr ""
+
+#: src/initprops.h:73 src/initprops.h:79
+msgid "wing span"
+msgstr ""
+
+#: src/initprops.h:85 src/initprops.h:91
+msgid "chord bar"
+msgstr ""
+
+#: src/initprops.h:97
+msgid "wing incidence angle"
+msgstr ""
+
+#: src/initprops.h:100
+msgid "aero/alpha-wing-rad = aero/alpha-rad + metrics/iw-deg * deg2rad"
+msgstr ""
+
+#: src/initprops.h:103
+msgid "Horizontal Tail Area"
+msgstr ""
+
+#: src/initprops.h:106 src/initprops.h:112 src/initprops.h:118
+#: src/initprops.h:124 src/initprops.h:142 src/initprops.h:148
+#: src/initprops.h:154 src/initprops.h:160
+msgid "deprecated"
+msgstr ""
+
+#: src/initprops.h:109
+msgid "horizontal tail area"
+msgstr ""
+
+#: src/initprops.h:115 src/initprops.h:121 src/initprops.h:127
+msgid "horizontal tail arm"
+msgstr ""
+
+#: src/initprops.h:130
+msgid "deprecated, HTailArm / cbar"
+msgstr ""
+
+#: src/initprops.h:133
+msgid "H. Tail Volume"
+msgstr ""
+
+#: src/initprops.h:136
+msgid "vbarh = HTailArm*HTailArea / (cbar*WingArea)"
+msgstr ""
+
+#: src/initprops.h:139 src/initprops.h:145
+msgid "vertical tail area"
+msgstr ""
+
+#: src/initprops.h:151 src/initprops.h:157 src/initprops.h:163
+msgid "vertical tail arm"
+msgstr ""
+
+#: src/initprops.h:166
+msgid "deprecated, VTailArm / cbar"
+msgstr ""
+
+#: src/initprops.h:169
+msgid "V. Tail Volume"
+msgstr ""
+
+#: src/initprops.h:172
+msgid "vbarv = VTailArm*VTailArea / (cbar*WingArea)"
+msgstr ""
+
+#: src/initprops.h:175 src/initprops.h:181
+msgid "X coordinate for ARP"
+msgstr ""
+
+#: src/initprops.h:178 src/initprops.h:184 src/initprops.h:190
+#: src/initprops.h:196 src/initprops.h:202 src/initprops.h:208
+msgid "Aero Referece Point in the structural frame"
+msgstr ""
+
+#: src/initprops.h:187 src/initprops.h:193
+msgid "Y coordinate for ARP"
+msgstr ""
+
+#: src/initprops.h:199 src/initprops.h:205
+msgid "Z coordinate for ARP"
+msgstr ""
+
+#: src/initprops.h:211 src/initprops.h:217
+msgid "X coordinate for EP"
+msgstr ""
+
+#: src/initprops.h:214 src/initprops.h:220 src/initprops.h:226
+#: src/initprops.h:232 src/initprops.h:238 src/initprops.h:244
+msgid "Eye Point in the structural frame"
+msgstr ""
+
+#: src/initprops.h:223 src/initprops.h:229
+msgid "Y coordinate for EP"
+msgstr ""
+
+#: src/initprops.h:235 src/initprops.h:241
+msgid "Z coordinate for EP"
+msgstr ""
+
+#: src/initprops.h:247 src/initprops.h:253
+msgid "X coordinate for VRP"
+msgstr ""
+
+#: src/initprops.h:250 src/initprops.h:256 src/initprops.h:262
+#: src/initprops.h:268 src/initprops.h:274 src/initprops.h:280
+msgid "Visual Reference Point in the structural frame"
+msgstr ""
+
+#: src/initprops.h:259 src/initprops.h:265
+msgid "Y coordinate for VRP"
+msgstr ""
+
+#: src/initprops.h:271 src/initprops.h:277
+msgid "Z coordinate for VRP"
+msgstr ""
+
+#: src/initprops.h:295 src/initprops.h:301
+msgid "weight"
+msgstr ""
+
+#: src/initprops.h:307 src/initprops.h:313
+msgid "CG pos along the X axis"
+msgstr ""
+
+#: src/initprops.h:310 src/initprops.h:316 src/initprops.h:322
+#: src/initprops.h:328 src/initprops.h:334 src/initprops.h:340
+msgid "CG pos in the structural frame"
+msgstr ""
+
+#: src/initprops.h:319 src/initprops.h:325
+msgid "CG pos along the Y axis"
+msgstr ""
+
+#: src/initprops.h:331 src/initprops.h:337
+msgid "CG pos along the Z axis"
+msgstr ""
+
+#: src/initprops.h:343 src/initprops.h:349 src/initprops.h:355
+#: src/initprops.h:379
+msgid "aero temperature"
+msgstr ""
+
+#: src/initprops.h:346
+msgid "the temperature in degrees Rankine"
+msgstr ""
+
+#: src/initprops.h:352
+msgid "the temperature in degrees Celsius"
+msgstr ""
+
+#: src/initprops.h:358
+msgid "the temperature in degrees Kelvin"
+msgstr ""
+
+#: src/initprops.h:361 src/initprops.h:367
+msgid "temperature at sea level"
+msgstr ""
+
+#: src/initprops.h:364
+msgid "sea level temperature in degrees Rankine"
+msgstr ""
+
+#: src/initprops.h:370
+msgid "sea level temperature in degrees Celsius"
+msgstr ""
+
+#: src/initprops.h:373
+msgid "aero temperature at sea level"
+msgstr ""
+
+#: src/initprops.h:376
+msgid "sea level temperature in degrees Kelvin"
+msgstr ""
+
+#: src/initprops.h:382
+msgid "the ratio of at-altitude temperature over the sea level value"
+msgstr ""
+
+#: src/initprops.h:385 src/initprops.h:391 src/initprops.h:409
+msgid "aero density"
+msgstr ""
+
+#: src/initprops.h:397 src/initprops.h:403
+msgid "aero density at sea level"
+msgstr ""
+
+#: src/initprops.h:412
+msgid "the ratio of at-altitude density over the sea level value"
+msgstr ""
+
+#: src/initprops.h:415 src/initprops.h:421 src/initprops.h:439
+msgid "aero pressure"
+msgstr ""
+
+#: src/initprops.h:427 src/initprops.h:433
+msgid "aero pressure at sea level"
+msgstr ""
+
+#: src/initprops.h:442
+msgid "the ratio of at-altitude pressure over the sea level value"
+msgstr ""
+
+#: src/initprops.h:445 src/initprops.h:451 src/initprops.h:469
+msgid "sound speed"
+msgstr ""
+
+#: src/initprops.h:457
+msgid "speed of sound  at sea level"
+msgstr ""
+
+#: src/initprops.h:463
+msgid "sound speed at sea level"
+msgstr ""
+
+#: src/initprops.h:472
+msgid "the ratio of at-altitude sound speed over the sea level value"
+msgstr ""
+
+#: src/initprops.h:475
+msgid "wind direction"
+msgstr ""
+
+#: src/initprops.h:478
+msgid "0 <= psiw < 2*pi"
+msgstr ""
+
+#: src/initprops.h:495
+msgid "density altitude in feet"
+msgstr ""
+
+#: src/initprops.h:501
+msgid "density altitude in meters"
+msgstr ""
+
+#: src/initprops.h:507
+msgid "aero turbulence moment along the X axis"
+msgstr ""
+
+#: src/initprops.h:510 src/initprops.h:516 src/initprops.h:522
+msgid "aero turbulence moment in the body frame"
+msgstr ""
+
+#: src/initprops.h:513
+msgid "aero turbulence moment along the Y axis"
+msgstr ""
+
+#: src/initprops.h:519
+msgid "aero turbulence moment along the Z axis"
+msgstr ""
+
+#: src/initprops.h:525 src/initprops.h:531
+msgid "aero turbulence force for the north axis"
+msgstr ""
+
+#: src/initprops.h:528 src/initprops.h:534 src/initprops.h:540
+#: src/initprops.h:546 src/initprops.h:552 src/initprops.h:558
+msgid "aero turbulence force in the local frame"
+msgstr ""
+
+#: src/initprops.h:537 src/initprops.h:543
+msgid "aero turbulence force for the east axis"
+msgstr ""
+
+#: src/initprops.h:549 src/initprops.h:555
+msgid "aero turbulence force for the down axis"
+msgstr ""
+
+#: src/initprops.h:561
+msgid "square coefficient of lift"
+msgstr ""
+
+#: src/initprops.h:564
+msgid "aerodynamic lift force divided by (qbar * WingArea)"
+msgstr ""
+
+#: src/initprops.h:567 src/initprops.h:573
+msgid "qbar * WingArea"
+msgstr ""
+
+#: src/initprops.h:570 src/initprops.h:576
+msgid "qbar multiplied by WingArea"
+msgstr ""
+
+#: src/initprops.h:579
+msgid "accessible max alpha angle"
+msgstr ""
+
+#: src/initprops.h:585
+msgid "accessible min alpha angle"
+msgstr ""
+
+#: src/initprops.h:591
+msgid "WingSpan divided by double velocity"
+msgstr ""
+
+#: src/initprops.h:594
+msgid "velocities/p-rad_sec * aero/bi2vel = p-norm"
+msgstr ""
+
+#: src/initprops.h:597
+msgid "chord divided by double velocity"
+msgstr ""
+
+#: src/initprops.h:600
+msgid "velocities/q-rad_sec * aero/ci2vel = q-norm"
+msgstr ""
+
+#: src/initprops.h:603
+msgid "alpha angle for the wing"
+msgstr ""
+
+#: src/initprops.h:606
+msgid "aero/alpha-rad + metrics/iw-deg * deg2rad"
+msgstr ""
+
+#: src/initprops.h:609
+msgid "stall warn signal"
+msgstr ""
+
+#: src/initprops.h:612
+msgid "10*(alpha/alphaclmax - 0.85)"
+msgstr ""
+
+#: src/initprops.h:615
+msgid "stall hysteresis flag"
+msgstr ""
+
+#: src/initprops.h:618
+msgid "if (alpha > alphahystmax) stall_hyst = 1; else stall_hyst = 0"
+msgstr ""
+
+#: src/initprops.h:621 src/initprops.h:627
+msgid "alpha angle"
+msgstr ""
+
+#: src/initprops.h:633 src/initprops.h:639 src/initprops.h:645
+#: src/initprops.h:651
+msgid "beta angle"
+msgstr ""
+
+#: src/initprops.h:648 src/initprops.h:654
+msgid "absolute magnitude of beta angle"
+msgstr ""
+
+#: src/initprops.h:657 src/initprops.h:663
+msgid "Q bar"
+msgstr ""
+
+#: src/initprops.h:683 src/initprops.h:689
+msgid "alpha dot"
+msgstr ""
+
+#: src/initprops.h:686 src/initprops.h:692
+msgid "d(alpha) / dt"
+msgstr ""
+
+#: src/initprops.h:695 src/initprops.h:701
+msgid "beta dot"
+msgstr ""
+
+#: src/initprops.h:698 src/initprops.h:704
+msgid "d(beta) / dt"
+msgstr ""
+
+#: src/initprops.h:721 src/initprops.h:727 src/initprops.h:757
+#: src/initprops.h:763
+msgid "aerodynamic force along the X axis"
+msgstr ""
+
+#: src/initprops.h:724 src/initprops.h:730 src/initprops.h:736
+#: src/initprops.h:742 src/initprops.h:748 src/initprops.h:754
+msgid "aerodynamic force only in the body frame"
+msgstr ""
+
+#: src/initprops.h:733 src/initprops.h:739 src/initprops.h:769
+#: src/initprops.h:775
+msgid "aerodynamic force along the Y axis"
+msgstr ""
+
+#: src/initprops.h:745 src/initprops.h:751 src/initprops.h:781
+#: src/initprops.h:787
+msgid "aerodynamic force along the Z axis"
+msgstr ""
+
+#: src/initprops.h:760 src/initprops.h:766 src/initprops.h:772
+#: src/initprops.h:778 src/initprops.h:784 src/initprops.h:790
+msgid "aerodynamic force only in the wind frame"
+msgstr ""
+
+#: src/initprops.h:793
+msgid "aerodynamic force load ratio"
+msgstr ""
+
+#: src/initprops.h:796
+msgid "aerodynamic lift force divided by aerodynamic drag force"
+msgstr ""
+
+#: src/initprops.h:799
+msgid "longitude force load"
+msgstr ""
+
+#: src/initprops.h:802
+msgid "longitude force divided by gravity, it is 1 normally."
+msgstr ""
+
+#: src/initprops.h:805
+msgid "absolute magnitude of all force load"
+msgstr ""
+
+#: src/initprops.h:808
+msgid "total force divided by gravity, it is 1 normally."
+msgstr ""
+
+#: src/initprops.h:811 src/initprops.h:817
+msgid "total force along the X axis"
+msgstr ""
+
+#: src/initprops.h:814 src/initprops.h:820 src/initprops.h:826
+#: src/initprops.h:832 src/initprops.h:838 src/initprops.h:844
+msgid "total force in the body frame"
+msgstr ""
+
+#: src/initprops.h:823 src/initprops.h:829
+msgid "total force along the Y axis"
+msgstr ""
+
+#: src/initprops.h:835 src/initprops.h:841
+msgid "total force along the Z axis"
+msgstr ""
+
+#: src/initprops.h:847
+msgid "total load along the X axis"
+msgstr ""
+
+#: src/initprops.h:850 src/initprops.h:856
+msgid "total load in the body frame"
+msgstr ""
+
+#: src/initprops.h:853
+msgid "total load along the Y axis"
+msgstr ""
+
+#: src/initprops.h:859
+msgid "total load along the Z axis"
+msgstr ""
+
+#: src/initprops.h:862
+msgid "total load in the body frame, it is -1 normally."
+msgstr ""
+
+#: src/initprops.h:903 src/initprops.h:909
+msgid "aerodynamic moment along the X axis"
+msgstr ""
+
+#: src/initprops.h:906 src/initprops.h:912 src/initprops.h:918
+#: src/initprops.h:924 src/initprops.h:930 src/initprops.h:936
+msgid "aerodynamic moment in the body frame at ARP"
+msgstr ""
+
+#: src/initprops.h:915 src/initprops.h:921
+msgid "aerodynamic moment along the Y axis"
+msgstr ""
+
+#: src/initprops.h:927 src/initprops.h:933
+msgid "aerodynamic moment along the Z axis"
+msgstr ""
+
+#: src/initprops.h:939 src/initprops.h:945
+msgid "total moment along the X axis"
+msgstr ""
+
+#: src/initprops.h:942 src/initprops.h:948 src/initprops.h:954
+#: src/initprops.h:960 src/initprops.h:966 src/initprops.h:972
+msgid "total moment in the body frame at ARP"
+msgstr ""
+
+#: src/initprops.h:951 src/initprops.h:957
+msgid "total moment along the Y axis"
+msgstr ""
+
+#: src/initprops.h:963 src/initprops.h:969
+msgid "total moment along the Z axis"
+msgstr ""
+
+#: src/initprops.h:995 src/initprops.h:1001
+msgid "acceleration at pilot along the X axis"
+msgstr ""
+
+#: src/initprops.h:998 src/initprops.h:1004 src/initprops.h:1010
+#: src/initprops.h:1016 src/initprops.h:1022 src/initprops.h:1028
+#: src/initprops.h:1088 src/initprops.h:1094 src/initprops.h:1100
+#: src/initprops.h:1106 src/initprops.h:1112 src/initprops.h:1118
+msgid "acceleration in the body frame"
+msgstr ""
+
+#: src/initprops.h:1007 src/initprops.h:1013
+msgid "acceleration at pilot along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1019 src/initprops.h:1025
+msgid "acceleration at pilot along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1031
+msgid "load at pilot along the X axis"
+msgstr ""
+
+#: src/initprops.h:1034 src/initprops.h:1040 src/initprops.h:1046
+msgid "load in the body frame"
+msgstr ""
+
+#: src/initprops.h:1037
+msgid "load at pilot along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1043
+msgid "load at pilot along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1049 src/initprops.h:1055
+msgid "angular acceleration along the X axis"
+msgstr ""
+
+#: src/initprops.h:1052 src/initprops.h:1058 src/initprops.h:1064
+#: src/initprops.h:1070 src/initprops.h:1076 src/initprops.h:1082
+msgid "angular acceleration in the body frame"
+msgstr ""
+
+#: src/initprops.h:1061 src/initprops.h:1067
+msgid "angular acceleration along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1073 src/initprops.h:1079
+msgid "angular acceleration along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1085 src/initprops.h:1091
+msgid "acceleration along the X axis"
+msgstr ""
+
+#: src/initprops.h:1097 src/initprops.h:1103
+msgid "acceleration along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1109 src/initprops.h:1115
+msgid "acceleration along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1121 src/initprops.h:1127 src/initprops.h:1133
+msgid "calibrated speed"
+msgstr ""
+
+#: src/initprops.h:1139 src/initprops.h:1145 src/initprops.h:1151
+msgid "equivalent speed"
+msgstr ""
+
+#: src/initprops.h:1165 src/initprops.h:1171
+msgid "total temperature"
+msgstr ""
+
+#: src/initprops.h:1168
+msgid "total temperature in degrees Rankine"
+msgstr ""
+
+#: src/initprops.h:1174
+msgid "total temperature in degrees Celsius"
+msgstr ""
+
+#: src/initprops.h:1177 src/initprops.h:1183
+msgid "total pressure"
+msgstr ""
+
+#: src/initprops.h:1189 src/initprops.h:1195 src/initprops.h:1411
+#: src/initprops.h:1417
+msgid "angular velocity along the X axis"
+msgstr ""
+
+#: src/initprops.h:1192 src/initprops.h:1198 src/initprops.h:1204
+#: src/initprops.h:1210 src/initprops.h:1216 src/initprops.h:1222
+msgid "angular velocity in the body frame"
+msgstr ""
+
+#: src/initprops.h:1201 src/initprops.h:1207 src/initprops.h:1423
+#: src/initprops.h:1429
+msgid "angular velocity along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1213 src/initprops.h:1219 src/initprops.h:1435
+#: src/initprops.h:1441
+msgid "angular velocity along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1225 src/initprops.h:1231
+msgid "angular speed for the phi angle"
+msgstr ""
+
+#: src/initprops.h:1237 src/initprops.h:1243
+msgid "angular speed for the theta angle"
+msgstr ""
+
+#: src/initprops.h:1249 src/initprops.h:1255
+msgid "angular speed for the psi angle"
+msgstr ""
+
+#: src/initprops.h:1261 src/initprops.h:1267 src/initprops.h:1375
+#: src/initprops.h:1381
+msgid "velocity along the X axis"
+msgstr ""
+
+#: src/initprops.h:1264 src/initprops.h:1270 src/initprops.h:1276
+#: src/initprops.h:1282 src/initprops.h:1288 src/initprops.h:1294
+msgid "aero velocity in the body frame, the wind is considered"
+msgstr ""
+
+#: src/initprops.h:1273 src/initprops.h:1279 src/initprops.h:1387
+#: src/initprops.h:1393
+msgid "velocity along the Y axis"
+msgstr ""
+
+#: src/initprops.h:1285 src/initprops.h:1291 src/initprops.h:1399
+#: src/initprops.h:1405
+msgid "velocity along the Z axis"
+msgstr ""
+
+#: src/initprops.h:1297 src/initprops.h:1303
+msgid "the true aero speed"
+msgstr ""
+
+#: src/initprops.h:1300 src/initprops.h:1306 src/initprops.h:1312
+msgid "the wind is considered"
+msgstr ""
+
+#: src/initprops.h:1309
+msgid "the mach number"
+msgstr ""
+
+#: src/initprops.h:1315 src/initprops.h:1321
+msgid "the ground speed"
+msgstr ""
+
+#: src/initprops.h:1318 src/initprops.h:1324
+msgid "refer to the ground"
+msgstr ""
+
+#: src/initprops.h:1327 src/initprops.h:1333
+msgid "vertical speed"
+msgstr ""
+
+#: src/initprops.h:1339 src/initprops.h:1345
+msgid "northward speed"
+msgstr ""
+
+#: src/initprops.h:1342 src/initprops.h:1348 src/initprops.h:1354
+#: src/initprops.h:1360 src/initprops.h:1366 src/initprops.h:1372
+msgid "speed in the local frame"
+msgstr ""
+
+#: src/initprops.h:1351 src/initprops.h:1357
+msgid "eastward speed"
+msgstr ""
+
+#: src/initprops.h:1363 src/initprops.h:1369
+msgid "downward speed"
+msgstr ""
+
+#: src/initprops.h:1378 src/initprops.h:1384 src/initprops.h:1390
+#: src/initprops.h:1396 src/initprops.h:1402 src/initprops.h:1408
+msgid "speed in the body frame"
+msgstr ""
+
+#: src/initprops.h:1414 src/initprops.h:1420 src/initprops.h:1426
+#: src/initprops.h:1432 src/initprops.h:1438 src/initprops.h:1444
+msgid "angular speed in the body frame"
+msgstr ""
+
+#: src/initprops.h:1447 src/initprops.h:1453 src/initprops.h:1459
+#: src/initprops.h:1465
+msgid "roll angle"
+msgstr ""
+
+#: src/initprops.h:1450 src/initprops.h:1456 src/initprops.h:1462
+#: src/initprops.h:1468 src/initprops.h:1474 src/initprops.h:1480
+#: src/initprops.h:1486 src/initprops.h:1492 src/initprops.h:1498
+#: src/initprops.h:1504 src/initprops.h:1510 src/initprops.h:1516
+msgid "the Euler angle"
+msgstr ""
+
+#: src/initprops.h:1471 src/initprops.h:1477 src/initprops.h:1483
+#: src/initprops.h:1489
+msgid "pitch angle"
+msgstr ""
+
+#: src/initprops.h:1495 src/initprops.h:1501 src/initprops.h:1507
+#: src/initprops.h:1513
+msgid "heading angle"
+msgstr ""
+
+#: src/initprops.h:1519
+msgid "earch position angle"
+msgstr ""
+
+#: src/initprops.h:1522
+msgid "earthPosAngle += State->Getdt()*Inertial->omega();"
+msgstr ""
+
+#: src/initprops.h:1525 src/initprops.h:1531
+msgid "height from sea level"
+msgstr ""
+
+#: src/initprops.h:1537
+msgid "latitude"
+msgstr ""
+
+#: src/initprops.h:1543
+msgid "longitude"
+msgstr ""
+
+#: src/initprops.h:1549 src/initprops.h:1555
+msgid "height from runway"
+msgstr ""
+
+#: src/initprops.h:1575
+msgid "gamma angle"
+msgstr ""
+
+#: src/initprops.h:1578
+msgid "vertical flight path angle, from -pi/2 ~ pi/2"
+msgstr ""
+
+#: src/initprops.h:1581
+msgid "psi angle"
+msgstr ""
+
+#: src/initprops.h:1584
+msgid "horizontal flight path angle, from 0 ~ 2pi"
+msgstr ""
+
+#: src/initprops.h:1587
+msgid "aileron command"
+msgstr ""
+
+#: src/initprops.h:1590 src/initprops.h:1608 src/initprops.h:1614
+#: src/initprops.h:1620 src/initprops.h:1626 src/initprops.h:1650
+msgid "range from 0 to 1"
+msgstr ""
+
+#: src/initprops.h:1593
+msgid "elevator command"
+msgstr ""
+
+#: src/initprops.h:1596 src/initprops.h:1602 src/initprops.h:1632
+#: src/initprops.h:1638 src/initprops.h:1644
+msgid "range from 0 to 1, must appear in FCS modal"
+msgstr ""
+
+#: src/initprops.h:1599
+msgid "rudder command"
+msgstr ""
+
+#: src/initprops.h:1605
+msgid "steer command"
+msgstr ""
+
+#: src/initprops.h:1611
+msgid "flap command"
+msgstr ""
+
+#: src/initprops.h:1617
+msgid "speedbrake"
+msgstr ""
+
+#: src/initprops.h:1623
+msgid "spoiler command"
+msgstr ""
+
+#: src/initprops.h:1629
+msgid "pitch trim command"
+msgstr ""
+
+#: src/initprops.h:1635
+msgid "roll trim command"
+msgstr ""
+
+#: src/initprops.h:1641
+msgid "yaw trim command"
+msgstr ""
+
+#: src/initprops.h:1647
+msgid "gear command"
+msgstr ""
+
+#: src/initprops.h:1683
+msgid "active engine"
+msgstr ""
+
+#: src/initprops.h:1686
+msgid "-1 means that all engines are running"
+msgstr ""
+
+#: src/initprops.h:1689
+msgid "throttle command"
+msgstr ""
+
+#: src/initprops.h:1692
+msgid "from 0 to 1, it must appear in the FCS modal"
+msgstr ""
+
+#: src/initprops.h:1696 src/initprops.h:1702
+msgid "left aileron positon"
+msgstr ""
+
+#: src/initprops.h:1699 src/initprops.h:1705 src/initprops.h:1711
+#: src/initprops.h:1717 src/initprops.h:1723 src/initprops.h:1729
+#: src/initprops.h:1735 src/initprops.h:1741
+msgid "it must appear in the FCS modal"
+msgstr ""
+
+#: src/initprops.h:1708 src/initprops.h:1714
+msgid "right aileron position"
+msgstr ""
+
+#: src/initprops.h:1720 src/initprops.h:1726
+msgid "elevator position"
+msgstr ""
+
+#: src/initprops.h:1732 src/initprops.h:1738
+msgid "rudder position"
+msgstr ""
+
+#: src/initprops.h:1744
+msgid "throttle position"
+msgstr ""
+
+#: src/initprops.h:1747
+msgid "from 0 to 2, it must appear in the FCS modal"
+msgstr ""
+
+#: src/initprops.h:1750 src/initprops.h:1756
+msgid "throttle attitude"
+msgstr ""
+
+#: src/initprops.h:1753
+msgid "use propulsion/pitch-deg[1] for the second engine"
+msgstr ""
+
+#: src/initprops.h:1759
+msgid "use propulsion/yaw-deg[1] for the second engine"
+msgstr ""
+
+#: src/initprops.h:1762
+msgid "gear position"
+msgstr ""
+
+#: src/initprops.h:1768
+msgid "flap position norm"
+msgstr ""
+
+#: src/initprops.h:1771 src/initprops.h:1777 src/initprops.h:1783
+#: src/initprops.h:1789 src/initprops.h:1795 src/initprops.h:1801
+#: src/initprops.h:1807 src/initprops.h:1813
+msgid "do not use the other one together"
+msgstr ""
+
+#: src/initprops.h:1774
+msgid "flap position"
+msgstr ""
+
+#: src/initprops.h:1780 src/initprops.h:1786 src/initprops.h:1792
+msgid "speedbrake position"
+msgstr ""
+
+#: src/initprops.h:1798 src/initprops.h:1804 src/initprops.h:1810
+msgid "spoiler position"
+msgstr ""

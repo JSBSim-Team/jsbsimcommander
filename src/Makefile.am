@@ -10,6 +10,10 @@ AM_CPPFLAGS = -I$(top_srcdir)src \
 	      -DwxUSE_DEPRECATED=1 -DwxUSE_PROLOGIO=1 \
               -I$(top_srcdir)/src/gui ${WX_CXXFLAGS}
 
+noinst_LIBRARIES = libJSBSim.a
+
+libJSBSim_a_SOURCES =  FGJSBBase.cpp
+
 bin_PROGRAMS = Commander JSBSimCommander
 
 commander.res: commander.rc
@@ -67,10 +71,6 @@ JSBSimCommander_DEPENDENCIES = \
 	$(top_builddir)/src/wx/ogl/libOGL.a \
 	$(top_builddir)/src/wx/deprecated/libDeprecated.a \
 	$(COMMANDER_RES)
-
-noinst_LIBRARIES = libJSBSim.a
-
-libJSBSim_a_SOURCES =  FGJSBBase.cpp
 
 noinst_HEADERS = initprops.h FGJSBBase.h MyApp.h
 
